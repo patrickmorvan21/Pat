@@ -440,40 +440,6 @@ b,strong{font-weight:700}
 #jtPalGo{width:100%}
 .who .palm{width:calc(var(--u)*7);height:calc(var(--u)*7);margin-left:calc(var(--u)*-1)}
 
-/* H2 · the banners: one unrolls from the top for each wave, two hang under a burning cord for a vote */
-.jt-ban,.jt-vote{position:fixed;z-index:5;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none}
-.jt-ban{width:calc(var(--u)*116)}
-.jt-vote{width:min(calc(100% - 24px),calc(var(--u)*212))}
-.jt-rod{position:relative;align-self:stretch;height:calc(var(--u)*5.4);margin:0 calc(var(--u)*-6);background:#8a6a48;box-shadow:inset 0 calc(var(--u)*-1.4) 0 #5e4630,inset 0 calc(var(--u)*1.4) 0 #b08a58}
-.jt-rod::before,.jt-rod::after{content:"";position:absolute;top:calc(var(--u)*-1.4);width:calc(var(--u)*8);height:calc(var(--u)*8);background:#d5bf7b;box-shadow:inset 0 calc(var(--u)*-2) 0 #8a6a2a}
-.jt-rod::before{left:calc(var(--u)*-4)}
-.jt-rod::after{right:calc(var(--u)*-4)}
-.jt-drop{align-self:stretch;overflow:hidden;pointer-events:auto}
-/* the cloth: a swallowtail with one thin gold edge that follows the tail too (two layers cut to the same shape: the gold, the cloth) */
-.jt-cloth,.jt-vcloth{--n:calc(var(--u)*14);position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*1.4);text-align:center;background:#d5bf7b;color:#f3ead6;clip-path:polygon(0 0,100% 0,100% 100%,50% calc(100% - var(--n)),0 100%);will-change:transform}
-.jt-cloth::after,.jt-vcloth::after{content:"";position:absolute;z-index:-1;pointer-events:none;inset:calc(var(--u)*2) calc(var(--u)*2) calc(var(--u)*2.6);background:var(--c,#7d3530);clip-path:polygon(0 0,100% 0,100% 100%,50% calc(100% - var(--n) + var(--u)*.5),0 100%)}
-.jt-cloth{padding:calc(var(--u)*9) calc(var(--u)*9) calc(var(--u)*22)}
-.jt-cloth .jt-bk,.jt-vcloth .jt-bk{font-family:var(--ft);font-size:calc(var(--t)*1.15);letter-spacing:.12em;color:#e6c35a;line-height:1}
-.jt-bnum{font-family:var(--ft);font-size:calc(var(--t)*4.1);line-height:.82;color:#f0dfb0}
-.jt-cloth b,.jt-vcloth b{font-weight:700;font-size:calc(var(--t)*1.2);line-height:1.1;color:#f3ead6}
-.jt-cloth .jt-bd,.jt-vcloth .jt-bd{font-size:calc(var(--t)*.88);line-height:1.18;color:#e3cfc8}
-.jt-cloth .ico,.jt-vcloth .ico{margin:calc(var(--u)*1.4) 0}
-.jt-bsub{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*1);margin-top:calc(var(--u)*3);padding-top:calc(var(--u)*4);border-top:calc(var(--u)*1.34) dashed rgba(230,195,90,.45);align-self:stretch}
-.jt-cord{align-self:stretch;height:calc(var(--u)*4);margin:0 calc(var(--u)*2) calc(var(--u)*2);display:flex;justify-content:flex-end;background:#3b342e}
-.jt-rope{position:relative;height:100%;background:repeating-linear-gradient(90deg,#c9b48a 0 calc(var(--u)*2.7),#8f7a55 calc(var(--u)*2.7) calc(var(--u)*4))}
-.jt-rope i{position:absolute;left:calc(var(--u)*-2.7);top:calc(var(--u)*-2);width:calc(var(--u)*5.4);height:calc(var(--u)*8);animation:jtspark .3s step-end infinite}
-@keyframes jtspark{0%{background:#fff6d8}33%{background:#f2c46a}66%{background:#e07a3a}}
-.jt-vbs{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*6);align-self:stretch;padding:0 calc(var(--u)*2)}
-.jt-vb{border:0;padding:0;background:none;cursor:pointer;overflow:hidden;pointer-events:auto;min-width:0;font:inherit;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start}
-.jt-vb .jt-vcloth{flex:1 0 auto}
-.jt-vb:disabled{cursor:default}
-.jt-vcloth{padding:calc(var(--u)*8) calc(var(--u)*6) calc(var(--u)*20);min-height:calc(var(--u)*100);box-sizing:border-box}
-.jt-vb[aria-pressed="true"] .jt-vcloth{filter:brightness(1.12)}
-.jt-vb[aria-pressed="true"] .jt-vcloth,.jt-vb.win .jt-vcloth{background:#fff1b0}
-.jt-vb.win .jt-vcloth{filter:brightness(1.18)}
-.jt-vdots{display:flex;gap:calc(var(--u)*2);min-height:calc(var(--u)*5.4);margin-top:calc(var(--u)*1.4)}
-.jt-vdots i{display:block;width:calc(var(--u)*5.4);height:calc(var(--u)*5.4);box-shadow:0 0 0 calc(var(--u)*.7) rgba(0,0,0,.35)}
-.jt-vlab{margin-top:calc(var(--u)*3);padding:calc(var(--u)*1.4) calc(var(--u)*5);background:var(--bg);font-family:var(--ft);font-size:calc(var(--t)*1.2);color:#f0dfb0;line-height:1.2}
 /* the pennant in the bar at the top */
 .wave{display:flex;align-items:center;gap:calc(var(--u)*4)}
 .jt-wtx{display:flex;flex-direction:column;align-items:flex-end}
@@ -481,6 +447,86 @@ b,strong{font-weight:700}
 .jt-wtx #waveNum{font-size:calc(var(--t)*.82);color:var(--muted)}
 .jt-fan{flex:none;width:calc(var(--u)*19);height:calc(var(--u)*23);display:flex;justify-content:center;padding-top:calc(var(--u)*3);box-sizing:border-box;background:#7d3530;clip-path:polygon(0 0,100% 0,100% 100%,50% 76%,0 100%)}
 .wave .jt-fan b{display:block;font-family:var(--ft);font-weight:400;font-size:calc(var(--t)*1.08);line-height:1;color:#f0dfb0}
+/* the announcement in the bar at the top: the wave's number, its sign, an "i" that opens the panel (A pennant, B shield, C medal, D scroll) */
+.wave.an{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wave.an .jt-fan,.wave.an .jt-wtx{display:none}
+.wave.mid{margin:0 auto}
+.wave.an-new{animation:anflash .3s steps(1) 6}
+@keyframes anflash{50%{filter:brightness(1.6)}}
+.an-chip{display:flex;align-items:center;gap:calc(var(--u)*4);text-align:left}
+.an-chip[hidden]{display:none}
+.wave.anA .an-chip{gap:calc(var(--u)*3)}
+.an-st{display:grid;flex:none;position:relative}
+.an-st>*{grid-area:1/1;align-self:center;justify-self:center}
+.an-tx{display:flex;flex-direction:column;align-items:flex-start;gap:calc(var(--u)*1)}
+.wave .an-tx b{display:flex;align-items:center;gap:calc(var(--u)*2);font:400 calc(var(--t)*1.4)/1 var(--fb);color:var(--ink)}
+.an-tx>span{font-size:calc(var(--t)*.82);line-height:1;color:var(--muted)}
+.an-i{position:relative;flex:none;width:calc(var(--u)*11);height:calc(var(--u)*11);display:grid;place-items:center;font:400 calc(var(--t)*1.1)/1 var(--ft);color:var(--panel);background:#d5bf7b;box-shadow:inset 0 calc(var(--u)*-1) 0 #ad9150}
+.an-dot{position:absolute;right:calc(var(--u)*-2.5);top:calc(var(--u)*-2.5);width:calc(var(--u)*4);height:calc(var(--u)*4);background:#d0473b;box-shadow:0 0 0 var(--u) var(--panel)}
+.wave.open .an-i{background:#f0dfb0}
+/* A · the pennant, the sign in a tile */
+.anA-fan{flex:none;width:calc(var(--u)*19);height:calc(var(--u)*23);display:flex;justify-content:center;padding-top:calc(var(--u)*3);box-sizing:border-box;clip-path:polygon(0 0,100% 0,100% 100%,50% 76%,0 100%)}
+.wave .anA-fan b{display:block;font:400 calc(var(--t)*1.08)/1 var(--ft);color:#f0dfb0}
+.anA-ic{flex:none;width:calc(var(--u)*20);height:calc(var(--u)*20);display:grid;place-items:center;background:var(--panel2);box-shadow:inset 0 0 0 var(--u) var(--line)}
+/* B · the shield holds the sign */
+.wave.anB .anB-tx b{font:400 calc(var(--t)*1.15)/1 var(--ft);letter-spacing:.05em;color:#f0dfb0}
+.wave.anB .anB-tx>span{display:flex;align-items:center;gap:calc(var(--u)*2);font:400 calc(var(--t)*1.05)/1 var(--fb);color:var(--muted)}
+.wave.anB .an-i{background:none;color:#d5bf7b;box-shadow:inset 0 0 0 var(--u) #d5bf7b}
+.wave.anB.open .an-i{background:#d5bf7b;color:var(--panel)}
+.anB-sh>.ico+.ico{margin-top:calc(var(--u)*-3)}
+/* C · the medal, its number on a plate, the i as a badge */
+.anC-m>.ico+.ico{margin-top:calc(var(--u)*-3)}
+.anC-n{position:absolute;left:50%;bottom:calc(var(--u)*-3);transform:translateX(-50%);font:400 calc(var(--t)*.95)/1 var(--ft);color:#2e2924;background:#d5bf7b;padding:calc(var(--u)*.8) calc(var(--u)*2.4) calc(var(--u)*.2);box-shadow:0 0 0 var(--u) var(--panel)}
+.wave.anC .an-i{position:absolute;right:calc(var(--u)*-5);top:calc(var(--u)*-3);width:calc(var(--u)*9);height:calc(var(--u)*9);font-size:calc(var(--t)*.9);box-shadow:0 0 0 var(--u) var(--panel)}
+.wave.anC .an-i.hot{background:#d0473b;color:#fff1d0}
+.anC-tx{margin-left:calc(var(--u)*3)}
+/* D · a small scroll, rolled up at the bottom */
+.anD-sc{position:relative;display:flex;align-items:center;gap:calc(var(--u)*3);height:calc(var(--u)*17);padding:0 calc(var(--u)*5);background:var(--parch);box-shadow:inset 0 0 0 calc(var(--u)*1.34) var(--pink),inset 0 calc(var(--u)*-2.4) 0 var(--parchd);margin-bottom:calc(var(--u)*2)}
+.anD-sc::after{content:"";position:absolute;left:calc(var(--u)*-3);right:calc(var(--u)*-3);bottom:calc(var(--u)*-3);height:calc(var(--u)*4.5);background:#8a6a48;box-shadow:inset 0 var(--u) 0 #b08a5c,inset 0 calc(var(--u)*-1) 0 #4a3628,0 0 0 calc(var(--u)*.9) #2e2924}
+.wave.anD.open .anD-sc::after{display:none}
+.wave .anD-sc b{display:block;font:400 calc(var(--t)*1.1)/1 var(--ft);color:#7a5a24;letter-spacing:.03em}
+.wave.anD .an-i{background:var(--pink);color:var(--parch);box-shadow:none;width:calc(var(--u)*10);height:calc(var(--u)*10)}
+.wave.anD .an-dot{box-shadow:0 0 0 var(--u) var(--parch)}
+.wave.anD.open .an-i{background:#d5bf7b;color:var(--pink)}
+/* the panel */
+#anPan{position:fixed;z-index:40}
+#anPan[hidden]{display:none}
+.ant{position:absolute;top:calc(var(--u)*-4);width:calc(var(--u)*8);height:calc(var(--u)*8);background:var(--parch);border-left:calc(var(--u)*1.34) solid var(--pink);border-top:calc(var(--u)*1.34) solid var(--pink);transform:rotate(45deg);z-index:1}
+.ant.dk{background:var(--panel);border-color:#d5bf7b}
+.anp{display:flex;flex-direction:column;animation:jtin .18s steps(3)}
+.anp .r{display:flex;align-items:flex-start;gap:calc(var(--u)*5);padding:calc(var(--u)*5) calc(var(--u)*6) calc(var(--u)*4)}
+.anp .r+.r{border-top:calc(var(--u)*1.34) dashed rgba(46,41,36,.28)}
+.anp .r>.ico{margin-top:calc(var(--u)*1)}
+.anp .x{display:flex;flex-direction:column;gap:calc(var(--u)*1.5);min-width:0}
+.anp .k{font:400 calc(var(--t)*1.0)/1 var(--ft);letter-spacing:.05em;color:var(--pk)}
+.anp .n{font-weight:700;line-height:1.1}
+.anp .d,.anp .tip{font-size:calc(var(--t)*.86);line-height:1.25;color:var(--pmut)}
+.anp .tip{color:#7a5a24}
+.anp .nx{display:flex;align-items:center;gap:calc(var(--u)*3);padding:calc(var(--u)*3) calc(var(--u)*6) calc(var(--u)*5);border-top:calc(var(--u)*1.34) solid rgba(46,41,36,.16)}
+.anp .nx .k{margin-right:auto}
+.anp .nx b{font-weight:700;font-size:calc(var(--t)*.9)}
+.anp .vh{display:flex;justify-content:space-between;align-items:center;padding:calc(var(--u)*5) calc(var(--u)*6) calc(var(--u)*4)}
+.anp .vc{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*4);padding:0 calc(var(--u)*6)}
+.anp .vc .jt-n{font-size:calc(var(--t)*.9)}
+.anp .vc .jt-d{font-size:calc(var(--t)*.76)}
+.anp .cord{height:calc(var(--u)*2);margin:calc(var(--u)*5) calc(var(--u)*6) calc(var(--u)*6);background:rgba(46,41,36,.22)}
+.anp .cord i{display:block;height:100%;background:#d0702e;box-shadow:var(--u) 0 0 #f6b44c}
+.anp.dk{background:var(--panel);color:var(--ink);box-shadow:inset 0 0 0 calc(var(--u)*1.34) #d5bf7b;clip-path:polygon(3px 0,calc(100% - 3px) 0,100% 3px,100% calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,0 calc(100% - 3px),0 3px)}
+.anp.dk .k{color:#d5bf7b}
+.anp.dk .d{color:var(--muted)}
+.anp.dk .tip{color:#e3c86a}
+.anp.dk .r+.r{border-top-color:rgba(213,191,123,.28)}
+.anp.dk .nx{border-top-color:rgba(213,191,123,.2)}
+.anp.dk .jt-vc{background:var(--panel2);box-shadow:inset 0 0 0 calc(var(--u)*1.34) var(--line);color:var(--ink)}
+.anp.dk .jt-vc .jt-n{color:var(--ink)}
+.anp.dk .jt-vc .jt-d{color:var(--muted)}
+.anp.dk .jt-vc[aria-pressed="true"]{background:#33392f;box-shadow:inset 0 0 0 calc(var(--u)*1.34) #d5bf7b}
+.anp.dk .cord{background:rgba(255,255,255,.08)}
+.anp.sm .r{padding:calc(var(--u)*4) calc(var(--u)*5) calc(var(--u)*3);gap:calc(var(--u)*4)}
+.anp.sm .d{font-size:calc(var(--t)*.8)}
+.anp.scr{animation:anroll .24s steps(4);transform-origin:top center}
+@keyframes anroll{from{transform:scaleY(.08)}}
+.anroll{position:relative;height:calc(var(--u)*5);margin:calc(var(--u)*-2) calc(var(--u)*-4) 0;background:#8a6a48;box-shadow:inset 0 var(--u) 0 #b08a5c,inset 0 calc(var(--u)*-1) 0 #4a3628,0 0 0 calc(var(--u)*.9) #2e2924}
 
 /* six players: five rivals in a row, their rings and marks alone (the name stays in the label) */
 .rivals.many .who{justify-content:center;padding-right:calc(var(--u)*2)}
@@ -529,7 +575,7 @@ b,strong{font-weight:700}
 <header class="hud" id="hud">
   <div class="hud-row">
     <button type="button" class="who me" id="meChip" aria-label="Tes vies · réactions rapides"></button>
-    <div class="wave"><span class="jt-fan" id="jtFan" hidden><b id="jtFanN"></b></span><span class="jt-wtx"><b id="waveT">dans 8 s</b><span id="waveNum">Vague 1</span></span></div>
+    <div class="wave"><span class="jt-fan" id="jtFan" hidden><b id="jtFanN"></b></span><span class="jt-wtx"><b id="waveT">dans 8 s</b><span id="waveNum">Vague 1</span></span><span class="an-chip" id="anChip" hidden></span></div>
     <div class="pill gold" id="goldPill" aria-label="Ton or et ton revenu">
       <span id="coinIcon" data-icon="coin"></span>
       <b id="gold">40</b>
@@ -548,8 +594,7 @@ b,strong{font-weight:700}
 <div id="bubbles"></div>
 
 <div class="jt-her" id="jtHer" hidden><div class="jt-tail" id="jtTail"></div><div class="jt-bub parch" id="jtBub"></div></div>
-<div class="jt-ban" id="jtBan" hidden aria-live="polite"><div class="jt-rod"></div><div class="jt-drop"><div class="jt-cloth" id="jtCloth"></div></div></div>
-<div class="jt-vote" id="jtVote" hidden><div class="jt-cord"><div class="jt-rope" id="jtRope"><i></i></div></div><div class="jt-rod"></div><div class="jt-vbs" id="jtVbs"></div><div class="jt-vlab" id="jtVLab"></div></div>
+<div id="anPan" hidden></div>
 <div class="jt-panel parch" id="jtPick" hidden></div>
 <div class="jt-card parch" id="jtCard" hidden></div>
 <div class="ov jt-entr" id="jtEntr" hidden>
@@ -5916,7 +5961,7 @@ function updateUI() {
   setTxt('inc', '+' + me.income);
   $('payRing').style.width = (100 * G.incT / INCOME_EVERY).toFixed(1) + '%';
   if (G.jt) jtWaveHud();
-  else { setTxt('waveNum', G.spc ? SPECIALS[G.spc].n : `Vague ${G.wave + 1}`); $('waveNum').classList.toggle('sp', !!G.spc); setTxt('waveT', `${G.spc ? 'suite' : 'dans'} ${Math.ceil(G.nextWave)} s`); }
+  else { jtWaveHudOff(); setTxt('waveNum', G.spc ? SPECIALS[G.spc].n : `Vague ${G.wave + 1}`); $('waveNum').classList.toggle('sp', !!G.spc); setTxt('waveT', `${G.spc ? 'suite' : 'dans'} ${Math.ceil(G.nextWave)} s`); }
   if (cache.free !== me.free && G.mode === 'build') renderItems();
   jtUI();
   const gk = me.gold + '|' + G.mode + '|' + me.free + '|' + (G.sel ? G.sel.c + ',' + G.sel.r : '');
@@ -8085,7 +8130,6 @@ function herTick() {
   while (H.q.length && G.t - H.q[0].at > herDur(H.q[0]) + 0.6) H.q.shift();
   if (!H.cur && H.q.length) {
     H.cur = H.q.shift(); H.cur.t0 = G.t; H.cur.end = G.t + herDur(H.cur);
-    if (H.cur.type === 'wave') H.cur.end += BAN_T;
     if (H.cur.type !== 'result') { H.annT = G.t; fanfare(); } else sfx('ding');
   }
 }
@@ -8124,79 +8168,143 @@ function renderHerald() {
   const tail = $('jtTail'); tail.hidden = !vis; if (vis) tail.style.left = Math.max(10, Math.min(bw - 22, hs.x - left - 7)) + 'px';
 }
 
-/* ---------------------------------------------------------------- H2 · banners: the wave's banner unrolls from the top, the vote hangs two */
+/* ---------------------------------------------------------------- the announcement in the bar at the top
+   Between your name and your gold: the wave's number and its sign (its event, else its new creature, else its
+   bestiary). When a wave starts the sign flashes and a red dot on the "i" says there is something new to read; a tap on
+   the announcement opens the panel (the event, the new creature and a tip, what comes next), a tap elsewhere closes it.
+   A vote opens it by itself. Four looks: A the pennant, B the shield, C the medal, D the scroll (AN_V picks one). */
 const ROMAN = n => { if (n < 1) return '·'; let s = '', v = n; for (const [a, r] of [[40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (v >= a) { s += r; v -= a; } return s; };
 const FAM_COL = { assaut: '#7d3530', bonus: '#6b5a24', ombre: '#3b3a5e', carte: '#6b4f38', caractere: '#5a3f6b', entracte: '#6b5a24' };
 function evCol(k) { if (!k || k === '?') return '#3f5f6e'; if (k === 'boss') return '#5a2328'; const e = EV[k]; return (e && FAM_COL[e.fam]) || '#3f5f6e'; }
-const BAN_T = 0.42;   // unrolling and rolling up, in six steps
-const banStep = (age, left) => age < BAN_T ? Math.floor(age / BAN_T * 6) / 6 : left < BAN_T ? Math.max(0, Math.ceil(left / BAN_T * 6) / 6) : 1;
-function banHTML(it) {
-  const k = it.k;
-  let html = `<span class="jt-bk">VAGUE</span><span class="jt-bnum">${ROMAN(it.w)}</span>`;
-  if (k) html += `${jtIcon(k, 3)}<b>${esc(evName(k))}</b><span class="jt-bd">${esc(evDesc(k))}</span>`;
-  else if (it.w === 1) html += `<b>Que la joute commence !</b><span class="jt-bd">Touche le héraut pour voir le programme</span>`;
-  else { const nx = G.jt.prog.find(e => e.w > it.w); if (nx) html += `<span class="jt-bd">Ensuite, vague ${nx.w}</span><b>${esc(nx.k ? evName(nx.k) : 'Au vote : ' + evName(nx.vote[0]) + ' ou ' + evName(nx.vote[1]))}</b>`; }
-  if (it.stage) html += `<span class="jt-bsub"><span class="jt-bk">NOUVEAU BESTIAIRE</span><b>${esc(it.stage)}</b></span>`;
-  if (it.fresh) html += `<span class="jt-bsub">${jtIcon(it.fresh)}<span class="jt-bk">NOUVELLE CRÉATURE</span><b>${esc(CH[it.fresh].n)}</b><span class="jt-bd">${esc(CH[it.fresh].d)}</span></span>`;
-  return html;
-}
-function renderBanner() {
-  const H = G.jt.her, el = $('jtBan'), it = H.cur;
-  const show = G.running && !G.ended && !G.entr && it && it.type === 'wave';
-  if (!show) { if (!el.hidden) el.hidden = true; return; }
-  const cloth = $('jtCloth');
-  if (cache.jtBan !== it.t0) { cache.jtBan = it.t0; cloth.innerHTML = banHTML(it); cloth.style.setProperty('--c', evCol(it.k)); }
-  el.hidden = false; el.style.top = (view.top + 4) + 'px';
-  cloth.style.transform = `translateY(${(-100 * (1 - banStep(G.t - it.t0, it.end - G.t))).toFixed(1)}%)`;
-}
-// a tap on the banner rolls it up at once
-$('jtBan').addEventListener('click', () => { const H = G && G.jt && G.jt.her; if (H && H.cur && H.cur.type === 'wave') H.cur.end = Math.min(H.cur.end, G.t + BAN_T); });
-function voteBanHTML(v, side) {
-  const k = v[side];
-  return `<button type="button" class="jt-vb" data-vote="${side}" aria-pressed="false" style="--c:${evCol(k)}"><span class="jt-vcloth"><span class="jt-bk">VAGUE ${v.w} ?</span>${jtIcon(k, 3)}<b>${esc(evName(k))}</b><span class="jt-bd">${esc(evDesc(k))}</span><span class="jt-vdots" data-dots="${side}"></span></span></button>`;
-}
-function renderVote() {
-  const H = G.jt.her, el = $('jtVote'), it = H.cur, v = G.jt.vote;
-  const voting = it && it.type === 'vote' && v && !v.done, result = it && it.type === 'result' && v && v.done && v.w === it.w;
-  if (!(G.running && !G.ended && !G.entr && (voting || result))) { if (!el.hidden) { el.hidden = true; cache.jtVoteK = null; } return; }
-  const key = v.w + '|' + v.a + v.b;
-  if (cache.jtVoteK !== key) { cache.jtVoteK = key; cache.jtPicks = null; $('jtVbs').innerHTML = voteBanHTML(v, 'a') + voteBanHTML(v, 'b'); }
-  el.hidden = false; el.style.top = (view.top + 4) + 'px';
-  // the cord burns while the vote is open
-  const left = Math.max(0, Math.min(1, (v.until - G.t) / VOTE_SECS));
-  $('jtRope').style.width = (voting ? 100 * left : 0).toFixed(1) + '%';
-  // unroll on opening; at the result the loser rolls up, then the winner
-  const age = G.t - (it.t0 ?? G.t), endIn = result ? it.end - G.t : 9;
-  for (const side of ['a', 'b']) {
-    const btn = el.querySelector(`[data-vote="${side}"]`); if (!btn) continue;
-    const lost = result && v.win !== side, u = voting ? banStep(age, 9) : lost ? banStep(9, Math.max(0, 0.6 - age) ) : banStep(9, endIn);
-    btn.firstChild.style.transform = `translateY(${(-100 * (1 - u)).toFixed(1)}%)`;
-    btn.classList.toggle('win', !!result && v.win === side);
-    btn.disabled = !voting;
+const AN_V = 'B';
+const AN = { g: null, open: false, seen: 0, it: null, t0: -1e9 };
+const AN_FAM = { assaut: 'ASSAUT', bonus: 'AUBAINE', ombre: 'OMBRE', carte: 'LA CARTE CHANGE', caractere: 'VAGUE SPÉCIALE', entracte: 'ENTRACTE' };
+// the signs, at the bar's pixel size (sc 1) or the panel's (sc 2)
+function anIcon(key, sc) {
+  const id = 'an|' + key + '|' + sc + '|' + TERKEY; if (JT_IMG[id]) return JT_IMG[id];
+  let html = '';
+  if (JT_IC[key]) html = jtIcon(key, sc);
+  else if (key === 'entracte') html = jtIcon('palet', sc);
+  else if (SP_V10.includes(key)) html = pxImg(spriteURL([[slotSym(key), 0, 0]], 18, 18, 1, 1, sc), 18 * sc, 18 * sc, 'ico');
+  else if (key === 'foire') html = ICON.chest || '';
+  else {
+    const kind = key.startsWith('v_') ? key.slice(2) : key, s = creepSprite(kind, 'down', 0, -1, false);
+    if (!s) return '';
+    const w = s.w + 2, h = Math.min(s.h + 1, 13);
+    html = pxImg(spriteURL([[s, 0, 0]], w, h, 1 - s.ox, -s.oy, sc), w * sc, h * sc, 'ico');
   }
-  const vk = JSON.stringify(v.picks) + (result ? 'r' : '');
-  if (cache.jtPicks !== vk) {
-    cache.jtPicks = vk;
-    for (const side of ['a', 'b']) {
-      const d = el.querySelector(`[data-dots="${side}"]`); if (d) d.innerHTML = G.b.filter(b => v.picks[b.k] === side).map(b => `<i style="background:${pc(b.k)}"></i>`).join('');
-      const btn = el.querySelector(`[data-vote="${side}"]`); if (btn) btn.setAttribute('aria-pressed', v.picks[G.me] === side);
+  return (JT_IMG[id] = html);
+}
+function anShade(hex, f) {
+  const n = parseInt(hex.slice(1), 16), m = v => Math.max(0, Math.min(255, Math.round(f >= 1 ? v + (255 - v) * (f - 1) : v * f)));
+  return '#' + [n >> 16, (n >> 8) & 255, n & 255].map(v => m(v).toString(16).padStart(2, '0')).join('');
+}
+// a shape drawn pixel by pixel: a dark outline, a gold rim, the colour inside, lit at the top
+function anBadge(id, W, H, ins, col) {
+  const k = id + '|' + col; if (JT_IMG[k]) return JT_IMG[k];
+  const lt = anShade(col, 1.22), url = pxURL(W, H, p => {
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      if (!ins(x, y)) continue;
+      const e1 = !ins(x - 1, y) || !ins(x + 1, y) || !ins(x, y - 1) || !ins(x, y + 1);
+      const e2 = !e1 && (!ins(x - 2, y) || !ins(x + 2, y) || !ins(x, y - 2) || !ins(x, y + 2));
+      p.px(x, y, e1 ? '#211a14' : e2 ? (y < H / 2 ? '#e6d49a' : '#ad9150') : y < H * 0.3 ? lt : col);
     }
+  }, 1);
+  return (JT_IMG[k] = pxImg(url, W, H, 'ico'));
+}
+const anShield = col => anBadge('anSh', 19, 21, (x, y) => y >= 0 && y < 21 && Math.abs(x - 9) <= (y < 12 ? 9 : 9 - (y - 11) * 1.12), col);
+const anMedal = col => anBadge('anMd', 23, 23, (x, y) => (x - 11) ** 2 + (y - 11) ** 2 <= 11.45 ** 2, col);
+const AN_HG = ['aaaaa', '.bbb.', '..b..', '..a..', '.a.a.', '.bbb.', 'aaaaa'];
+const anHourglass = () => JT_IMG.anHG || (JT_IMG.anHG = pxImg(pxURL(5, 7, p => p.spr(AN_HG, { a: '#8ea2a7', b: '#d5bf7b' }, 0, 0), 1), 5, 7, 'ico'));
+// what the wave brings: its event, its new creature, its bestiary, and what comes next
+function anInfo() {
+  const H = G.jt.her;
+  if (H.cur && H.cur.type === 'wave' && (!AN.it || AN.it.t0 !== H.cur.t0)) { AN.it = H.cur; AN.t0 = performance.now(); }
+  const w = Math.max(1, G.wave);
+  let it = AN.it && AN.it.w === w ? AN.it : null;
+  if (!it) { const k = evAt(w); it = { w, k: k && EV[k] && (EV[k].mod || EV[k].map) ? k : '', stage: '', fresh: '' }; }
+  const stage = jtStage(w), rows = [];
+  if (it.k) rows.push({ ic: anIcon(it.k, 2), k: AN_FAM[EV[it.k].fam] || 'ÉVÉNEMENT', n: evName(it.k), d: evDesc(it.k) });
+  if (it.fresh && CH[it.fresh]) rows.push({ ic: anIcon(it.fresh, 2), k: 'NOUVELLE CRÉATURE', n: CH[it.fresh].n, d: CH[it.fresh].d, tip: CH[it.fresh].tip });
+  if (it.stage) rows.push({ ic: stage ? anIcon(stage.kinds[0], 2) : '', k: 'NOUVEAU BESTIAIRE', n: it.stage, d: 'De nouvelles créatures prennent le chemin' });
+  const isNew = rows.length > 0;
+  if (!rows.length) rows.push({ ic: anIcon(stage ? stage.kinds[0] : 'brute', 2), k: 'BESTIAIRE', n: stage ? stage.n : 'Cauchemar', d: 'Rien de spécial à cette vague' });
+  const nx = G.jt.prog.find(e => e.w > w);
+  const next = !nx ? null : nx.k ? { w: nx.w, ic: anIcon(nx.k, 1), n: evName(nx.k) } : nx.vote ? { w: nx.w, ic: anIcon('vote', 1), n: 'Au vote' } : null;
+  return { w, it, rows, next, isNew, sign: it.k || it.fresh || (stage ? stage.kinds[0] : 'brute'), col: it.k ? evCol(it.k) : '#3f5f6e' };
+}
+const anNum = (V, w) => V === 'A' || V === 'D' ? ROMAN(w) : String(w);
+function anBar(V, I, dot) {
+  const ic = anIcon(I.sign, 1), secs = Math.max(0, Math.ceil(G.nextWave)) + ' s';
+  const iB = `<span class="an-i" aria-hidden="true">i${dot ? '<span class="an-dot"></span>' : ''}</span>`;
+  if (V === 'A') return `<span class="anA-fan" style="background:${I.col}"><b>${ROMAN(I.w)}</b></span><span class="anA-ic">${ic}</span><span class="an-tx"><b>${secs}</b><span>vague ${G.wave + 1}</span></span>${iB}`;
+  if (V === 'B') return `<span class="an-st anB-sh">${anShield(I.col)}${ic}</span><span class="an-tx anB-tx"><b>VAGUE ${I.w}</b><span>${anHourglass()}${secs}</span></span>${iB}`;
+  if (V === 'C') return `<span class="an-st anC-m">${anMedal(I.col)}${ic}<span class="anC-n">${I.w}</span><span class="an-i${dot ? ' hot' : ''}" aria-hidden="true">i</span></span><span class="an-tx anC-tx"><b>${anHourglass()}${secs}</b></span>`;
+  return `<span class="anD-sc"><b>${ROMAN(I.w)}</b>${ic}${iB}</span><span class="an-tx"><b>${anHourglass()}${secs}</b></span>`;
+}
+function anBody(V, I, voting, result, v) {
+  if (voting) {
+    const left = Math.max(0, Math.min(1, (v.until - G.t) / VOTE_SECS));
+    const dots = side => G.b.filter(b => v.picks[b.k] === side).map(b => `<i style="background:${pc(b.k)}"></i>`).join('');
+    const card = side => `<button type="button" class="jt-vc" data-vote="${side}" aria-pressed="${v.picks[G.me] === side}">${anIcon(v[side], 2)}<span class="jt-n">${esc(evName(v[side]))}</span><span class="jt-d">${esc(EV_TAG[v[side]] || '')}</span><span class="jt-dots">${dots(side)}</span></button>`;
+    return `<div class="vh"><span class="k">VAGUE ${anNum(V, v.w)} · À VOUS DE CHOISIR</span><span class="k" data-an="s">${Math.ceil(left * VOTE_SECS)} s</span></div><div class="vc">${card('a')}${card('b')}</div><div class="cord"><i data-an="c" style="width:${(100 * left).toFixed(1)}%"></i></div>`;
   }
-  setTxt('jtVLab', voting ? `Encore ${Math.ceil(left * VOTE_SECS)} s · touche une bannière` : v.tie ? `Égalité : le héraut choisit ${evName(v[v.win])}` : `${evName(v[v.win])} l’emporte`);
+  if (result) return `<div class="r">${anIcon(v[v.win], 2)}<div class="x"><span class="k">VAGUE ${anNum(V, v.w)} · LE VOTE</span><span class="n">${esc(evName(v[v.win]))}</span><span class="d">${v.tie ? 'Égalité : le héraut a tranché' : 'L’emporte'}</span></div></div>`;
+  let h = I.rows.map(r => `<div class="r">${r.ic}<div class="x"><span class="k">${r.k}</span><span class="n">${esc(r.n)}</span><span class="d">${esc(r.d)}</span>${r.tip ? `<span class="tip">Conseil : ${esc(r.tip)}</span>` : ''}</div></div>`).join('');
+  if (I.next) h += `<div class="nx"><span class="k">ENSUITE · VAGUE ${anNum(V, I.next.w)}</span>${I.next.ic}<b>${esc(I.next.n)}</b></div>`;
+  return h;
 }
-$('jtVote').addEventListener('click', e => {
-  const b = e.target.closest('[data-vote]'); if (!b || !G || !G.jt) return;
-  const err = act(['J', 'vote', b.dataset.vote]);
-  if (!err) { sfx('click'); cache.jtPicks = null; }
-});
-// the pennant in the bar at the top: the wave we are in, the time to the next one
 function jtWaveHud() {
-  const fan = $('jtFan');
-  if (G.entr) { fan.hidden = true; setTxt('waveT', 'Entracte'); setTxt('waveNum', 'le palet'); return; }
-  fan.hidden = G.wave < 1;
-  if (G.wave >= 1) { setTxt('jtFanN', ROMAN(G.wave)); const c = evCol(evAt(G.wave)); if (fan.dataset.c !== c) { fan.dataset.c = c; fan.style.background = c; } }
-  setTxt('waveT', Math.max(0, Math.ceil(G.nextWave)) + ' s'); setTxt('waveNum', 'vague ' + (G.wave + 1));
+  const V = window.__ANNV || AN_V, box = document.querySelector('.hud-row .wave'), chip = $('anChip'), pan = $('anPan');
+  if (AN.g !== G) { AN.g = G; AN.open = false; AN.seen = 0; AN.it = null; AN.t0 = -1e9; }
+  const H = G.jt.her, v = G.jt.vote, it = H.cur;
+  const voting = !!(it && it.type === 'vote' && v && !v.done), result = !!(it && it.type === 'result' && v && v.done && v.w === it.w);
+  const open = G.running && !G.ended && !G.entr && (AN.open || voting || result);
+  const I = G.entr ? null : anInfo();
+  const cls = 'wave an an' + V + (V === 'A' ? '' : ' mid') + (open ? ' open' : '') + (performance.now() - AN.t0 < 1800 ? ' an-new' : '');
+  if (box.className !== cls) box.className = cls;
+  if (chip.hidden) chip.hidden = false;
+  const html = G.entr ? `<span class="an-st">${anIcon('entracte', 1)}</span><span class="an-tx"><b>Entracte</b><span>le palet</span></span>` : anBar(V, I, I.isNew && AN.seen !== I.w && !open);
+  if (chip.dataset.h !== html) { chip.dataset.h = html; chip.innerHTML = html; }
+  if (!open) { if (!pan.hidden) { pan.hidden = true; pan.dataset.k = ''; } return; }
+  const key = V + '|' + (voting ? 'v' + v.w + JSON.stringify(v.picks) : result ? 'r' + v.w : 'i' + I.w + I.it.k + I.it.fresh + I.it.stage);
+  if (pan.dataset.k !== key) {
+    pan.dataset.k = key;
+    const body = anBody(V, I, voting, result, v);
+    pan.innerHTML = V === 'B' ? `<div class="ant dk"></div><div class="anp dk">${body}</div>`
+      : V === 'D' ? `<div class="anp parch scr">${body}</div><div class="anroll"></div>`
+      : `<div class="ant"></div><div class="anp parch${V === 'C' ? ' sm' : ''}">${body}</div>`;
+  }
+  if (voting) {
+    const left = Math.max(0, Math.min(1, (v.until - G.t) / VOTE_SECS)), c = pan.querySelector('[data-an="c"]'), s = pan.querySelector('[data-an="s"]');
+    if (c) c.style.width = (100 * left).toFixed(1) + '%';
+    if (s) s.textContent = Math.ceil(left * VOTE_SECS) + ' s';
+  }
+  pan.hidden = false;
+  // where it hangs: A under its "i", B across the screen under the bar, C under the medal, D unrolled from the scroll
+  const W = innerWidth, bar = document.querySelector('.hud-row').getBoundingClientRect(), u = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--u')) || 1.5;
+  const anchor = chip.querySelector(V === 'A' ? '.an-i' : V === 'B' ? '.anB-sh' : V === 'C' ? '.anC-m' : '.anD-sc') || chip, ar = anchor.getBoundingClientRect(), ax = ar.left + ar.width / 2;
+  const pw = V === 'B' ? W - 16 : Math.min(V === 'C' ? 250 : 268, W - 16);
+  let left = V === 'B' ? 8 : V === 'A' ? ax - pw + 26 : ax - pw / 2;
+  left = Math.max(8, Math.min(W - 8 - pw, left));
+  pan.style.width = pw + 'px'; pan.style.left = left + 'px';
+  pan.style.top = (V === 'D' ? ar.bottom - 1.34 * u : bar.bottom + 7) + 'px';
+  const tail = pan.querySelector('.ant'); if (tail) tail.style.left = (ax - left - 6) + 'px';
 }
+// a game without the tournament (the menu's background game, a guest still waiting for it): the old wave counter
+function jtWaveHudOff() {
+  const box = document.querySelector('.hud-row .wave');
+  if (box.classList.contains('an')) { box.className = 'wave'; $('anChip').hidden = true; }
+  if (!$('anPan').hidden) $('anPan').hidden = true;
+}
+// a tap on the announcement opens or closes the panel; a tap anywhere else closes it; the panel's cards vote
+document.addEventListener('click', e => {
+  if (!G || !G.jt || !G.running) return;
+  const vb = e.target.closest('#anPan [data-vote]');
+  if (vb) { if (!act(['J', 'vote', vb.dataset.vote])) sfx('click'); return; }
+  if (e.target.closest('.hud-row .wave.an')) { AN.open = !AN.open; AN.seen = G.wave; sfx('click'); return; }
+  if (AN.open && !e.target.closest('#anPan')) AN.open = false;
+}, true);
 
 /* ---------------------------------------------------------------- choices: a spell from the scroll, a relic from the palet */
 function renderPick() {
@@ -8288,9 +8396,9 @@ function jtTap(sx, sy) {
 /* ---------------------------------------------------------------- once per frame */
 function jtUI() {
   if (!G || !G.jt) return;
-  herTick(); renderHerald(); renderBanner(); renderVote(); renderPick(); renderPow(); renderEmCard();
+  herTick(); renderHerald(); renderPick(); renderPow(); renderEmCard();
 }
-function jtEnd() { for (const id of ['jtHer', 'jtBan', 'jtVote', 'jtPick', 'jtCard']) $(id).hidden = true; if (G) G.jtCard = false; $('jtPow').hidden = true; }
+function jtEnd() { for (const id of ['jtHer', 'anPan', 'jtPick', 'jtCard']) $(id).hidden = true; AN.open = false; if (G) G.jtCard = false; $('jtPow').hidden = true; }
 
 /* ---------------------------------------------------------------- the Houses, in the solo set-up */
 function jtRenderMaisons() {
@@ -8382,7 +8490,7 @@ Object.assign(TUTO_ART, {
       p: "Dans l’onglet Envoyer, tes créatures partent chez la Maison voisine. Chaque envoi fait monter ton revenu, et les vies qu’elle perd sont pour toi.",
       x: () => `<p class="tut-hint">Plus une créature coûte cher, plus elle est forte.</p>` },
     { k: 'surprises', t: 'Le héraut et ses surprises',
-      p: "Le héraut annonce chaque vague : feu de broussailles, cercle des korrigans, boss… Parfois, on vote. À mi-partie, l’Entracte : une partie de palet pour gagner une relique.",
+      p: "Chaque vague s’annonce en haut, à côté de ton nom : touche l’annonce pour savoir ce qu’elle apporte (feu de broussailles, cercle des korrigans, boss…). Parfois, on vote. À mi-partie, l’Entracte : une partie de palet pour gagner une relique.",
       x: () => tsec('Par exemple', ['feu', 'korrigans', 'boss', 'entracte'].map(k => tchip(jtIcon(k), EV[k].n, EV_TAG[k])).join('')) });
 })();
 
