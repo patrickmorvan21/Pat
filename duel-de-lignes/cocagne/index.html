@@ -565,6 +565,32 @@ b,strong{font-weight:700}
 .jt-fin-hint{margin:0;color:var(--muted);font-size:calc(var(--t)*.85)}
 
 
+/* the paths: the herald's offer at the start, the Atelier, the tree in "Comment jouer"; the lock of the next sends */
+.jt-offers.two{grid-template-columns:1fr 1fr}
+.jt-offer.voie{position:relative;padding-top:calc(var(--u)*6);justify-content:flex-start}
+.jt-offer.voie .jt-d b{color:var(--pink)}
+.jt-offer.voie .jt-then{color:var(--pk);margin-top:auto}
+.jt-tagm{position:absolute;top:0;left:50%;transform:translate(-50%,-40%);font:400 calc(var(--t)*.8)/1 var(--ft);letter-spacing:.05em;color:#2e2924;background:#d5bf7b;padding:calc(var(--u)*1) calc(var(--u)*3);white-space:nowrap}
+.item.tech.mine .tag{background:#d5bf7b;color:var(--panel)}
+.item.lockhint{opacity:.72;cursor:default;box-shadow:inset 0 0 0 var(--u) var(--line);background:none}
+.tut-voies{display:flex;flex-direction:column;gap:calc(var(--u)*3)}
+.tvoie{display:flex;align-items:center;gap:calc(var(--u)*4);background:var(--panel2);padding:calc(var(--u)*3) calc(var(--u)*4)}
+.tvoie>div{display:flex;flex-direction:column;gap:calc(var(--u)*1);min-width:0}
+.tvoie b{color:var(--ink)}
+.tvoie span{font-size:calc(var(--t)*.82);line-height:1.3;color:var(--muted)}
+.tvoie i{font-style:normal;font-family:var(--ft);color:var(--gold)}
+
+/* the masterpiece: first in the Atelier and in the build bar, on a double golden button */
+.items.scroll>.item.chef{flex-basis:calc((100% - var(--u) * 6) / 4.35 * 2 + var(--u) * 2)}
+.items:not(.scroll)>.item.chef{grid-column:span 2}
+.item.chef{flex-direction:row;justify-content:flex-start;align-items:center;gap:calc(var(--u)*3);padding:calc(var(--u)*7) calc(var(--u)*3) calc(var(--u)*2) calc(var(--u)*4);box-shadow:inset 0 0 0 var(--u) var(--gold),0 0 calc(var(--u)*5) color-mix(in srgb,var(--gold) 40%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 20%,var(--panel2)),var(--panel2) 75%)}
+.item.chef[aria-pressed="true"]{background:var(--line);box-shadow:inset 0 0 0 calc(var(--u)*1.5) var(--gold),0 0 calc(var(--u)*6) color-mix(in srgb,var(--gold) 55%,transparent)}
+.item.chef .tag{background:#d5bf7b;color:var(--panel)}
+.item.chef .ico{flex:none;margin:0}
+.item.chef .cw{display:flex;flex-direction:column;align-items:flex-start;gap:calc(var(--u)*2);min-width:0;text-align:left}
+.item.chef .nm{white-space:normal;line-height:1.05;max-width:none;color:#f3e3b0}
+.pact.chef{color:#f3e3b0;box-shadow:inset 0 0 0 var(--u) var(--gold),inset 0 calc(var(--u)*-2) 0 var(--line);background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 20%,var(--panel2)),var(--panel2) 75%)}
+
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
 </head>
@@ -764,17 +790,24 @@ const T = {
   frost:  { n: 'Givre',  cost: 20, range: 2.0, dmg: 3,  rate: 0.9, slowDur: 1.6 },
   tesla:    { n: 'Foudre',  cost: 36, range: 2.1, dmg: 9,  rate: 1.1, tech: 'tesla' },
   ballista: { n: 'Baliste', cost: 32, range: 3.2, dmg: 22, rate: 1.7, tech: 'ballista' },
+  bombard:  { n: 'Bombarde', cost: 40, range: 2.6, dmg: 30, rate: 2.8, splash: 0.6, tech: 'bombard' },
 };
 const TECH = {
   tesla:    { n: 'Foudre',   cost: 150, bit: 1, tag: 'tour', d: "Nouvelle tour : l'éclair frappe trois créatures à la suite et traverse les armures" },
   ballista: { n: 'Baliste',  cost: 130, bit: 2, tag: 'tour', d: 'Nouvelle tour : un gros carreau qui transperce toute une file de créatures, de très loin' },
-  mastery:  { n: 'Maîtrise', cost: 200, bit: 4, tag: 'niv. 4', d: 'Tes tours de niveau 3 peuvent passer au niveau 4 : plus de dégâts, de portée et de cadence' },
+  bombard:   { n: 'Bombarde', cost: 140, bit: 8, tag: 'tour', d: 'Nouvelle tour : un boulet lent, en cloche, qui écrase les grosses créatures' },
+  m_arc:     { n: 'Maîtrise de l’Arc', cost: 180, bit: 16, tag: 'niv. 4', d: 'Archers et Balistes peuvent passer au niveau 4' },
+  m_arcanes: { n: 'Maîtrise des Arcanes', cost: 180, bit: 32, tag: 'niv. 4', d: 'Givres et Foudres peuvent passer au niveau 4' },
+  m_poudre:  { n: 'Maîtrise de la Poudre', cost: 180, bit: 64, tag: 'niv. 4', d: 'Canons et Bombardes peuvent passer au niveau 4' },
+  pillards:  { n: 'Pillards', cost: 130, bit: 128, tag: 'or', d: '+1 or par créature tuée' },
+  tresorier: { n: 'Trésorier', cost: 180, bit: 256, tag: 'revenu', d: 'Tes envois rapportent 25 % de revenu en plus' },
 };
 const TECH_KEYS = Object.keys(TECH);
 const hasTech = (b, key) => !!(b && TECH[key] && (b.tech & TECH[key].bit));
-const canUse = (b, type) => !T[type] || !T[type].tech || hasTech(b, T[type].tech);
-const maxLvl = b => hasTech(b, 'mastery') ? 4 : 3;
-const TOWER_INFO = { tesla: "L'éclair rebondit sur plusieurs créatures et traverse les armures.", ballista: 'Le carreau transperce toute une file de créatures.' };
+const canUse = (b, type) => !T[type] || !T[type].tech || (T[type].tech === 'chef' ? jtChefOpen(b, type) : hasTech(b, T[type].tech));
+const LVL4 = { arrow: 'm_arc', ballista: 'm_arc', frost: 'm_arcanes', tesla: 'm_arcanes', cannon: 'm_poudre', bombard: 'm_poudre' };
+const maxLvl = (b, type) => T[type] && T[type].tech === 'chef' ? 1 : LVL4[type] && hasTech(b, LVL4[type]) ? 4 : 3;
+const TOWER_INFO = { tesla: "L'éclair rebondit sur plusieurs créatures et traverse les armures.", ballista: 'Le carreau transperce toute une file de créatures.', bombard: 'Un boulet lent, en cloche : il écrase les grosses créatures (dégâts doublés).' };
 const S = {
   rat:     { n: 'Rat',       cost: 6,    inc: 1,  hp: 24,   speed: 1.9,  lives: 1,  bounty: 2,   size: 0.2,  tag: 'rapide' },
   skel:    { n: 'Squelette', cost: 9,    inc: 1,  hp: 48,   speed: 1.2,  lives: 1,  bounty: 2,   size: 0.22, tag: 'solide' },
@@ -881,10 +914,10 @@ for (let c = 0; c <= 7; c++) AI_PLAN.push([c, 9]);
 for (let c = 8; c >= 1; c--) AI_PLAN.push([c, 6]);
 for (let c = 0; c <= 7; c++) AI_PLAN.push([c, 3]);
 const DIRS = [[0, 1], [1, 0], [-1, 0], [0, -1]];
-const TYPES = ['arrow', 'cannon', 'frost', 'tesla', 'ballista'];
+const TYPES = ['arrow', 'cannon', 'frost', 'tesla', 'ballista', 'bombard'];
 const TCODES = ['wall'];
 for (const ty of TYPES) { TCODES.push(ty + ':1', ty + ':2'); if (EVO[ty]) { for (const lv of [3, 4]) for (const e of Object.keys(EVO[ty])) TCODES.push(ty + ':' + lv + ':' + e); } else TCODES.push(ty + ':3', ty + ':4'); }
-const TCHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+const TCHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const KCODE = { rat: 'r', swarm: 's', crow: 'c', golem: 'g', wave: 'v', gold: 'o', boss: 'b', spirit: 'p', slime: 'j', mini: 'q', shaman: 'h', knight: 'k', mole: 't',
   skel: 'l', brood: 'u', spiderling: 'a', spectre: 'x', troll: 'z', wyvern: 'y', ogre: 'w', lich: 'e', dragon: 'd', colossus: 'm',
   beetle: 'f', shieldskel: 'i', wolf: 'n', boar: 'A', bat: 'B', wisp: 'C', imp: 'D', brute: 'E' };
@@ -1084,31 +1117,33 @@ function stat(t, b) {
   if (G && G.spc === 'eclipse') range *= 0.75;
   const o = { range, dmg, rate, splash, slowDur, slowF }; if (b && b.jt) jtStat(t, b, o); return o;
 }
-const convertCost = type => T[type].cost - T.wall.cost;
+const convertCost = type => T[type].cost - (T[type].tech === 'chef' ? 0 : T.wall.cost);
 const upCost = t => Math.round(T[t.type].cost * 0.8 * t.lvl);
 const sellValue = t => Math.floor(t.spent * 0.6);
 function spentFor(type, lvl) { if (type === 'wall') return 4; let s = T[type].cost; for (let l = 1; l < lvl; l++) s += Math.round(T[type].cost * 0.8 * l); return s; }
 function build(k, type, c, r) {
-  const b = G.b[k], free = type !== 'wall' && b.free > 0, cost = free ? 0 : jtCost(b, type);
-  if (!canUse(b, type)) return "Débloque-la d'abord dans l'Atelier";
+  const b = G.b[k], free = type !== 'wall' && !isChef(type) && b.free > 0, cost = free ? 0 : jtCost(b, type);
+  if (!canUse(b, type)) return jtChefNo(b, type);
   if (b.gold < cost) return "Pas assez d'or";
   const why = buildReason(b, c, r); if (why) return why;
   b.gold -= cost; if (free) b.free--;
   b.grid[idx(c, r)] = { id: uid++, type, lvl: 1, evo: '', spent: T[type].cost, cd: 0, c, r, ang: -Math.PI / 2, born: G.quiet ? -9 : G.t, kills: 0 };
   b.dist = bfs(b.grid);
+  if (isChef(type)) jtChefBuilt(b, type);
   if (fxOn(k)) { sfx('build'); dust(b, c + 0.5, r + 0.5); }
   return '';
 }
 function convert(k, t, type) {
-  const b = G.b[k], free = b.free > 0, cost = free ? 0 : convertCost(type); if (b.gold < cost) return false;
+  const b = G.b[k], free = b.free > 0 && !isChef(type), cost = free ? 0 : convertCost(type); if (b.gold < cost) return false;
   b.gold -= cost; if (free) b.free--;
   t.type = type; t.spent = T[type].cost; t.cd = 0.2; if (!G.quiet) t.born = G.t;
+  if (isChef(type)) jtChefBuilt(b, type);
   if (fxOn(k)) { sfx('upgrade'); dust(b, t.c + 0.5, t.r + 0.5); }
   return true;
 }
 function upgrade(k, t, evo) {
   const b = G.b[k], cost = upCost(t);
-  if (t.lvl >= maxLvl(b)) return t.lvl === 3 ? "Le niveau 4 se débloque dans l'Atelier (Maîtrise)" : 'Niveau maximum';
+  if (t.lvl >= maxLvl(b, t.type)) return t.lvl === 3 && LVL4[t.type] ? `Le niveau 4 se débloque dans l'Atelier (${TECH[LVL4[t.type]].n})` : 'Niveau maximum';
   if (t.lvl === 2 && EVO[t.type] && !evoOffer(k, idx(t.c, t.r), t.type).includes(evo)) return 'x';
   if (b.gold < cost) return "Pas assez d'or";
   b.gold -= cost; t.lvl++; t.spent += cost; if (!G.quiet) t.born = G.t;
@@ -1131,8 +1166,8 @@ function buyTech(k, key) {
 function sell(k, t) { const b = G.b[k]; b.gold += sellValue(t); b.grid[idx(t.c, t.r)] = null; b.dist = bfs(b.grid); if (fxOn(k)) sfx('sell'); }
 function send(k, kind) {
   const from = G.b[k], tk = nextAlive(k), s = S[kind];
-  if (tk < 0 || from.gold < s.cost) return false;
-  from.gold -= s.cost; from.income += s.inc; if (from.jt) from.jt.sent = (from.jt.sent || 0) + (s.count || 1);
+  if (tk < 0 || from.gold < s.cost || !jtSendOpen(kind)) return false;
+  from.gold -= s.cost; from.income += s.inc + jtIncBonus(from, s); if (from.jt) from.jt.sent = (from.jt.sent || 0) + (s.count || 1);
   if (auth()) for (let i = 0; i < (s.count || 1); i++) G.b[tk].queue.push({ kind, from: k });
   if (fxOn(k)) { sfx('send'); bumpEl('goldPill'); }
   return true;
@@ -1168,11 +1203,11 @@ function applyAction(k, a) {
   const cell = (c, r) => Number.isInteger(c) && Number.isInteger(r) && c >= 0 && c < COLS && r >= 0 && r < ROWS ? b.grid[idx(c, r)] : undefined;
   switch (a[0]) {
     case 'b': if (!T[a[1]] || cell(a[2], a[3]) === undefined) return 'x'; return build(k, a[1], a[2], a[3]);
-    case 'v': { const t = cell(a[1], a[2]); if (!t || t.type !== 'wall' || !TCODE_OK(a[3])) return 'x'; if (!canUse(b, a[3])) return "Débloque-la d'abord dans l'Atelier"; return convert(k, t, a[3]) ? '' : "Pas assez d'or"; }
+    case 'v': { const t = cell(a[1], a[2]); if (!t || t.type !== 'wall' || !TCODE_OK(a[3])) return 'x'; if (!canUse(b, a[3])) return jtChefNo(b, a[3]); return convert(k, t, a[3]) ? '' : "Pas assez d'or"; }
     case 'k': return TECH[a[1]] ? buyTech(k, a[1]) : 'x';
     case 'u': { const t = cell(a[1], a[2]); if (!t || t.type === 'wall') return 'x'; return upgrade(k, t, a[3]); }
-    case 'x': { const t = cell(a[1], a[2]); if (!t) return 'x'; sell(k, t); return ''; }
-    case 'e': if (!S[a[1]]) return 'x'; return send(k, a[1]) ? '' : "Pas assez d'or";
+    case 'x': { const t = cell(a[1], a[2]); if (!t || isChef(t.type)) return 'x'; sell(k, t); return ''; }
+    case 'e': if (!S[a[1]] || !jtSendOpen(a[1])) return 'x'; return send(k, a[1]) ? '' : "Pas assez d'or";
     case 'o': return Number.isInteger(a[1]) && openChest(k, a[1]) ? '' : 'x';
     case 's': return castCard(k, a[1], a[2], a[3], a[4]);
     case 'J': return jtAction(k, a);
@@ -1204,7 +1239,7 @@ function pick(w) { const e = Object.entries(w).filter(([, v]) => v > 0); let r =
 function aiBuild(k) {
   const me = G.b[k], all = towersOf(me), sh = all.filter(t => t.type !== 'wall'), walls = all.filter(t => t.type === 'wall');
   if (sh.length < 2) for (const [c, r] of AI_PRE) if (!me.grid[idx(c, r)]) return build(k, 'arrow', c, r) === '';
-  const fresh = ['tesla', 'ballista'].find(ty => hasTech(me, ty) && sh.filter(t => t.type === ty).length < 2);
+  const fresh = ['tesla', 'ballista', 'bombard'].find(ty => hasTech(me, ty) && sh.filter(t => t.type === ty).length < 2);
   if (fresh && walls.length) return me.gold >= convertCost(fresh) && convert(k, walls[(Math.random() * walls.length) | 0], fresh);
   if (fresh) {
     // no wall left to convert: a free cell beside the route that keeps the passage open
@@ -1215,8 +1250,8 @@ function aiBuild(k) {
   }
   const next = AI_PLAN.find(([c, r]) => !me.grid[idx(c, r)] && !buildReason(me, c, r));
   if (next && walls.length < sh.length * 2 + 2) return build(k, 'wall', next[0], next[1]) === '';
-  if (walls.length) return convert(k, walls[(Math.random() * walls.length) | 0], pick({ arrow: 5, cannon: 3, frost: sh.filter(t => t.type === 'frost').length < 3 ? 2 : 0, tesla: hasTech(me, 'tesla') ? 4 : 0, ballista: hasTech(me, 'ballista') ? 4 : 0 }));
-  const up = sh.filter(t => t.lvl < maxLvl(me)).sort((a, b) => a.lvl - b.lvl)[0];
+  if (walls.length) return convert(k, walls[(Math.random() * walls.length) | 0], pick({ arrow: 5, cannon: 3, frost: sh.filter(t => t.type === 'frost').length < 3 ? 2 : 0, tesla: hasTech(me, 'tesla') ? 4 : 0, ballista: hasTech(me, 'ballista') ? 4 : 0, bombard: hasTech(me, 'bombard') ? 4 : 0 }));
+  const up = sh.filter(t => t.lvl < maxLvl(me, t.type)).sort((a, b) => a.lvl - b.lvl)[0];
   if (up) { const evo = up.lvl === 2 && EVO[up.type] ? evoOffer(k, idx(up.c, up.r), up.type)[Math.random() < 0.5 ? 0 : 1] : ''; return upgrade(k, up, evo) === ''; }
   if (next) return build(k, 'wall', next[0], next[1]) === '';
   return false;
@@ -1224,19 +1259,20 @@ function aiBuild(k) {
 function aiThink(k) {
   const me = G.b[k], tk = nextAlive(k); if (tk < 0) return;
   if (me.cards.length && Math.random() < 0.35 && botCard(k, tk)) return;
-  if (G.t > 75 && Math.random() < 0.1) { const want = TECH_KEYS.filter(x => !hasTech(me, x)); const key = want[(Math.random() * want.length) | 0]; if (key && me.gold >= TECH[key].cost + 40 && buyTech(k, key) === '') return; }
+  if (G.t > 60 && Math.random() < 0.1 && jtBotStep(k)) return;
+  if (jtBotChef(k)) return;
   // a tower just unlocked gets put to use right away, even when the defence is already strong enough
-  if (['tesla', 'ballista'].some(ty => hasTech(me, ty) && towersOf(me).filter(t => t.type === ty).length < 2) && aiBuild(k)) return;
+  if (['tesla', 'ballista', 'bombard'].some(ty => hasTech(me, ty) && towersOf(me).filter(t => t.type === ty).length < 2) && aiBuild(k)) return;
   const def = towersOf(me).reduce((s, t) => s + t.spent, 0);
   const want = 18 + G.t * 0.7 * G.D.ai + (G.t - me.leakT < 6 ? 30 : 0);
   if (def < want || me.creeps.length > 7) { if (aiBuild(k)) return; if (me.gold < 30) return; }
-  if (me.gold >= 6 && (me.creeps.length <= 7 || me.gold >= 30)) {
+  if (me.gold >= 6 && (me.creeps.length <= 7 || me.gold >= 30) && !jtBotSaving(me)) {
     const opp = G.b[tk], w = {};
     if (me.goal && (G.t - me.goalT > 70 || !S[me.goal])) me.goal = '';
-    if (!me.goal && G.t > 80 && Math.random() < 0.08) { const big = Object.keys(S).filter(k => S[k].cost >= 50 && S[k].cost <= me.income * 30 + 60); if (big.length) { me.goal = big[(Math.random() * big.length) | 0]; me.goalT = G.t; } }
+    if (!me.goal && G.t > 80 && Math.random() < 0.08) { const big = Object.keys(S).filter(k => jtSendOpen(k) && S[k].cost >= 50 && S[k].cost <= me.income * 30 + 60); if (big.length) { me.goal = big[(Math.random() * big.length) | 0]; me.goalT = G.t; } }
     if (me.goal) { if (me.gold < S[me.goal].cost) return; w[me.goal] = 1; me.goal = ''; }
     else for (const [k, sv] of Object.entries(S)) {
-      if (sv.cost > me.gold) continue;
+      if (sv.cost > me.gold || !jtSendOpen(k)) continue;
       let wt = sv.cost <= 30 ? 1.2 : 0.3 + G.t / 300;
       if (sv.fly) wt *= opp.dist[SPAWN] + 1 > 20 ? 2.2 : 0.8;
       if (k === 'shaman') wt *= me.queue.length > 2 || G.t > 60 ? 1 : 0.3;
@@ -1347,12 +1383,12 @@ function damage(b, cr, dmg, src, soft) {
   if (cr.dead || moleUnder(cr)) return;
   if (cr.illu) { jtPoof(b, cr); return; }
   dmg = jtDamage(b, cr, dmg, src, soft);
-  if (cr.armor && !soft && !(src && src.type === 'tesla')) { dmg = Math.max(1, dmg - cr.armor); cr.clankT = G.t; }
+  if (cr.armor && !soft && !(src && (src.type === 'tesla' || src.type === 'ch_orage'))) { dmg = Math.max(1, dmg - cr.armor); cr.clankT = G.t; }
   if (G.t < cr.brittleUntil) dmg *= 1.35;
   cr.hp -= dmg; if (!soft) cr.hitT = G.t;
   if (cr.hp > 0) return;
   cr.dead = true;
-  const bounty = cr.bounty * (G.spc === 'gold' ? 2 : 1) + (src && src.evo === 'bounty' ? 2 : 0);
+  const bounty = jtChefBounty(cr, src, cr.bounty * (G.spc === 'gold' ? 2 : 1) + (src && src.evo === 'bounty' ? 2 : 0));
   b.gold += bounty; b.st.kills++;
   jtOnKill(b, cr, src, bounty);
   if (src) { src.kills = (src.kills || 0) + 1; if (src.kills >= b.mvp.kills) b.mvp = { code: tcode(src), kills: src.kills }; }
@@ -1387,9 +1423,11 @@ function statusBits(cr) {
   if (G.t < cr.stunUntil) s |= 4;
   if (G.t < cr.brittleUntil) s |= 8;
   if (G.t < cr.iceUntil) s |= 16;
+  if (G.t < (cr.chfGold || 0)) s |= 64;
   return s;
 }
 function eliminate(b) {
+  jtCatchUp(b);
   b.alive = false; b.lives = 0; b.creeps = []; b.queue = []; b.proj = []; b.chests = []; b.fires = []; b.meteors = [];
   b.ghost = G.N > 2; b.gcd = [3, 3]; b.aiT = 5 + Math.random() * 4; b.fog = 0; b.jam = 0; b.rage = 0;
   if (!G.elim.includes(b.k)) G.elim.push(b.k);
@@ -1525,6 +1563,7 @@ function stepTowers(b, dt, real) {
       if (list.length) { t.kick = G.t; if (real) for (const cr of list) { slow(cr, 0.45, 0.6); damage(b, cr, st.dmg * 0.25, t, true); } }
       continue;
     }
+    if (isChef(t.type)) { jtChefFire(b, t, st, tx, ty, real); continue; }
     if (t.type === 'tesla') {
       const list = inRange(b, tx, ty, st.range);
       if (!list.length) { t.cd = 0.05; continue; }
@@ -1543,15 +1582,15 @@ function stepTowers(b, dt, real) {
     for (let i = 0; i < n; i++) launch(b, t, st, list[i], real, tx, ty);
     if (t.type === 'arrow' && b.jt && b.jt.relics.carquois && (t.shots = (t.shots || 0) + 1) % 5 === 0) launch(b, t, st, list[Math.min(1, list.length - 1)], real, tx, ty);
     if (fxOn(b.k) && t.type === 'arrow') sfx('shoot');
-    if (fxOn(b.k) && t.type === 'ballista') sfx('thunk');
+    if (fxOn(b.k) && (t.type === 'ballista' || t.type === 'bombard')) sfx('thunk');
   }
   stepProjectiles(b, dt);
 }
 function launch(b, t, st, target, real, x, y) {
   if (t.type === 'ballista') { const dx = target.x - x, dy = target.y - y, d = Math.hypot(dx, dy) || 1; b.proj.push({ type: 'ballista', real, src: t, x, y, sx: x, sy: y, ux: dx / d, uy: dy / d, ang: Math.atan2(dy, dx), speed: 15, left: st.range + 0.8, w: t.lvl >= 3 ? 0.42 : 0.3, dmg: st.dmg, hit: [], t: 0 }); return; }
-  const sp = { arrow: 13, cannon: 6.5, frost: 9 }[t.type];
+  const sp = { arrow: 13, cannon: 6.5, frost: 9, bombard: 3.8 }[t.type];
   const p = { type: t.type, evo: t.evo, src: t, real, x, y, sx: x, sy: y, tgt: target, tx: target.x, ty: target.y, speed: sp, dmg: st.dmg, splash: st.splash, slowDur: st.slowDur, slowF: st.slowF, t: 0, chain: t.evo === 'chain' ? 2 : 0, hitList: null };
-  if (t.type === 'cannon') p.dur = Math.max(0.2, Math.hypot(target.x - x, target.y - y) / sp) * (t.evo === 'mortar' ? 1.25 : 1);
+  if (t.type === 'cannon' || t.type === 'bombard') p.dur = Math.max(0.2, Math.hypot(target.x - x, target.y - y) / sp) * (t.evo === 'mortar' ? 1.25 : 1);
   b.proj.push(p);
 }
 function hitCreep(b, p, cr) {
@@ -1580,6 +1619,7 @@ function explode(b, p, x, y, r, dmg, main) {
 function stepProjectiles(b, dt) {
   const add = [];
   for (const p of b.proj) {
+    if (p.chef) { jtChefProj(b, p, dt, add); continue; }
     if (p.type === 'ballista') {
       const stp = p.speed * dt, nx = p.x + p.ux * stp, ny = p.y + p.uy * stp, ex = nx - p.x, ey = ny - p.y, L2 = ex * ex + ey * ey || 1;
       for (const cr of b.creeps) {
@@ -1593,9 +1633,9 @@ function stepProjectiles(b, dt) {
       if (p.left <= 0 || nx < -1 || ny < -1 || nx > COLS + 1 || ny > ROWS + 1) p.done = true;
       continue;
     }
-    if (p.type === 'cannon') {
+    if (p.type === 'cannon' || p.type === 'bombard') {
       p.t += dt; const u = Math.min(1, p.t / p.dur);
-      p.x = p.sx + (p.tx - p.sx) * u; p.y = p.sy + (p.ty - p.sy) * u; p.h = Math.sin(u * Math.PI) * (p.evo === 'mortar' ? 1.1 : 0.6);
+      p.x = p.sx + (p.tx - p.sx) * u; p.y = p.sy + (p.ty - p.sy) * u; p.h = Math.sin(u * Math.PI) * (p.evo === 'mortar' ? 1.1 : p.type === 'bombard' ? 1.5 : 0.6);
       if (u >= 1) {
         p.done = true;
         explode(b, p, p.tx, p.ty, p.splash, p.dmg, true);
@@ -1623,7 +1663,7 @@ function stepProjectiles(b, dt) {
 function stepFires(b, dt) {
   for (const f of b.fires) {
     f.t -= dt;
-    if (f.real) for (const cr of b.creeps) if (!cr.dead && cr.y >= 0 && Math.hypot(cr.x - f.x, cr.y - f.y) <= f.r) damage(b, cr, f.dps * dt, f.src, true);
+    if (f.real) for (const cr of b.creeps) if (!cr.dead && cr.y >= 0 && Math.hypot(cr.x - f.x, cr.y - f.y) <= f.r) { damage(b, cr, f.dps * dt, f.src, true); if (f.slow) slow(cr, f.slow, 0.3); }
   }
   b.fires = b.fires.filter(f => f.t > 0);
 }
@@ -1744,7 +1784,7 @@ function encBoard(b, maxC) {
   let cs = '', n = 0;
   for (const cr of b.creeps) {
     if (cr.dead || n++ >= maxC) continue;
-    cs += b36(cr.id % 1296, 2) + KCODE[cr.kind] + (cr.from < 0 ? 'n' : cr.from) + b36((cr.x + 1) * 20, 2) + b36((cr.y + 1) * 20, 2) + b36(Math.max(0, cr.hp) / cr.max * 35, 1) + b36(statusBits(cr), 1) + b36(jtCrFlags(cr), 1);
+    cs += b36(cr.id % 1296, 2) + KCODE[cr.kind] + (cr.from < 0 ? 'n' : cr.from) + b36((cr.x + 1) * 20, 2) + b36((cr.y + 1) * 20, 2) + b36(Math.max(0, cr.hp) / cr.max * 35, 1) + b36(jtSbEnc(statusBits(cr)), 1) + b36(jtCrFlags(cr), 1);
   }
   let chs = ''; for (const c of b.chests) if (c.t > 0) chs += b36(c.id, 2) + b36(c.x * 20, 2) + b36(c.y * 20, 2) + b36(c.t * 10, 1) + c.rw;
   const head = [Math.max(0, b.lives), b.gold, b.income, b.alive ? 1 : 0, b.queue.length, b.ack | 0, Math.round(b.rage * 10), b.free,
@@ -1807,7 +1847,7 @@ function applySnap(pr) {
     for (let i = 0; i + 11 <= cs.length; i += 11) {
       const id = parseInt(cs.substr(i, 2), 36), kind = KDEC[cs[i + 2]]; if (!kind) continue;
       const fc = cs[i + 3], from = fc === 'n' ? -1 : Math.min(3, +fc | 0);
-      const x = parseInt(cs.substr(i + 4, 2), 36) / 20 - 1, y = parseInt(cs.substr(i + 6, 2), 36) / 20 - 1, hpf = parseInt(cs[i + 8], 36) / 35, sb = parseInt(cs[i + 9], 36) | 0;
+      const x = parseInt(cs.substr(i + 4, 2), 36) / 20 - 1, y = parseInt(cs.substr(i + 6, 2), 36) / 20 - 1, hpf = parseInt(cs[i + 8], 36) / 35, sb = jtSbDec(parseInt(cs[i + 9], 36) | 0);
       seen.add(id);
       let cr = b.cmap.get(id);
       if (!cr) {
@@ -1862,6 +1902,8 @@ function processEvents(b, str) {
     else if (t === 'g') { if (!mine) gelFx(b); }
     else if (t === 's') { if (from !== G.me && CARDS[s[1]]) sabotageFx(b, s[1], from); }
     else if (t === 'h') { if (from !== G.me && GHOST[s[1]]) ghostFx(b, s[1], from); }
+    else if (t === 'p') jtPrimeFx(b, parseInt(s.substr(1, 2), 36));
+    else if (t === 'c') jtChefAnnounce(b, CHF_TYPES[+s[1]]);
   }
   if (b.evSeen.size > 80) b.evSeen = new Set([...b.evSeen].slice(-40));
 }
@@ -2255,12 +2297,12 @@ function renderItems() {
   }
   const free = me ? me.free : 0;
   if (G.mode === 'build') {
-    items.innerHTML = Object.entries(T).map(([k, t]) => canUse(me, k) ? `<button class="item" type="button" data-tool="${k}" aria-pressed="${G.tool === k}">${ICON[k]}<span class="nm">${t.n}</span><span class="ct">${free > 0 && k !== 'wall' ? '<span class="free">Offert</span>' : jtCost(me, k)}</span></button>`
+    items.innerHTML = jtChefButtons(me, true) + Object.entries(T).filter(([k]) => !isChef(k)).map(([k, t]) => canUse(me, k) ? `<button class="item" type="button" data-tool="${k}" aria-pressed="${G.tool === k}">${ICON[k]}<span class="nm">${t.n}</span><span class="ct">${free > 0 && k !== 'wall' ? '<span class="free">Offert</span>' : jtCost(me, k)}</span></button>`
       : `<button class="item locked" type="button" data-lock="${k}">${ICON[k]}<span class="nm">${t.n}</span><span class="lk">${ICON.lock}Atelier</span></button>`).join('');
   } else if (G.mode === 'tech') {
-    items.innerHTML = TECH_KEYS.map(k => { const tc = TECH[k], own = hasTech(me, k); return `<button class="item snd tech${own ? ' own' : ''}" type="button" data-tech="${k}" aria-pressed="${G.techPick === k}"${own ? ' disabled' : ''}><span class="tag">${own ? 'acquis' : tc.tag}</span>${ICON['tech_' + k]}<span class="nm">${tc.n}</span><span class="ct">${own ? '✓' : tc.cost}</span></button>`; }).join('');
+    items.innerHTML = jtAtelierItems(me);
   } else if (G.mode === 'send') {
-    items.innerHTML = Object.entries(S).map(([k, s]) => `<button class="item snd" type="button" data-send="${k}">${ICON[k]}<span class="nm">${s.n}</span><span class="ct">${s.cost}<small>+${s.inc}</small></span><span class="tag">${s.tag}</span></button>`).join('');
+    items.innerHTML = jtSendItems();
   } else {
     let html = '';
     for (let i = 0; i < MAX_CARDS; i++) {
@@ -2274,13 +2316,15 @@ function renderItems() {
   items.classList.toggle('scroll', items.children.length > 4);
   cache.gold = null; cache.free = free; cache.items = itemsKey();
 }
-const itemsKey = () => { const me = G.b[G.me]; return G.mode + '|' + (me ? me.cards.join('') + me.charge + 't' + me.tech : '') + '|' + (G.aim ? G.aim.slot : '') + '|' + (G.techPick || ''); };
+const itemsKey = () => { const me = G.b[G.me]; return G.mode + '|' + (me ? me.cards.join('') + me.charge + 't' + me.tech : '') + '|' + (G.aim ? G.aim.slot : '') + '|' + (G.techPick || '') + '|' + jtItemsKey(me); };
 $('items').addEventListener('click', e => {
   if (!G) return;
   const tb = e.target.closest('[data-tool]');
   if (tb) { G.tool = tb.dataset.tool; sfx('click'); $('items').querySelectorAll('[data-tool]').forEach(x => x.setAttribute('aria-pressed', x === tb)); return; }
   const cb = e.target.closest('[data-card]'); if (cb) { useCard(+cb.dataset.card); return; }
   const lk = e.target.closest('[data-lock]'); if (lk) { sfx('click'); setMode('tech'); return; }
+  const stp = e.target.closest('[data-step]'); if (stp) { jtStepClick(stp.dataset.step); return; }
+  const chb = e.target.closest('[data-chef]'); if (chb) { jtChefClick(chb.dataset.chef); return; }
   const tb2 = e.target.closest('[data-tech]');
   if (tb2) {
     const key = tb2.dataset.tech, tc = TECH[key];
@@ -2345,19 +2389,20 @@ function openPop(c, r) {
   if (t.type === 'wall') {
     const free = me.free > 0;
     html = `<div class="ttl"><b>Mur</b><span>Transforme-le en tour</span></div><div class="acts${TYPES.filter(k => canUse(me, k)).length > 3 ? ' grid' : ''}">` +
-      TYPES.filter(k => canUse(me, k)).map(k => `<button class="pact" type="button" data-act="v" data-type="${k}" data-cost="${free ? 0 : convertCost(k)}">${T[k].n}<em${free ? ' class="free"' : ''}>${free ? 'Offert' : convertCost(k)}</em></button>`).join('') + sellBtn + `</div>`;
+      TYPES.filter(k => canUse(me, k)).map(k => `<button class="pact${isChef(k) ? ' chef' : ''}" type="button" data-act="v" data-type="${k}" data-cost="${free ? 0 : convertCost(k)}">${T[k].n}<em${free ? ' class="free"' : ''}>${free ? 'Offert' : convertCost(k)}</em></button>`).join('') + sellBtn + `</div>`;
   } else {
     const st = stat(t), head = `${Math.round(st.dmg)} dégâts · portée ${st.range.toFixed(1)}`, name = T[t.type].n, ev = EVO[t.type] && t.evo ? EVO[t.type][t.evo] : null;
     const kills = auth() && t.kills ? ` · ${t.kills} éliminations` : '', upBtn = label => `<button class="pact" type="button" data-act="u" data-cost="${upCost(t)}">${label}<em>${upCost(t)}</em></button>`;
-    if (t.lvl === 2 && EVO[t.type]) {
+    if (isChef(t.type)) html = jtChefPop(t, head, kills);
+    else if (t.lvl === 2 && EVO[t.type]) {
       const offer = evoOffer(G.me, idx(c, r), t.type), cost = upCost(t);
       html = `<div class="ttl"><b>${name} · niv. 2</b><span>${head}</span></div><div class="evo-h">Choisis une évolution</div><div class="evos">` +
         offer.map(e => `<button class="evo" type="button" data-act="u" data-evo="${e}" data-cost="${cost}"><b>${EVO[t.type][e].n}</b><span>${EVO[t.type][e].d}</span><em>${cost}</em></button>`).join('') + `</div><div class="acts">${sellBtn}</div>`;
     } else if (t.lvl < 3) {
       html = `<div class="ttl"><b>${name} · niv. ${t.lvl}</b><span>${head}</span></div><div class="acts">${upBtn('Améliorer')}${sellBtn}</div><div class="info">${EVO[t.type] ? 'Au niveau 3, tu choisis une évolution.' : TOWER_INFO[t.type] || ''}</div>`;
     } else if (t.lvl === 3) {
-      const m = hasTech(me, 'mastery');
-      html = `<div class="ttl"><b>${name} · ${ev ? ev.n : 'niv. 3'}</b><span>${head}${kills}</span></div>${ev ? `<div class="info">${ev.d}</div>` : ''}<div class="acts">${m ? upBtn('Niveau 4') : ''}${sellBtn}</div>${m ? '' : `<div class="info">Niveau 4 : technologie Maîtrise, dans l'Atelier.</div>`}`;
+      const m = maxLvl(me, t.type) >= 4;
+      html = `<div class="ttl"><b>${name} · ${ev ? ev.n : 'niv. 3'}</b><span>${head}${kills}</span></div>${ev ? `<div class="info">${ev.d}</div>` : ''}<div class="acts">${m ? upBtn('Niveau 4') : ''}${sellBtn}</div>${m ? '' : `<div class="info">Niveau 4 : ${LVL4[t.type] ? TECH[LVL4[t.type]].n : 'Maîtrise'}, dans l'Atelier.</div>`}`;
     } else {
       html = `<div class="ttl"><b>${name} · ${ev ? ev.n : 'niv. 4'}</b><span>${head}${kills}</span></div><div class="evo-h">Maître · niveau 4</div>${ev ? `<div class="info">${ev.d}</div>` : ''}<div class="acts">${sellBtn}</div>`;
     }
@@ -3469,8 +3514,8 @@ function rankPips(cx, y, lvl, own) {
   for (let i = 0; i < n; i++) { const px = x0 + i * 4; P.rect(px, y, 3, 3, c[0]); P.px(px, y, c[1]); P.px(px + 2, y + 2, c[2]); P.px(px + 1, y + 2, c[2]); P.px(px + 2, y + 1, c[2]); }
 }
 // a level reads by its colours and marks, not by its size: a tower gains 2 px per level at most and never widens
-const towerH = (type, lvl, evo) => { const g = 2 * (Math.min(4, lvl) - 1); return type === 'arrow' ? 27 + g + (evo === 'sniper' ? 2 : 0) : type === 'cannon' ? 22 + g : type === 'tesla' ? 20 + g : type === 'ballista' ? 20 + g / 2 : 6 + g; };
-const towerW = (type, lvl) => type === 'cannon' || type === 'ballista' ? 18 : 16;
+const towerH = (type, lvl, evo) => { const g = 2 * (Math.min(4, lvl) - 1); return type === 'arrow' ? 27 + g + (evo === 'sniper' ? 2 : 0) : type === 'cannon' ? 22 + g : type === 'tesla' ? 20 + g : type === 'ballista' ? 20 + g / 2 : type === 'bombard' ? 18 + g / 2 : 6 + g; };
+const towerW = (type, lvl) => type === 'cannon' || type === 'ballista' ? 18 : type === 'bombard' ? 20 : 16;
 const COPPER = ['#8a5a34', '#b07a4a', '#d39a62'];
 // level 4 (Maîtrise): white gems set on the gilded battlements, and a soft halo
 function masteryCrown(cx, ty, w) {
@@ -3598,18 +3643,19 @@ function crossbowSprite(dir, lvl, kick) {
   }));
 }
 // a structure's sprites: the wall it stands on, then the tower body (no moving parts)
-const TOWER_BODY = { arrow: arrowBody, cannon: cannonBody, frost: frostBody, tesla: teslaBody, ballista: ballistaBody };
+const TOWER_BODY = { arrow: arrowBody, cannon: cannonBody, frost: frostBody, tesla: teslaBody, ballista: ballistaBody, bombard: bombardBody };
 function towerSprite(type, lvl, evo, k) {
   const own = [PCOL[k] || NEUTRAL[0], PDARK[k] || NEUTRAL[1]];
   return sprGet(`t${type}${lvl}${evo}${k}`, () => bakeStruct((x, y) => (TOWER_BODY[type] || frostBody)(x, y, lvl, evo, own)));
 }
 // where the moving part sits on each tower (relative to the cell origin)
 function towerTopAt(type, lvl, evo) {
+  if (CHF_AT[type]) return CHF_AT[type];
   const base = 23, Hb = towerH(type, lvl, evo);
   if (type === 'arrow') return [14, base - Hb + 9 - 3];
   if (type === 'cannon') return [12, base - Hb + 7 - 5];
   if (type === 'tesla') return [12, base - Hb + 7 - 3 - (10 + Math.min(2, lvl - 1)) - 4];
-  if (type === 'ballista') return [12, base - Hb + 7 - 5];
+  if (type === 'ballista' || type === 'bombard') return [12, base - Hb + 7 - 5];
   return [12, base - Hb - 2];
 }
 // the archer on top (two facings, idle or loosing an arrow)
@@ -3661,8 +3707,9 @@ function crystalSprite(lvl, evo) {
 }
 
 function topSprite(type, lvl, evo, k, ang = 1.2, kick = false) {
+  if (CHF_AT[type]) return jtChefTop(type, ang, kick);
   const d16 = ((Math.round(ang / (Math.PI * 2) * 16) % 16) + 16) % 16;
-  return type === 'arrow' ? archerSprite(k, Math.cos(ang) < -0.15, kick, evo === 'double', evo === 'sniper') : type === 'cannon' ? barrelSprite(d16, evo || '', kick) : type === 'tesla' ? orbSprite(lvl, kick) : type === 'ballista' ? crossbowSprite(d16, lvl, kick) : crystalSprite(lvl, evo || '');
+  return type === 'arrow' ? archerSprite(k, Math.cos(ang) < -0.15, kick, evo === 'double', evo === 'sniper') : type === 'cannon' ? barrelSprite(d16, evo || '', kick) : type === 'tesla' ? orbSprite(lvl, kick) : type === 'ballista' ? crossbowSprite(d16, lvl, kick) : type === 'bombard' ? bombardSprite(d16, lvl, kick) : crystalSprite(lvl, evo || '');
 }
 /* ---------------------------------------------------------------- creatures */
 function creepColors(from) { return from >= 0 ? [PCOL[from] || NEUTRAL[0], PDARK[from] || NEUTRAL[1]] : NEUTRAL; }
@@ -4427,6 +4474,8 @@ function drawStruct(x, b, s) {
   }
   else if (t.type === 'tesla') blit(x, orbSprite(t.lvl, kick < 0.12 || Math.sin(G.t * 17 + t.id) > 0.92), s.x + tx, s.y + ty + (Math.sin(G.t * 3 + t.id) > 0.5 ? -1 : 0));
   else if (t.type === 'ballista') blit(x, crossbowSprite(((Math.round((t.ang ?? 1.57) / (Math.PI * 2) * 16) % 16) + 16) % 16, t.lvl, kick < 0.15), s.x + tx, s.y + ty);
+  else if (CHF_AT[t.type]) blit(x, jtChefTop(t.type, t.ang ?? -1.57, kick < 0.16), s.x + tx, s.y + ty);
+  else if (t.type === 'bombard') blit(x, bombardSprite(((Math.round((t.ang ?? 1.57) / (Math.PI * 2) * 16) % 16) + 16) % 16, t.lvl, kick < 0.14), s.x + tx, s.y + ty);
   else blit(x, crystalSprite(t.lvl, t.evo || ''), s.x + tx, s.y + ty + (Math.sin(G.t * 2.2 + t.id) > 0.3 ? -1 : 0));
   if (b.rage > 0 && Math.sin(G.t * 12 + t.id) > -0.2) { P.px(s.x + 6 + (t.id % 3) * 5, s.y - 14 + ((G.t * 9 + t.id) % 3 | 0), K.fire1); P.px(s.x + 16, s.y - 12, K.fire2); }
   if (b.jam > 0 && Math.sin(G.t * 19 + t.id * 2.3) > 0.2) { const a = s.x + 17, c = s.y - 6; P.px(a, c, K.hpR); P.px(a + 1, c + 1, K.hpR); P.px(a, c + 2, K.hpR); P.px(a + 1, c + 3, K.hpR); }
@@ -4443,9 +4492,10 @@ function drawCreepArt(x, b, cr, sb) {
   if (cr.kind === 'spirit') x.globalAlpha = 0.8;
   if (cr.kind === 'follet') x.globalAlpha = jtAlpha(cr);
   const s = creepSprite(cr.zz ? 'geantz' : cr.kind, dir, cr.zz ? fmod(G.t * 1.3, 2) : cr.fly ? fmod(G.t * 8 + cr.id, 2) : fr, cr.from >= 0 ? pcol(cr.from) : -1, flash);
-  blit(x, s, ax, ay + fly);
+  blit(x, sb & 64 ? jtGoldSprite(s) : s, ax, ay + fly);
   x.globalAlpha = 1;
   const top = Math.round(ay + fly + s.oy), cx = Math.round(ax);
+  if (sb & 64) jtGoldGlint(cr, cx, top, s);
   // a spark on the knight's armour when a hit glances off
   if ((cr.kind === 'knight' || cr.kind === 'shieldskel' || cr.kind === 'brute') && G.t - (cr.clankT ?? cr.hitT ?? -9) < 0.1) { P.px(cx - 3, top + 7, '#ffffff'); P.px(cx - 4, top + 6, K.au2); P.px(cx - 2, top + 8, K.au2); }
   if (sb & 16) { x.globalAlpha = 0.55; P.rect(cx + s.ox - 1, top - 1, s.w + 2, s.h + 2, K.ice); x.globalAlpha = 1; P.hl(cx + s.ox - 1, top - 1, s.w + 2, K.c3); }
@@ -4490,6 +4540,7 @@ function drawLaneArt(b) {
   // ground-level effects
   for (const f of b.fires) {
     const a = Math.min(1, f.t / 0.5), fx = AX0 + f.x * CS, fy = AY0 + f.y * CS;
+    if (f.green) { jtDrawGreenFire(x, f, a, fx, fy); continue; }
     disc(x, fx, fy, f.r * CS, K.fire1, 0.2 * a);
     for (let i = 0; i < 6; i++) { const ang = i * 1.3 + f.x * 3, rr = f.r * CS * (0.25 + 0.5 * ((i * 0.37) % 1)); drawFlame(Math.round(fx + Math.cos(ang) * rr), Math.round(fy + Math.sin(ang) * rr * 0.8), fmod(G.t * 7 + i, 2)); }
   }
@@ -4576,6 +4627,7 @@ function drawLaneArt(b) {
 }
 const T_RANGE = type => T[type].range;
 function drawZap(x, z) {
+  if (z.beam) { jtDrawBeam(x, z); return; }
   const a = Math.max(0, z.t / z.ttl), fr = Math.floor(G.t * 40), pts = z.pts.map(([X, Y]) => [AX0 + X * CS, AY0 + Y * CS]);
   for (let i = 1; i < pts.length; i++) {
     const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L, seg = [[x0, y0]];
@@ -4591,6 +4643,7 @@ function drawZap(x, z) {
 // with a dark rim, a highlight and puffs of smoke, a frost shard with an icy trail
 function drawShot(x, b, p) {
   const px = AX0 + p.x * CS, py = AY0 + p.y * CS;
+  if (p.chef) { jtDrawChefShot(x, b, p, px, py); return; }
   if (p.type === 'ballista') {
     // a heavy bolt flying flat: dark outline, wooden shaft, iron head, pale fletching, a faint trail
     const ux = p.ux, uy = p.uy, ex = px, ey = py - 9;
@@ -4600,6 +4653,7 @@ function drawShot(x, b, p) {
     P.px(Math.round(ex - ux * 10 - uy), Math.round(ey - uy * 10 + ux), '#efe6cf'); P.px(Math.round(ex - ux * 10 + uy), Math.round(ey - uy * 10 - ux), '#efe6cf');
     return;
   }
+  if (p.type === 'bombard') { jtDrawBombardShot(x, b, p, px, py); return; }
   if (p.type === 'cannon') {
     const lift = h => h * CS + 6, napalm = p.evo === 'napalm';
     // smoke puffs at the ball's earlier positions on its arc
@@ -5497,7 +5551,7 @@ function chargeImg(frac) {
 }
 function buildIcons() {
   const k = G ? pcol(G.me) : 0;
-  for (const t of Object.keys(T)) ICON[t] = towerIcon(t, k);
+  for (const t of Object.keys(T)) ICON[t] = isChef(t) ? jtChefIcon(t) : towerIcon(t, k);
   for (const c of Object.keys(S).concat(['mini'])) ICON[c] = creepIcon(c, k);
   ICON.tech_tesla = icon12('bolt'); ICON.tech_ballista = icon12('dart'); ICON.tech_mastery = icon12('mastery'); ICON.lock = icon12('lock', 1);
   for (const c of ['m', 'g', 'f', 'j', 't', 'gc', 'gb']) ICON[c] = icon12(c);
@@ -5979,7 +6033,7 @@ function updateUI() {
   }
   setDock();
   $('cardDot').hidden = !(me.cards.length && G.mode !== 'cards' && me.alive);
-  if ((G.mode === 'cards' || G.mode === 'tech' || G.mode === 'build') && me.alive && !G.spec && cache.items !== itemsKey()) renderItems();
+  if ((G.mode === 'cards' || G.mode === 'tech' || G.mode === 'build' || G.mode === 'send') && me.alive && !G.spec && cache.items !== itemsKey()) renderItems();
   if (G.techPick && G.t > G.techPickT + 4) { G.techPick = ''; renderItems(); }
   if (me.ghost && !me.alive) $('items').querySelectorAll('[data-cd]').forEach(el => { const v = me.gcd[+el.dataset.cd]; el.hidden = v <= 0; if (v > 0) el.textContent = Math.ceil(v) + ' s'; });
   const camKey = isHome() ? 'all' : 'home';
@@ -6616,7 +6670,8 @@ const RELICS = {
   plan:      { n: 'Plan de tour', d: 'Ta prochaine tour est gratuite' },
 };
 const RELIC_KEYS = Object.keys(RELICS);
-function relicPool(b) { return RELIC_KEYS.filter(k => !(RELICS[k].perm && b.jt.relics[k]) && !(k === 'parchemin' && b.cards.length >= MAX_CARDS)); }
+// the relics of the four paths are not won at the palet any more: they are each path's first step
+function relicPool(b) { return RELIC_KEYS.filter(k => !VOIE_RELIC.has(k) && !(RELICS[k].perm && b.jt.relics[k]) && !(k === 'parchemin' && b.cards.length >= MAX_CARDS)); }
 
 /* ---------------------------------------------------------------- Houses and their living emblems */
 const MAISONS = ['cerf', 'ours', 'griffon', 'renard'];
@@ -6649,7 +6704,7 @@ const isBig = cr => (cr.size || 0) >= 0.27 || cr.lives >= 2 || cr.kind === 'boss
 /* ---------------------------------------------------------------- setting up a game */
 function jtBoard(b, seat) {
   b.ob = new Uint8Array(COLS * ROWS); b.grid.ob = b.ob;
-  b.jt = { maison: seat && EMB[seat.maison] ? seat.maison : '', em: null, relics: {}, zone: null, swamps: [], fires: [], ash: [], ringW: 0, scroll: false, relicPick: null, palet: false, rays: [], fx: [] };
+  b.jt = { maison: seat && EMB[seat.maison] ? seat.maison : '', em: null, relics: {}, zone: null, swamps: [], fires: [], ash: [], ringW: 0, scroll: false, relicPick: null, palet: false, rays: [], fx: [], voie: '', voieOffer: null, incFrac: 0 };
 }
 function jtNewGame(seats, opts) {
   G.entr = null; G.jt = null;
@@ -6664,6 +6719,8 @@ function jtNewGame(seats, opts) {
     b.ob[i] = OB_EMB;
     b.jt.em = { k: b.jt.maison, i, c, r, lvl: 1, xp: 0, cd: 10, pend: null, pw: [], atkT: -9, lvlT: -9, castT: -9, face: 1 };
   }
+  // the herald offers two paths to each House (its own and another); the bots take theirs at once
+  for (const b of G.b) { b.jt.voieOffer = jtVoieOffer(b); if (b.bot) { const own = b.jt.voieOffer.find(v => VOIES[v].maison === b.jt.maison); jtChooseVoie(b, own && Math.random() < 0.6 ? own : rndOf(b.jt.voieOffer)); } }
   // the tournament: a fresh programme, the bestiaries and the characters in a new order
   G.jt = { prog: [], stages: [0].concat(shuffled([1, 2, 3, 4])), chars: shuffled(CH_KEYS), vote: null, entrDone: false, her: { q: [], cur: null, open: false, seen: -1 }, lastVoteFam: '', news: [] };
   // the Mimic never comes first: it needs chests to hide among
@@ -6739,6 +6796,8 @@ function jtWaveStarted() {
   if (!G.jt) return;
   for (const b of G.b) (b.jt.hist = b.jt.hist || []).push(Math.max(0, b.lives));
   const J = G.jt, w = G.wave, e = progAt(w);
+  // a House that has not chosen its path by the second wave gets its own (or the first offered)
+  if (w >= 2) for (const b of G.b) if (b.alive && b.jt.voieOffer && !b.jt.voie) { const own = b.jt.voieOffer.find(v => VOIES[v].maison === b.jt.maison); jtChooseVoie(b, own || b.jt.voieOffer[0]); }
   // the map changes announced a wave ago
   for (const b of G.b) {
     if (!b.alive) continue;
@@ -6901,6 +6960,8 @@ function jtAction(k, a) {
     case 'scroll': if (!b.jt.scroll || !CARDS[a[2]]) return 'x'; b.jt.scroll = false; if (b.cards.length < MAX_CARDS) { b.cards.push(a[2]); if (fxOn(k)) cardFx(a[2]); } return '';
     case 'relic': if (!b.jt.relicPick || !b.jt.relicPick.includes(a[2])) return 'x'; b.jt.relicPick = null; jtGiveRelic(b, a[2]); if (fxOn(k)) sfx('evolve'); return '';
     case 'pow': return jtCast(k);
+    case 'voie': if (!b.jt.voieOffer || !b.jt.voieOffer.includes(a[2])) return 'x'; return jtChooseVoie(b, a[2]);
+    case 'step': return jtBuyStep(k, a[2]);
     case 'epick': return jtPickPower(k, a[2]);
     case 'palet': return jtPaletThrow(k, a[2], a[3]);
   }
@@ -6996,11 +7057,15 @@ function jtDamage(b, cr, dmg, src, soft) {
     // the bear's neighbours hit the big ones harder
     const em = b.jt.em;
     if (em && em.k === 'ours' && isBig(cr) && Math.hypot(src.c - em.c, src.r - em.r) <= emR(em) + 0.01) dmg *= emHas(em, 'force') ? 1.5 : 1.3;
+    // the Bombarde's ball crushes the big ones
+    if (src.type === 'bombard' && isBig(cr)) dmg *= 2.2;
   }
   return dmg;
 }
 function jtOnKill(b, cr, src, bounty) {
   const em = b.jt.em, near = emNear(em, cr.x, cr.y, 0.3);
+  // La Fortune II: the Pillards take a coin off every creature that falls
+  if (hasTech(b, 'pillards')) b.gold += 1;
   if (near && !cr.illu) jtXP(b, cr.lives >= 2 ? 2 : 1);
   if (near && em.k === 'renard') { const g = emHas(em, 'bourse') ? 2 : 1; b.gold += g; if (fxOn(b.k)) G.floats.push({ k: b.k, x: cr.x + 0.3, y: cr.y - 0.6, txt: '+' + g, color: '#cfd4da', t: 0.8, ttl: 0.8 }); }
   if (near && em.k === 'ours' && emHas(em, 'miel') && (cr.kind === 'boss' || (S[cr.kind] && S[cr.kind].boss))) b.lives += 1;
@@ -7228,7 +7293,8 @@ function jtSnap() {
     const rel = Object.keys(b.jt.relics).map(k => RELIC_KEYS.indexOf(k)).join('');
     const fl = (b.jt.palet ? 1 : 0) + '0' + (b.jt.scroll ? 1 : 0) + (b.jt.relicPick || []).map(k => RELIC_KEYS.indexOf(k)).join('');
     const tw = []; for (const t of b.grid) if (t && (t.stoneT > G.t || t.stunT > G.t)) tw.push(b36(idx(t.c, t.r), 2) + (t.stoneT > G.t ? 's' + b36(Math.min(35, Math.ceil((t.stoneT - G.t) * 10)), 1) : 'z' + b36(Math.min(35, Math.ceil((t.stunT - G.t) * 10)), 1)));
-    return [ob.join(''), e, z, rel, fl, tw.join('')].join(';');
+    const vo = (b.jt.voie ? VOIE_KEYS.indexOf(b.jt.voie) : '-') + (b.jt.voieOffer || []).map(v => VOIE_KEYS.indexOf(v)).join('');
+    return [ob.join(''), e, z, rel, fl, tw.join(''), vo].join(';');
   }).join('/');
   const E = G.entr, en = E ? PHASES[E.phase] + E.turn + E.order.join('') + ':' + b36(Math.min(1295, Math.round(E.t * 10)), 2) + ':' + E.pucks.map(p => p.k + b36(Math.round(p.x * 2), 2) + b36(Math.round((p.y + 20) * 2), 2) + (p.out ? 1 : 0)).join('') + ':' + b36(Math.round(E.jack.x * 2), 2) + b36(Math.round((E.jack.y + 20) * 2), 2)
     + ':' + (E.res ? E.res.map(r => r.k + (r.d === Infinity ? 'x' : '.')).join('') + (E.win ?? '-') + b36(E.sack || 0, 2) + (E.second ?? '-') + (E.botRelic ? RELIC_KEYS.indexOf(E.botRelic) : '-') : '') : '';
@@ -7253,7 +7319,7 @@ function jtApplySnap(s) {
   } else J.vote = null;
   boards.split('/').forEach((str, k) => {
     const b = G.b[k]; if (!b || !b.jt) return;
-    const [ob = '', e = '', z = '', rel = '', fl = '', tw = ''] = str.split(';');
+    const [ob = '', e = '', z = '', rel = '', fl = '', tw = '', vo = ''] = str.split(';');
     // the cells: what changed falls, floods or rises as on the host
     const nob = new Uint8Array(COLS * ROWS); for (let i = 0; i + 3 <= ob.length; i += 3) { const c = parseInt(ob.slice(i, i + 2), 36); if (c >= 0 && c < COLS * ROWS) nob[c] = +ob[i + 2]; }
     let changed = false;
@@ -7271,6 +7337,11 @@ function jtApplySnap(s) {
     b.jt.zone = z ? { k: EV_DEC[z[0]], w: parseInt(z.slice(1, 3), 36), cells: (z.slice(3).match(/../g) || []).map(x => parseInt(x, 36)) } : null;
     b.jt.relics = {}; for (const d of rel) if (RELIC_KEYS[+d]) b.jt.relics[RELIC_KEYS[+d]] = 1;
     b.jt.palet = fl[0] === '1'; b.jt.scroll = fl[2] === '1';
+    // the path: my own choice shows at once, before the host has it
+    const sv = vo && vo[0] !== '-' ? VOIE_KEYS[+vo[0]] || '' : '', own = k === G.me && b.jt.voie && !sv;
+    if (!own) b.jt.voie = sv;
+    b.jt.voieOffer = !own && vo.length >= 3 && VOIE_KEYS[+vo[1]] && VOIE_KEYS[+vo[2]] ? [VOIE_KEYS[+vo[1]], VOIE_KEYS[+vo[2]]] : null;
+    if (own) b.jt.relics[VOIES[b.jt.voie].steps[0]] = 1;
     b.jt.relicPick = fl.length > 3 ? fl.slice(3).split('').map(d => RELIC_KEYS[+d]).filter(Boolean) : null;
     if (b.jt.relicPick && !b.jt.relicPick.length) b.jt.relicPick = null;
     for (const t of b.grid) if (t) { t.stoneT = 0; t.stunT = 0; }
@@ -7796,7 +7867,7 @@ function jtDrawStone(x, b, s) {
   const [tx, ty] = towerTopAt(t.type, t.lvl, t.evo), dir16 = ((Math.round((t.ang ?? 1.57) / (Math.PI * 2) * 16) % 16) + 16) % 16;
   const top = t.type === 'arrow' ? archerSprite(pcol(b.k), Math.cos(t.ang ?? -1.57) < -0.15, false, t.evo === 'double', t.evo === 'sniper')
     : t.type === 'cannon' ? barrelSprite(dir16, t.evo || '', false) : t.type === 'tesla' ? orbSprite(t.lvl, false)
-    : t.type === 'ballista' ? crossbowSprite(dir16, t.lvl, false) : crystalSprite(t.lvl, t.evo || '');
+    : t.type === 'ballista' ? crossbowSprite(dir16, t.lvl, false) : t.type === 'bombard' ? bombardSprite(dir16, t.lvl, false) : CHF_AT[t.type] ? jtChefTop(t.type, t.ang ?? -1.57, false) : crystalSprite(t.lvl, t.evo || '');
   blit(x, stoneOf(top), s.x + tx, s.y + ty);
   if (fmod(G.t * 5 + t.id, 7) === 0) P.px(s.x + 6 + (t.id % 11), s.y + 4, '#dcdee1');
 }
@@ -7857,7 +7928,7 @@ function laneShadows(x, b, A, crs, chests, proj, fog) {
   for (const ch of chests) { if (ch.t <= 0 || (ch.t < 1 && fmod(G.t * 8, 2) === 0)) continue; shEll(x, src, AX0 + ch.x * CS, AY0 + ch.y * CS + 4, 5.5, .3); }
   for (const p of proj) {
     const gx = Math.round(AX0 + p.x * CS), gy = Math.round(AY0 + p.y * CS) + 3;
-    if (p.type === 'cannon') { shRow(x, src, gx - 1, gy - 1, 3); shRow(x, src, gx - 2, gy, 5); shRow(x, src, gx - 1, gy + 1, 3); } else shRow(x, src, gx - 1, gy, 3);
+    if (p.type === 'cannon' || p.type === 'bombard' || p.lob) { shRow(x, src, gx - 1, gy - 1, 3); shRow(x, src, gx - 2, gy, 5); shRow(x, src, gx - 1, gy + 1, 3); } else shRow(x, src, gx - 1, gy, 3);
   }
 }
 
@@ -8227,6 +8298,8 @@ function anInfo() {
   if (it.k) rows.push({ ic: anIcon(it.k, 2), k: AN_FAM[EV[it.k].fam] || 'ÉVÉNEMENT', n: evName(it.k), d: evDesc(it.k) });
   if (it.fresh && CH[it.fresh]) rows.push({ ic: anIcon(it.fresh, 2), k: 'NOUVELLE CRÉATURE', n: CH[it.fresh].n, d: CH[it.fresh].d, tip: CH[it.fresh].tip });
   if (it.stage) rows.push({ ic: stage ? anIcon(stage.kinds[0], 2) : '', k: 'NOUVEAU BESTIAIRE', n: it.stage, d: 'De nouvelles créatures prennent le chemin' });
+  const ns = jtNewSends(w);
+  if (ns) rows.push({ ic: anIcon(ns[0], 2), k: 'NOUVEAUX ENVOIS', n: ns.map(x => S[x].n).join(', '), d: 'Ils t’attendent dans l’onglet Envoyer' });
   const isNew = rows.length > 0;
   if (!rows.length) rows.push({ ic: anIcon(stage ? stage.kinds[0] : 'brute', 2), k: 'BESTIAIRE', n: stage ? stage.n : 'Cauchemar', d: 'Rien de spécial à cette vague' });
   const nx = G.jt.prog.find(e => e.w > w);
@@ -8256,21 +8329,22 @@ function anBody(V, I, voting, result, v) {
 }
 function jtWaveHud() {
   const V = window.__ANNV || AN_V, box = document.querySelector('.hud-row .wave'), chip = $('anChip'), pan = $('anPan');
-  if (AN.g !== G) { AN.g = G; AN.open = false; AN.seen = 0; AN.it = null; AN.t0 = -1e9; }
+  if (AN.g !== G) { AN.g = G; AN.open = false; AN.seen = 0; AN.it = null; AN.t0 = -1e9; AN.chef = null; }
   const H = G.jt.her, v = G.jt.vote, it = H.cur;
   const voting = !!(it && it.type === 'vote' && v && !v.done), result = !!(it && it.type === 'result' && v && v.done && v.w === it.w);
-  const open = G.running && !G.ended && !G.entr && (AN.open || voting || result);
+  const chefOn = !!(AN.chef && performance.now() < AN.chef.until && G.b[AN.chef.k]);
+  const open = G.running && !G.ended && !G.entr && (AN.open || voting || result || chefOn);
   const I = G.entr ? null : anInfo();
   const cls = 'wave an an' + V + (V === 'A' ? '' : ' mid') + (open ? ' open' : '') + (performance.now() - AN.t0 < 1800 ? ' an-new' : '');
   if (box.className !== cls) box.className = cls;
   if (chip.hidden) chip.hidden = false;
   const html = G.entr ? `<span class="an-st">${anIcon('entracte', 1)}</span><span class="an-tx"><b>Entracte</b><span>le palet</span></span>` : anBar(V, I, I.isNew && AN.seen !== I.w && !open);
   if (chip.dataset.h !== html) { chip.dataset.h = html; chip.innerHTML = html; }
-  if (!open) { if (!pan.hidden) { pan.hidden = true; pan.dataset.k = ''; } return; }
-  const key = V + '|' + (voting ? 'v' + v.w + JSON.stringify(v.picks) : result ? 'r' + v.w : 'i' + I.w + I.it.k + I.it.fresh + I.it.stage);
+  if (!open) { if (!pan.hidden) { pan.hidden = true; pan.dataset.k = ''; } jtToastsTop(view.top + 6); return; }
+  const key = V + '|' + (voting ? 'v' + v.w + JSON.stringify(v.picks) : result ? 'r' + v.w : chefOn ? 'c' + AN.chef.id : 'i' + I.w + I.it.k + I.it.fresh + I.it.stage);
   if (pan.dataset.k !== key) {
     pan.dataset.k = key;
-    const body = anBody(V, I, voting, result, v);
+    const body = chefOn && !voting && !result ? jtChefAnnBody() : anBody(V, I, voting, result, v);
     pan.innerHTML = V === 'B' ? `<div class="ant dk"></div><div class="anp dk">${body}</div>`
       : V === 'D' ? `<div class="anp parch scr">${body}</div><div class="anroll"></div>`
       : `<div class="ant"></div><div class="anp parch${V === 'C' ? ' sm' : ''}">${body}</div>`;
@@ -8290,12 +8364,15 @@ function jtWaveHud() {
   pan.style.width = pw + 'px'; pan.style.left = left + 'px';
   pan.style.top = (V === 'D' ? ar.bottom - 1.34 * u : bar.bottom + 7) + 'px';
   const tail = pan.querySelector('.ant'); if (tail) tail.style.left = (ax - left - 6) + 'px';
+  jtToastsTop(pan.getBoundingClientRect().bottom + 6);
 }
+// the notes hang under the herald's panel while it is open, under the bar otherwise
+function jtToastsTop(y) { const tb = $('toasts'), v = Math.round(y) + 'px'; if (tb.style.top !== v) tb.style.top = v; }
 // a game without the tournament (the menu's background game, a guest still waiting for it): the old wave counter
 function jtWaveHudOff() {
   const box = document.querySelector('.hud-row .wave');
   if (box.classList.contains('an')) { box.className = 'wave'; $('anChip').hidden = true; }
-  if (!$('anPan').hidden) $('anPan').hidden = true;
+  if (!$('anPan').hidden) { $('anPan').hidden = true; jtToastsTop(view.top + 6); }
 }
 // a tap on the announcement opens or closes the panel; a tap anywhere else closes it; the panel's cards vote
 document.addEventListener('click', e => {
@@ -8307,22 +8384,32 @@ document.addEventListener('click', e => {
 }, true);
 
 /* ---------------------------------------------------------------- choices: a spell from the scroll, a relic from the palet */
+// the herald's offer at the start: two paths, the first step of the one you keep is given
+function voieHTML(me) {
+  const card = v => {
+    const V = VOIES[v], s1 = jtStepInfo(v, 0), own = V.maison === me.jt.maison;
+    return `<button type="button" class="jt-offer voie" data-voie="${v}">${own ? '<span class="jt-tagm">TA MAISON</span>' : ''}${jtVoieIcon(v)}<span class="jt-n">${esc(V.n)}</span><span class="jt-d"><b>Offert :</b> ${esc(s1.n)}</span><span class="jt-d">${esc(s1.d)}</span><span class="jt-d jt-then">Puis ${esc(jtStepInfo(v, 1).n)}, ${esc(jtStepInfo(v, 2).n)}</span></button>`;
+  };
+  return `<div class="jt-ttl"><span>LE HÉRAUT · CHOISIS TA VOIE</span></div><div class="jt-offers two">${me.jt.voieOffer.map(card).join('')}</div><div class="jt-foot">La suite s’achète à l’Atelier.</div>`;
+}
 function renderPick() {
   const me = G.b[G.me], el = $('jtPick');
-  const mode = !me || !G.running || G.ended || G.entr ? '' : me.jt.relicPick ? 'relic' : me.jt.scroll ? 'scroll' : '';
+  const mode = !me || !G.running || G.ended || G.entr || G.spec || !me.alive ? '' : me.jt.relicPick ? 'relic' : me.jt.scroll ? 'scroll' : me.jt.voieOffer && !me.jt.voie ? 'voie' : '';
   if (!mode) { if (!el.hidden) el.hidden = true; cache.jtPick = null; return; }
-  const key = mode + '|' + (me.jt.relicPick || []).join(',');
+  const key = mode + '|' + (me.jt.relicPick || me.jt.voieOffer || []).join(',');
   if (cache.jtPick !== key) {
     cache.jtPick = key;
-    el.innerHTML = mode === 'relic'
+    el.innerHTML = mode === 'voie' ? voieHTML(me)
+      : mode === 'relic'
       ? `<div class="jt-ttl">${jtIcon('palet')}<span>LE PALET EST À TOI · CHOISIS UNE RELIQUE</span></div><div class="jt-offers">` + me.jt.relicPick.map(k => `<button type="button" class="jt-offer" data-relic="${k}">${relicIcon(k)}<span class="jt-n">${esc(RELICS[k].n)}</span><span class="jt-d">${esc(RELICS[k].d)}</span></button>`).join('') + '</div>'
       : `<div class="jt-ttl">${jtIcon('parchemin')}<span>LE PARCHEMIN · CHOISIS UN SORT</span></div><div class="jt-offers five">` + CARD_KEYS.map(k => `<button type="button" class="jt-offer" data-scroll="${k}">${ICON[k]}<span class="jt-n">${esc(CARDS[k].n)}</span></button>`).join('') + '</div>';
   }
   el.hidden = false; el.style.bottom = (H - view.bottom + 6) + 'px';
 }
 $('jtPick').addEventListener('click', e => {
-  const r = e.target.closest('[data-relic]'), s = e.target.closest('[data-scroll]');
-  if (r) { if (!act(['J', 'relic', r.dataset.relic])) toast(`${RELICS[r.dataset.relic].n} : ${RELICS[r.dataset.relic].d}`, 'gold'); }
+  const r = e.target.closest('[data-relic]'), s = e.target.closest('[data-scroll]'), vb = e.target.closest('[data-voie]');
+  if (vb) { act(['J', 'voie', vb.dataset.voie]); }
+  else if (r) { if (!act(['J', 'relic', r.dataset.relic])) toast(`${RELICS[r.dataset.relic].n} : ${RELICS[r.dataset.relic].d}`, 'gold'); }
   else if (s) { if (!act(['J', 'scroll', s.dataset.scroll])) toast(`Nouveau sort : ${CARDS[s.dataset.scroll].n}`, 'gold'); }
 });
 
@@ -8483,11 +8570,11 @@ Object.assign(TUTO_ART, {
     { k: 'chemin', t: 'Ton labyrinthe',
       p: "Pose des murs pour allonger leur chemin et des tours pour tirer : plus le détour est long, plus tes tours tirent. Le Givre les ralentit. Le passage ne se ferme jamais.",
       x: () => tsec('Constructions', ['wall', 'arrow', 'cannon', 'frost'].map(k => tchip(ICON[k], T[k].n, TUTO_TOWER[k], { cost: T[k].cost, cls: 'tall' })).join('')) + `<p class="tut-hint">Touche une tour pour l’améliorer.</p>` },
-    { k: 'embleme', t: 'Ton emblème',
-      p: "La statue de ta Maison est posée au hasard dans ta clairière : construis ton labyrinthe autour d’elle. Elle frappe les créatures qui passent tout près et renforce les tours voisines. Plus il en meurt à côté d’elle, plus elle monte de niveau.",
-      x: () => tsec('Les quatre Maisons', MAISONS.map(m => tchip(blazonImg(m, tutoCol(), 2), EMB[m].n, EMB[m].jeu.toLowerCase())).join('')) },
+    { k: 'embleme', t: 'Ta Maison et ta voie',
+      p: "La statue de ta Maison est posée au hasard dans ta clairière : construis autour d’elle, elle frappe les créatures et renforce les tours voisines. Au départ, le héraut te propose deux voies : garde-en une, sa première marche est offerte. Les suivantes s’achètent à l’Atelier. Deux voies complètes ouvrent un chef-d’œuvre : une tour unique, une seule par partie.",
+      x: () => tsec('Les quatre voies', VOIE_KEYS.map(v => `<div class="tvoie">${jtVoieIcon(v)}<div><b>${esc(VOIES[v].n)}</b><span>${[0, 1, 2].map(i => `<i>${STEP_ROMAN[i]}</i> ${esc(jtStepInfo(v, i).n)}`).join(' · ')}</span></div></div>`).join(''), 'tut-voies') },
     { k: 'envoyer', t: 'Envoyer',
-      p: "Dans l’onglet Envoyer, tes créatures partent chez la Maison voisine. Chaque envoi fait monter ton revenu, et les vies qu’elle perd sont pour toi.",
+      p: "Dans l’onglet Envoyer, tes créatures partent chez la Maison voisine. Chaque envoi fait monter ton revenu, et les vies qu’elle perd sont pour toi. Au début, quatre créatures ; de nouvelles s’ouvrent toutes les quatre vagues.",
       x: () => `<p class="tut-hint">Plus une créature coûte cher, plus elle est forte.</p>` },
     { k: 'surprises', t: 'Le héraut et ses surprises',
       p: "Chaque vague s’annonce en haut, à côté de ton nom : touche l’annonce pour savoir ce qu’elle apporte (feu de broussailles, cercle des korrigans, boss…). Parfois, on vote. À mi-partie, l’Entracte : une partie de palet pour gagner une relique.",
@@ -8495,6 +8582,731 @@ Object.assign(TUTO_ART, {
 })();
 
 function circlePxOn(p, cx, cy, r, col) { const n = Math.max(16, Math.round(r * 6.3)); for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2; p.px(Math.round(cx + Math.cos(t) * r), Math.round(cy + Math.sin(t) * r), col); } }
+
+/* =============== La Grande Joute · progression: sends that open in tiers, four paths, the Bombarde, the ring's catch-up =============== */
+
+/* ---------------------------------------------------------------- sends open in tiers, one with each new bestiary (every 4 waves) */
+const SEND_TIERS = [['rat', 'skel', 'swarm', 'crow'], ['mole', 'shaman', 'slime'], ['golem', 'knight', 'brood'], ['spectre', 'troll', 'wyvern'], ['ogre', 'lich'], ['dragon', 'colossus']];
+const SEND_TIER = {}; SEND_TIERS.forEach((l, i) => l.forEach(k => { SEND_TIER[k] = i; }));
+// the tier open now: the same clock as the bestiaries (waves 1, 5, 9, 13, 17, 21)
+const jtTier = () => G ? Math.min(SEND_TIERS.length - 1, Math.floor(Math.max(0, G.wave - 1) / 4)) : 0;
+const jtTierWave = i => 1 + 4 * i;
+const jtSendOpen = k => (SEND_TIER[k] ?? 0) <= jtTier();
+// the wave that opens a new tier, and what it opens (nothing for the first)
+function jtNewSends(w) { const i = Math.floor(Math.max(0, w - 1) / 4); return i > 0 && i < SEND_TIERS.length && w === jtTierWave(i) ? SEND_TIERS[i] : null; }
+// the bar of sends: what is open, then a lock for the next tier
+function jtSendItems() {
+  const open = Object.entries(S).filter(([k]) => jtSendOpen(k));
+  let html = open.map(([k, s]) => `<button class="item snd" type="button" data-send="${k}">${ICON[k]}<span class="nm">${s.n}</span><span class="ct">${s.cost}<small>+${s.inc}</small></span><span class="tag">${s.tag}</span></button>`).join('');
+  const nx = jtTier() + 1;
+  if (nx < SEND_TIERS.length) html += `<div class="item snd lockhint">${ICON.lock}<span class="nm">Vague ${jtTierWave(nx)}</span><span class="tag">+${SEND_TIERS[nx].length} envois</span></div>`;
+  return html;
+}
+
+/* ---------------------------------------------------------------- the four paths: three steps each; the first is a relic, the others the Atelier's */
+const VOIES = {
+  arc:     { n: 'L’Arc', de: 'de l’Arc', steps: ['carquois', 'ballista', 'm_arc'], maison: 'griffon' },
+  arcanes: { n: 'Les Arcanes', de: 'des Arcanes', steps: ['givre', 'tesla', 'm_arcanes'], maison: 'cerf' },
+  poudre:  { n: 'La Poudre', de: 'de la Poudre', steps: ['poudre', 'bombard', 'm_poudre'], maison: 'ours' },
+  fortune: { n: 'La Fortune', de: 'de la Fortune', steps: ['bourse', 'pillards', 'tresorier'], maison: 'renard' },
+};
+const VOIE_KEYS = Object.keys(VOIES);
+const VOIE_RELIC = new Set(VOIE_KEYS.map(v => VOIES[v].steps[0]));
+const VOIE_I_COST = 90;   // the first step of a path you did not pick
+const STEP_ROMAN = ['I', 'II', 'III'];
+const jtStepKey = (v, i) => VOIES[v].steps[i];
+const jtStepOwned = (b, v, i) => i === 0 ? !!(b.jt && b.jt.relics[VOIES[v].steps[0]]) : hasTech(b, VOIES[v].steps[i]);
+function jtNextStep(b, v) { for (let i = 0; i < 3; i++) if (!jtStepOwned(b, v, i)) return i; return -1; }
+const jtStepsOwned = (b, v) => [0, 1, 2].filter(i => jtStepOwned(b, v, i)).length;
+const jtStepCost = (b, v, i = jtNextStep(b, v)) => i < 0 ? 0 : i === 0 ? VOIE_I_COST : TECH[jtStepKey(v, i)].cost;
+function jtStepInfo(v, i) {
+  const key = jtStepKey(v, i);
+  return i === 0 ? { n: RELICS[key].n, d: RELICS[key].d } : { n: TECH[key].n, d: TECH[key].d };
+}
+function jtStepIcon(v, i) {
+  const key = jtStepKey(v, i);
+  if (i === 0) return jtIcon(key);
+  if (i === 2 && v !== 'fortune') return ICON.tech_mastery;
+  return key === 'pillards' ? jtIconCoins() : key === 'tresorier' ? ICON.chest : key === 'bombard' ? jtIconBall() : ICON['tech_' + key] || '';
+}
+const jtVoieIcon = (v, sc = 2) => jtIcon(VOIES[v].steps[0], sc);
+// the herald's offer at the start: your House's path and another one
+function jtVoieOffer(b) {
+  const mine = VOIE_KEYS.find(v => VOIES[v].maison === b.jt.maison) || rndOf(VOIE_KEYS), other = rndOf(VOIE_KEYS.filter(v => v !== mine));
+  return Math.random() < 0.5 ? [mine, other] : [other, mine];
+}
+function jtChooseVoie(b, v) {
+  if (!VOIES[v] || b.jt.voie) return 'x';
+  b.jt.voie = v; b.jt.voieOffer = null;
+  b.jt.relics[VOIES[v].steps[0]] = 1;
+  if (!b.bot && fxOn(b.k) && G.running) { sfx('evolve'); toast(`${VOIES[v].n} : ${RELICS[VOIES[v].steps[0]].n} t’est offert`, 'gold'); }
+  return '';
+}
+// buying the next step of a path in the Atelier
+function jtBuyStep(k, v) {
+  const b = G.b[k]; if (!VOIES[v] || !b.jt) return 'x';
+  const i = jtNextStep(b, v); if (i < 0) return 'x';
+  const cost = jtStepCost(b, v, i);
+  if (b.gold < cost) return "Pas assez d'or";
+  b.gold -= cost;
+  if (i === 0) b.jt.relics[jtStepKey(v, 0)] = 1; else b.tech |= TECH[jtStepKey(v, i)].bit;
+  if (fxOn(k)) { sfx('evolve'); bumpEl('goldPill'); }
+  return '';
+}
+// the bots dig their path, and sometimes start a second one
+function jtBotStep(k) {
+  const b = G.b[k]; if (!b.jt) return false;
+  // their path first; once it is complete, a second path to the end (the two of them open their masterpiece)
+  let v = b.jt.voie && jtNextStep(b, b.jt.voie) >= 0 ? b.jt.voie : '';
+  if (!v && !b.jt.voie2 && Math.random() < 0.4) b.jt.voie2 = rndOf(VOIE_KEYS.filter(x => x !== b.jt.voie));
+  if (!v && b.jt.voie2 && jtNextStep(b, b.jt.voie2) >= 0) v = b.jt.voie2;
+  if (!v || b.gold < jtStepCost(b, v) + 40) return false;
+  return jtBuyStep(k, v) === '';
+}
+// La Fortune III: sends bring a quarter more income (kept in fractions so the cheap ones count too)
+function jtIncBonus(b, s) {
+  if (!b.jt || !hasTech(b, 'tresorier')) return 0;
+  b.jt.incFrac = (b.jt.incFrac || 0) + s.inc * 0.25;
+  const n = Math.floor(b.jt.incFrac); b.jt.incFrac -= n; return n;
+}
+
+/* ---------------------------------------------------------------- the Atelier: the next step of each path, four buttons */
+function jtAtelierItems(me) {
+  return jtChefButtons(me, false) + VOIE_KEYS.map(v => {
+    const i = jtNextStep(me, v), done = i < 0, mine = me.jt && me.jt.voie === v, pick = G.techPick === 'v:' + v;
+    const s = done ? null : jtStepInfo(v, i), ic = done ? jtStepIcon(v, 2) : jtStepIcon(v, i);
+    const tag = `${VOIES[v].n} · ${done ? 'complète' : STEP_ROMAN[i]}`;
+    return `<button class="item snd tech${done ? ' own' : ''}${mine ? ' mine' : ''}" type="button" data-step="${v}" aria-pressed="${pick}"${done ? ' disabled' : ''}><span class="tag">${tag}</span>${ic}<span class="nm">${done ? 'Voie complète' : esc(s.n)}</span><span class="ct">${done ? '✓' : jtStepCost(me, v, i)}</span></button>`;
+  }).join('');
+}
+const jtItemsKey = me => me && me.jt ? Object.keys(me.jt.relics).join('') + (me.jt.voie || '') + jtTier() + jtChefAvail(me).join('') : '' + jtTier();
+// a big spend: the first tap says what it does, the second one buys
+function jtStepClick(v) {
+  const me = G.b[G.me], i = jtNextStep(me, v); if (i < 0) return;
+  const s = jtStepInfo(v, i), cost = jtStepCost(me, v, i);
+  if (G.techPick !== 'v:' + v) { G.techPick = 'v:' + v; G.techPickT = G.t; sfx('click'); toast(`${VOIES[v].n} ${STEP_ROMAN[i]} · ${s.n} : ${s.d}. Touche encore pour l’acheter (${cost} or)`, 'gold'); renderItems(); return; }
+  G.techPick = ''; const err = act(['J', 'step', v]);
+  if (err) { sfx('error'); if (err !== 'x') toast(err, 'bad'); }
+  renderItems();
+}
+
+/* ---------------------------------------------------------------- the ring closes: the catch-up purse */
+// When a House falls, the one it attacked gets a new, often richer, attacker: once, it gets the gap between their
+// incomes times 1.5, as a bag of gold that drops in its clearing.
+function jtCatchUp(x) {
+  if (!G.jt || !auth() || !x.alive || G.b.filter(b => b.alive).length < 3) return;
+  const y = nextAlive(x.k), z = prevAlive(x.k); if (y < 0 || z < 0 || y === z) return;
+  const amt = Math.min(1295, Math.round((G.b[z].income - x.income) * 1.5)); if (amt <= 0) return;
+  const Y = G.b[y]; Y.gold += amt;
+  pushEv(Y, 'p' + b36(amt, 2));
+  jtPrimeFx(Y, amt);
+}
+function jtPrimeFx(b, amt) {
+  if (G.quiet || !b.alive) return;
+  const x = COLS / 2, y = ROWS / 2;
+  b.rings.push({ x, y, r0: 0.2, r1: 1.4, t: 0.5, ttl: 0.5, color: C.gold, fill: true });
+  for (let j = 0; j < 18; j++) { const a = Math.random() * Math.PI * 2, v = 1.5 + Math.random() * 2.5; b.parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, t: 0.6, ttl: 0.6, color: j % 3 ? C.gold : '#FFFFFF', size: 0.06 }); }
+  G.floats.push({ k: b.k, x, y: y - 0.5, txt: `Sac d’or +${amt}`, color: C.gold, t: 1.8, ttl: 1.8, big: true });
+  if (b.k === G.me && !G.spec) { coinBurst(b, x, y, amt, 10); sfx('chest'); }
+}
+
+/* ---------------------------------------------------------------- the Bombarde: a squat tower, a fat iron barrel pointing at the sky */
+function bombardBody(x, y, lvl, evo, own) {
+  const cx = x + 12, base = y + 23, Hb = towerH('bombard', lvl), top = base - Hb + 7, w = towerW('bombard', lvl), rim = lvl >= 3 ? 'gold' : { own };
+  castEll(cx, base - 5, 12, 5, Hb + 2);
+  const ledge = towerBody(x, top, base, w);
+  // iron straps down the squat base, a low door
+  for (const sx of [cx - w / 2 + 2, cx + w / 2 - 3]) { P.vl(sx, ledge + 2, base - ledge - 3, K.i1); P.px(sx, ledge + 2, K.i2); }
+  P.vl(cx - 1, base - 7, 3, K.dk); P.vl(cx, base - 7, 3, K.dk);
+  band(cx, top + 1, w, lvl, own);
+  rankPips(cx, top + 6, lvl, own);
+  if (lvl >= 2) merlons(cx, top - 9, w + 2, rim);
+  octTop(cx, top - 9, 'dark', rim, w + 2);
+  if (lvl >= 4) masteryCrown(cx, top - 9, w + 2);
+  // the stone balls piled on the platform
+  for (const [a, b] of [[cx + 5, top - 4], [cx + 8, top - 4], [cx + 6, top - 7]]) { P.rect(a, b, 3, 3, K.s2); P.px(a, b, K.s4); P.px(a + 2, b + 2, K.s1); }
+  banner(cx - w / 2 - 2, ledge + 4, own, '');
+  if (lvl >= 3) pennant(cx + w / 2 + 1, top - 20, own[0]);
+}
+// the barrel: a thick iron tube raised towards the sky on its wooden bed, turned left or right towards its target,
+// drawn pixel by pixel (lit along the top, hoops along it, gilded from level 3, a flared mouth); recoil and smoke when it fires
+function bombardSprite(dir, lvl, kick) {
+  const left = Math.cos(dir / 16 * Math.PI * 2) < -0.15;
+  return sprGet(`bb${+left}${lvl >= 3 ? 1 : 0}${+kick}`, () => bakeAt(32, 28, 16, 19, (cx, cy) => {
+    const sg = left ? -1 : 1, put = (x, y, c) => P.px(cx + sg * x, cy + y, c);
+    const hoop = lvl >= 3 ? ['#f3d36a', K.ua, K.au0] : [K.i2, '#8d939c', K.i0];
+    // the bed: two planks and its feet
+    for (let i = -7; i <= 5; i++) { put(i, 0, K.w2); put(i, 1, K.w1); put(i, 2, K.w0); }
+    put(-7, 3, K.w0); put(-6, 3, K.w0); put(4, 3, K.w0); put(5, 3, K.w0);
+    // the tube, along a (up and forward), across n (down and forward)
+    const ax = 0.85, ay = -0.53, nx = 0.53, ny = 0.85, L = 12, back = kick ? 1.6 : 0, bx = -5 - ax * back, by = -2 - ay * back;
+    for (let y = -16; y <= 3; y++) for (let x = -10; x <= 12; x++) {
+      const dx = x - bx, dy = y - by, u = dx * ax + dy * ay, v = dx * nx + dy * ny;
+      const r = u > L - 2.6 ? 3.2 : u < 1.2 ? 2.7 : 2.4;
+      if (u < -1.6 || u > L + 0.4 || Math.abs(v) > r) continue;
+      let c;
+      if (u < -0.6) c = Math.abs(v) <= 1.1 ? K.i1 : null;                       // the knob at the back
+      else if (Math.abs(v) > r - 0.85 || u > L - 0.4) c = K.dk2;                 // the outline
+      else if (u > L - 1.6 && Math.abs(v) < r - 1.1) c = '#0d0e11';              // the mouth
+      else {
+        const band = (u > 2.4 && u < 3.6) || (u > 6.6 && u < 7.8) || (u > L - 2.6 && u < L - 1.6);
+        const side = v < -r + 1.9 ? 0 : v < 0.6 ? 1 : 2;
+        c = band ? hoop[side] : [K.i2, K.i1, K.i0][side];
+      }
+      if (c) put(x, y, c);
+    }
+    if (kick) { const mx = bx + ax * (L + 2), my = by + ay * (L + 2); for (const [ox, oy, c] of [[0, 0, '#fff1b0'], [1, -1, K.sm1], [0, -2, K.sm1], [2, -2, K.sm1], [1, -3, K.sm1], [-1, -3, K.sm1]]) put(Math.round(mx + ox), Math.round(my + oy), c); }
+  }));
+}
+// the ball: big, dark, high in the air, smoke behind
+function jtDrawBombardShot(x, b, p, px, py) {
+  const lift = h => h * CS + 6;
+  for (let k = 1; k <= 4; k++) {
+    const u = Math.max(0, Math.min(1, (p.t - k * .06) / p.dur)); if (u <= 0) break;
+    const sx = AX0 + (p.sx + (p.tx - p.sx) * u) * CS, sy = AY0 + (p.sy + (p.ty - p.sy) * u) * CS - lift(Math.sin(u * Math.PI) * 1.5);
+    x.globalAlpha = .5 - k * .1; P.rect(Math.round(sx) - 1, Math.round(sy) - 1, 3, 3, K.sm1); x.globalAlpha = 1;
+  }
+  const bx = Math.round(px), by = Math.round(py - lift(p.h || 0));
+  P.spr(['..ddd..', '.dbbbd.', 'dbbbbbd', 'dbbbbbd', 'dbbbbbd', '.dbbbd.', '..ddd..'], { d: K.dk2, b: K.i0 }, bx - 3, by - 3);
+  P.px(bx - 1, by - 2, K.i2); P.px(bx - 2, by - 1, K.i1); P.px(bx, by - 2, K.i1);
+}
+// small pictures for the Atelier: the Pillards' pile of coins, the Bombarde's stone ball
+function jtIconCoins() {
+  return JT_IMG.anCoins || (JT_IMG.anCoins = pxImg(pxURL(12, 11, p => {
+    for (const [cx, cy] of [[3, 7], [8, 7], [5, 3]]) { p.ell(cx, cy + 1, 3, 2, '#7a5a1a'); p.ell(cx, cy, 3, 2, '#e3c86a'); p.hl(cx - 1, cy - 1, 2, '#fff1b0'); p.hl(cx - 2, cy + 2, 5, '#a8812e'); }
+  }, 2), 24, 22, 'ico'));
+}
+function jtIconBall() {
+  return JT_IMG.anBall || (JT_IMG.anBall = pxImg(pxURL(12, 11, p => {
+    p.rect(1, 8, 10, 2, '#5e4630'); p.hl(1, 8, 10, '#8a6a48');
+    p.ell(6, 5, 4, 4, '#26282e'); p.ell(6, 5, 3, 3, '#6b707a'); p.ell(5, 4, 1, 1, '#a7adb8'); p.px(4, 3, '#e2e4e6');
+  }, 2), 24, 22, 'ico'));
+}
+
+/* =============== La Grande Joute · the masterpieces (chefs-d'œuvre) =============== */
+// Two complete paths open the masterpiece of their pair: a unique tower, one per House and per game. It goes on a wall
+// (or a free cell) like any tower and comes complete: no levels, no evolution, it cannot be sold. The herald tells everyone.
+// Drawn without any dark outline: shapes come from their own light and dark tones.
+const CHF_KEYS = ['orage', 'couleuvrine', 'fleche', 'gregeois', 'pierre', 'canon'];
+const CHF = {
+  orage: { n: 'Arbalète d’orage', full: 'L’Arbalète d’orage', voies: ['arc', 'arcanes'], col: '#4f8fd6', stats: { range: 4, dmg: 70, rate: 1.6 },
+    d: 'Son carreau de foudre transperce toute la file, la foudre saute sur une voisine. Il traverse les armures.',
+    foe: 'Ses carreaux de foudre transpercent la file de tes créatures.' },
+  couleuvrine: { n: 'Couleuvrine', full: 'La Couleuvrine', voies: ['arc', 'poudre'], col: '#b8402a', stats: { range: 5, dmg: 130, rate: 3, splash: 0.7 },
+    d: 'Elle tire de très loin, toujours sur la créature la plus avancée : un gros boulet, une petite explosion.',
+    foe: 'Elle frappe de très loin ta créature la plus avancée.' },
+  fleche: { n: 'Flèche d’or', full: 'La Flèche d’or', voies: ['arc', 'fortune'], col: '#3f5fa8', stats: { range: 3.4, dmg: 26, rate: 0.8 },
+    d: 'Trois flèches d’or à chaque tir. Chaque créature qu’elle achève rapporte 3 or de plus.',
+    foe: 'Trois flèches d’or par tir, et tes créatures lui rapportent plus.' },
+  gregeois: { n: 'Feu grégeois', full: 'Le Feu grégeois', voies: ['arcanes', 'poudre'], col: '#3f8a3a', stats: { range: 3, dmg: 25, rate: 2.5, splash: 0.9 },
+    d: 'Ses fioles laissent 4 s de feu vert sur le chemin : il brûle et ralentit tout ce qui passe.',
+    foe: 'Son feu vert brûle et ralentit tes créatures.' },
+  pierre: { n: 'Pierre philosophale', full: 'La Pierre philosophale', voies: ['arcanes', 'fortune'], col: '#a8243a', stats: { range: 3.2, dmg: 40, rate: 2 },
+    d: 'Son rayon change une créature en or pendant 3 s : elle avance moitié moins vite, et rapporte trois fois son prix si elle meurt dorée.',
+    foe: 'Les créatures que tu lui envoies peuvent devenir or : elles lui rapportent le triple.' },
+  canon: { n: 'Canon d’or', full: 'Le Canon d’or', voies: ['poudre', 'fortune'], col: '#8a2a2a', stats: { range: 3, dmg: 60, rate: 2, splash: 1.2 },
+    d: 'Une grosse explosion : chaque créature touchée lui rapporte 1 or, même si elle survit (5 au plus par tir).',
+    foe: 'Chaque créature touchée lui rapporte de l’or.' },
+};
+const CHF_TYPES = CHF_KEYS.map(k => 'ch_' + k), CHF_COST = 250;
+const chfKey = type => type.slice(3);
+const isChef = type => !!(type && T[type] && T[type].tech === 'chef');
+// they join the towers: stats, the info line, a network code each (TCODES has room for them), the list of tower types
+for (const k of CHF_KEYS) {
+  T['ch_' + k] = Object.assign({ n: CHF[k].n, cost: CHF_COST, tech: 'chef' }, CHF[k].stats);
+  TOWER_INFO['ch_' + k] = CHF[k].d;
+  TCODES.push('ch_' + k + ':1'); TYPES.push('ch_' + k);
+}
+
+/* ---------------------------------------------------------------- when it opens */
+const jtChefBuiltType = b => { const t = b && b.grid ? b.grid.find(t => t && isChef(t.type)) : null; return t ? t.type : ''; };
+// the pairs whose two paths are complete, as long as the House has not built its masterpiece
+function jtChefAvail(b) {
+  if (!b || !b.jt || !b.grid || jtChefBuiltType(b)) return [];
+  return CHF_TYPES.filter(type => CHF[chfKey(type)].voies.every(v => jtStepsOwned(b, v) >= 3));
+}
+const jtChefOpen = (b, type) => jtChefAvail(b).includes(type);
+const jtChefNo = (b, type) => isChef(type) && jtChefBuiltType(b) ? 'Un seul chef-d’œuvre par partie' : "Débloque-la d'abord dans l'Atelier";
+// a creature turned to gold pays three times its bounty; the golden arrow's kills pay 3 more
+function jtChefBounty(cr, src, base) { return (base + (src && src.type === 'ch_fleche' ? 3 : 0)) * (cr.chfGold > G.t ? 3 : 1); }
+// the golden state travels in the status character (one base-36 digit): 32 + poison + stun when golden (golden implies slowed)
+const jtSbEnc = s => s & 64 ? 32 + (s & 2 ? 1 : 0) + (s & 4 ? 2 : 0) : s & 31;
+const jtSbDec = v => v >= 32 ? 64 | 1 | (v & 1 ? 2 : 0) | (v & 2 ? 4 : 0) : v;
+
+/* ---------------------------------------------------------------- built: the herald tells everyone */
+function jtChefBuilt(b, type) {
+  if (auth()) pushEv(b, 'c' + CHF_TYPES.indexOf(type));
+  jtChefAnnounce(b, type);
+}
+function jtChefAnnounce(b, type) {
+  // built: the House's tool goes back to what it was (a guest hears it from the herald)
+  if (b && type && b.k === G.me && G.tool === type) G.tool = G.chefPrev && T[G.chefPrev] && !isChef(G.chefPrev) ? G.chefPrev : 'arrow';
+  if (!type || !G || G.quiet || !b.jt || b.jt.chefAnn === type) return;
+  b.jt.chefAnn = type;
+  AN.chef = { k: b.k, type, id: (AN.chef ? AN.chef.id : 0) + 1, until: performance.now() + 6500 };
+  // the herald takes over from the choice's notes
+  if (b.k === G.me) document.querySelectorAll('#toasts .toast').forEach(el => el.remove());
+  const t = b.grid.find(t => t && t.type === type);
+  if (t) {
+    b.rings.push({ x: t.c + 0.5, y: t.r + 0.5, r0: 0.3, r1: 1.7, t: 0.7, ttl: 0.7, color: C.gold, fill: true });
+    for (let i = 0; i < 22; i++) { const a = Math.random() * Math.PI * 2, v = 1.5 + Math.random() * 2.5; b.parts.push({ x: t.c + 0.5, y: t.r + 0.5, vx: Math.cos(a) * v, vy: Math.sin(a) * v, t: 0.7, ttl: 0.7, color: i % 3 ? C.gold : '#FFFFFF', size: 0.07 }); }
+  }
+  sfx('evolve');
+}
+// the herald's panel while the news is fresh
+function jtChefAnnBody() {
+  const a = AN.chef, b = G.b[a.k], c = CHF[chfKey(a.type)], mine = a.k === G.me;
+  const ic = jtChefIcon(a.type), pair = c.voies.map(v => VOIES[v].n).join(' et ');
+  return `<div class="r">${ic}<div class="x"><span class="k">${mine ? 'TON CHEF-D’ŒUVRE' : 'CHEF-D’ŒUVRE · ' + esc(String(b.name || '').toUpperCase())}</span><span class="n">${esc(c.full)}</span><span class="d">${esc(pair)} réunies</span><span class="tip">${esc(mine ? c.d : c.foe)}</span></div></div>`;
+}
+
+/* ---------------------------------------------------------------- the Atelier, the build bar, the wall's panel, the tower's panel */
+function jtChefButtons(me, asTool) {
+  return jtChefAvail(me).map(type => {
+    const c = CHF[chfKey(type)], data = asTool ? `data-tool="${type}" aria-pressed="${G.tool === type}"` : `data-chef="${type}" aria-pressed="${G.techPick === type}"`;
+    return `<button class="item snd tech chef" type="button" ${data}><span class="tag">Chef-d’œuvre</span>${ICON[type] || jtChefIcon(type)}<span class="cw"><span class="nm">${esc(c.full)}</span><span class="ct">${CHF_COST}</span></span></button>`;
+  }).join('');
+}
+// a big spend: the first tap says what it does, the second one picks it to be built
+function jtChefClick(type) {
+  const c = CHF[chfKey(type)];
+  if (G.techPick !== type) { G.techPick = type; G.techPickT = G.t; sfx('click'); toast(`${c.full} · ${c.d} Touche encore pour le choisir (${CHF_COST} or).`, 'gold'); renderItems(); return; }
+  G.techPick = ''; if (!isChef(G.tool)) G.chefPrev = G.tool; G.tool = type; sfx('click');
+  setMode('build'); toast(`Touche un mur ou une case libre pour bâtir ${c.full}`, 'gold');
+}
+function jtChefPop(t, head, kills) {
+  const c = CHF[chfKey(t.type)];
+  return `<div class="ttl"><b>${esc(c.full)}</b><span>${head}${kills}</span></div><div class="evo-h">Chef-d’œuvre</div><div class="info">${esc(c.d)}</div>`;
+}
+
+/* ---------------------------------------------------------------- firing */
+function jtChefFire(b, t, st, tx, ty, real) {
+  const list = inRange(b, tx, ty, st.range);
+  if (!list.length) { t.cd = 0.05; return; }
+  let tg = list[0];
+  if (t.type === 'ch_pierre') tg = list.find(c => !(c.chfGold > G.t) && !((c.sb | 0) & 64)) || list[0];
+  t.cd = st.rate; t.kick = G.t; t.ang = Math.atan2(tg.y - ty, tg.x - tx);
+  const fx = fxOn(b.k);
+  switch (t.type) {
+    case 'ch_orage': {
+      const dx = tg.x - tx, dy = tg.y - ty, d = Math.hypot(dx, dy) || 1;
+      b.proj.push({ chef: 1, type: t.type, real, src: t, x: tx, y: ty, sx: tx, sy: ty, ux: dx / d, uy: dy / d, speed: 16, left: st.range + 0.8, w: 0.42, dmg: st.dmg, hit: [], t: 0 });
+      if (fx) sfx('zap');
+      break;
+    }
+    case 'ch_couleuvrine': case 'ch_gregeois': case 'ch_canon': {
+      const sp = t.type === 'ch_couleuvrine' ? 5.5 : t.type === 'ch_gregeois' ? 4.2 : 4.8;
+      b.proj.push({ chef: 1, lob: 1, type: t.type, real, src: t, x: tx, y: ty, sx: tx, sy: ty, tx: tg.x, ty: tg.y, dmg: st.dmg, splash: st.splash, t: 0, h: 0, dur: Math.max(0.3, Math.hypot(tg.x - tx, tg.y - ty) / sp) });
+      if (fx) sfx(t.type === 'ch_gregeois' ? 'shoot' : 'thunk');
+      break;
+    }
+    case 'ch_fleche': {
+      for (const c of list.slice(0, 3)) b.proj.push({ chef: 1, type: t.type, real, src: t, x: tx, y: ty, sx: tx, sy: ty, tgt: c, tx: c.x, ty: c.y, speed: 13, dmg: st.dmg, t: 0, d0: Math.max(0.5, Math.hypot(c.x - tx, c.y - ty)) });
+      if (fx) sfx('shoot');
+      break;
+    }
+    case 'ch_pierre': {
+      if (real) {
+        damage(b, tg, st.dmg, t);
+        if (!tg.dead) { const boss = tg.kind === 'boss' || !!(S[tg.kind] && S[tg.kind].boss), dur = boss ? 1.5 : 3; tg.chfGold = G.t + dur; slow(tg, 0.5, dur); }
+      }
+      if (!G.quiet) b.zaps.push({ beam: 1, pts: [[tx, ty - 1.0], [tg.x, tg.y - 0.3]], t: 0.35, ttl: 0.35 });
+      if (fx) sfx('sparkle');
+      break;
+    }
+  }
+}
+function jtChefProj(b, p, dt, add) {
+  p.t += dt;
+  if (p.type === 'ch_orage') {
+    // the bolt flies straight through the file; from each creature it hits, the lightning jumps to the nearest other one
+    const stp = p.speed * dt, nx = p.x + p.ux * stp, ny = p.y + p.uy * stp, ex = nx - p.x, ey = ny - p.y, L2 = ex * ex + ey * ey || 1;
+    for (const cr of b.creeps) {
+      if (cr.dead || cr.y < 0 || cr.x < 0 || moleUnder(cr) || p.hit.includes(cr)) continue;
+      const u = Math.max(0, Math.min(1, ((cr.x - p.x) * ex + (cr.y - p.y) * ey) / L2));
+      if (Math.hypot(p.x + ex * u - cr.x, p.y + ey * u - cr.y) > p.w + cr.size) continue;
+      p.hit.push(cr);
+      const nb = b.creeps.filter(c => c !== cr && !c.dead && c.y >= 0 && c.x >= 0 && !moleUnder(c) && Math.hypot(c.x - cr.x, c.y - cr.y) <= 1.7).sort((a, c) => Math.hypot(a.x - cr.x, a.y - cr.y) - Math.hypot(c.x - cr.x, c.y - cr.y))[0];
+      if (p.real) { damage(b, cr, p.dmg, p.src); if (nb) damage(b, nb, p.dmg * 0.5, p.src); }
+      if (!G.quiet) {
+        if (nb) b.zaps.push({ pts: [[cr.x, cr.y - 0.3], [nb.x, nb.y - 0.3]], t: 0.18, ttl: 0.18, seed: (Math.random() * 997) | 0 });
+        for (let i = 0; i < 3; i++) { const a = Math.random() * Math.PI * 2; b.parts.push({ x: cr.x, y: cr.y, vx: Math.cos(a) * 1.8, vy: Math.sin(a) * 1.8, t: 0.2, ttl: 0.2, color: '#BFE0FF', size: 0.05 }); }
+      }
+    }
+    p.x = nx; p.y = ny; p.left -= stp;
+    if (p.left <= 0 || nx < -1 || ny < -1 || nx > COLS + 1 || ny > ROWS + 1) p.done = true;
+    return;
+  }
+  if (p.type === 'ch_fleche') {
+    if (p.tgt && !p.tgt.dead) { p.tx = p.tgt.x; p.ty = p.tgt.y; }
+    const dx = p.tx - p.x, dy = p.ty - p.y, dd = Math.hypot(dx, dy), stp = p.speed * dt;
+    p.ang = Math.atan2(dy, dx);
+    if (dd > stp) { p.x += dx / dd * stp; p.y += dy / dd * stp; return; }
+    p.done = true;
+    const cr = p.tgt && !p.tgt.dead ? p.tgt : null;
+    if (cr && p.real) damage(b, cr, p.dmg, p.src);
+    if (!G.quiet) for (let i = 0; i < 4; i++) { const a = Math.random() * Math.PI * 2; b.parts.push({ x: p.tx, y: p.ty, vx: Math.cos(a) * 1.8, vy: Math.sin(a) * 1.8, t: 0.25, ttl: 0.25, color: '#FFE08A', size: 0.05 }); }
+    return;
+  }
+  // the lobbed ones: the culverin's ball, the Greek fire's flask, the golden cannon's ball
+  const u = Math.min(1, p.t / p.dur);
+  p.x = p.sx + (p.tx - p.sx) * u; p.y = p.sy + (p.ty - p.sy) * u; p.h = Math.sin(u * Math.PI) * jtChefArc(p.type);
+  if (u < 1) return;
+  p.done = true;
+  if (p.type === 'ch_couleuvrine') { explode(b, p, p.tx, p.ty, p.splash, p.dmg, true); return; }
+  if (p.type === 'ch_gregeois') {
+    b.fires.push({ x: p.tx, y: p.ty, r: p.splash, t: 4, ttl: 4, dps: p.dmg, src: p.src, real: p.real, green: true, slow: 0.65 });
+    b.rings.push({ x: p.tx, y: p.ty, r0: 0.1, r1: p.splash, t: 0.3, ttl: 0.3, color: '#9FF07A', fill: true });
+    if (!G.quiet) for (let i = 0; i < 8; i++) { const a = Math.random() * Math.PI * 2; b.parts.push({ x: p.tx, y: p.ty, vx: Math.cos(a) * 2.2, vy: Math.sin(a) * 2.2, t: 0.35, ttl: 0.35, color: i % 2 ? '#9FF07A' : '#EAFFD8', size: 0.06 }); }
+    if (fxOn(b.k)) sfx('boom');
+    return;
+  }
+  // the golden cannon: every creature caught in the blast pays one coin (five at most)
+  let n = 0;
+  for (const cr of b.creeps) if (!cr.dead && cr.y >= 0 && Math.hypot(cr.x - p.tx, cr.y - p.ty) <= p.splash + cr.size * 0.5) { n++; if (p.real) damage(b, cr, p.dmg, p.src); }
+  n = Math.min(5, n);
+  if (p.real && n) b.gold += n;
+  b.rings.push({ x: p.tx, y: p.ty, r0: 0.15, r1: p.splash, t: 0.32, ttl: 0.32, color: C.gold, fill: true });
+  if (!G.quiet) for (let i = 0; i < 10; i++) { const a = Math.random() * Math.PI * 2; b.parts.push({ x: p.tx, y: p.ty, vx: Math.cos(a) * 2.6, vy: Math.sin(a) * 2.6 - 0.8, t: 0.45, ttl: 0.45, color: i % 3 ? C.gold : '#FFFFFF', size: 0.07 }); }
+  if (n && b.k === G.me && !G.spec && !G.quiet) G.floats.push({ k: b.k, x: p.tx, y: p.ty - 0.5, txt: '+' + n, color: C.gold, t: 0.9, ttl: 0.9 });
+  if (fxOn(b.k)) { sfx('boom'); G.shake = Math.max(G.shake, 2.5); }
+}
+const jtChefArc = type => type === 'ch_gregeois' ? 1.3 : type === 'ch_couleuvrine' ? 1.1 : 0.9;
+
+/* ---------------------------------------------------------------- drawing the shots, the beam, the green fire, the golden creatures */
+const CHF_BALL = { ch_couleuvrine: ['#5d615a', '#7e837a', '#a9ada4', '#d2d5cd'], ch_canon: ['#ad9150', '#e3c86a', '#f3d36a', '#fff1b0'] };
+function jtDrawChefShot(x, b, p, px, py) {
+  if (p.type === 'ch_orage') {
+    // a bolt of lightning flying flat, a pale trail, sparks crackling along it
+    const ux = p.ux, uy = p.uy, ex = px, ey = py - 13;
+    x.globalAlpha = .4; P.line(ex - ux * 20, ey - uy * 20, ex - ux * 11, ey - uy * 11, '#9fd4ff'); x.globalAlpha = 1;
+    P.line(ex - ux * 11, ey - uy * 11 + 1, ex, ey + 1, '#4f8fd6'); P.line(ex - ux * 11, ey - uy * 11, ex, ey, '#9fd4ff'); P.line(ex - ux * 6, ey - uy * 6, ex, ey, '#ffffff');
+    P.px(Math.round(ex + ux), Math.round(ey + uy), '#ffffff');
+    if (fmod(G.t * 30, 2)) { P.px(Math.round(ex - ux * 4 + uy * 2), Math.round(ey - uy * 4 - ux * 2), '#cfe8ff'); P.px(Math.round(ex - ux * 8 - uy * 2), Math.round(ey - uy * 8 + ux * 2), '#cfe8ff'); }
+    return;
+  }
+  if (p.type === 'ch_fleche') {
+    // a golden arrow, blue and white fletching; it leaves high, from the sheaf
+    const frac = Math.min(1, Math.hypot(p.tx - p.x, p.ty - p.y) / p.d0), h = 8 + frac * 20, a = p.ang ?? Math.atan2(p.ty - p.y, p.tx - p.x), ux = Math.cos(a), uy = Math.sin(a), ex = px, ey = py - h;
+    x.globalAlpha = .4; P.line(ex - ux * 15, ey - uy * 15, ex - ux * 9, ey - uy * 9, '#f3d36a'); x.globalAlpha = 1;
+    P.line(ex - ux * 8, ey - uy * 8, ex, ey, '#e3c86a'); P.px(Math.round(ex), Math.round(ey), '#ffffff'); P.px(Math.round(ex - ux), Math.round(ey - uy), '#fff1b0');
+    P.px(Math.round(ex - ux * 8), Math.round(ey - uy * 8) - 1, '#7a9ad8'); P.px(Math.round(ex - ux * 8), Math.round(ey - uy * 8) + 1, '#f4efe2'); P.px(Math.round(ex - ux * 7), Math.round(ey - uy * 7) - 1, '#3f5fa8');
+    return;
+  }
+  // lobbed: it leaves from the mouth, high, then falls on its arc; smoke (or green sparks, or gold dust) behind
+  const u = Math.min(1, p.t / p.dur), z0 = p.type === 'ch_gregeois' ? 18 : 16, H = jtChefArc(p.type), lift = (h, uu) => h * CS + 6 + (1 - uu) * z0;
+  for (let k = 1; k <= 3; k++) {
+    const uu = Math.max(0, Math.min(1, (p.t - k * .05) / p.dur)); if (uu <= 0) break;
+    const sx = AX0 + (p.sx + (p.tx - p.sx) * uu) * CS, sy = AY0 + (p.sy + (p.ty - p.sy) * uu) * CS - lift(Math.sin(uu * Math.PI) * H, uu);
+    x.globalAlpha = .55 - k * .13; P.rect(Math.round(sx) - 1, Math.round(sy) - 1, 2, 2, p.type === 'ch_gregeois' ? '#9ff07a' : p.type === 'ch_canon' ? '#f3d36a' : K.sm1); x.globalAlpha = 1;
+  }
+  const bx = Math.round(px), by = Math.round(py - lift(p.h || 0, u));
+  if (p.type === 'ch_gregeois') {
+    const spin = fmod(G.t * 10, 2);
+    P.spr(spin ? ['.c..', '.gg.', 'gGGg', 'gGGg', '.gg.'] : ['..c.', '.gg.', 'gGGg', 'gGGg', '.gg.'], { c: '#8a6a48', g: '#5fc04a', G: '#c8f59a' }, bx - 2, by - 3);
+    return;
+  }
+  const q = CHF_BALL[p.type] || CHF_BALL.ch_couleuvrine;
+  P.spr(['.bbb.', 'bhmmb', 'bmmmd', 'bmmdd', '.ddd.'], { h: q[3], b: q[2], m: q[1], d: q[0] }, bx - 2, by - 2);
+}
+function jtDrawBeam(x, z) {
+  const a = Math.max(0, z.t / z.ttl), [[X0, Y0], [X1, Y1]] = z.pts, x0 = AX0 + X0 * CS, y0 = AY0 + Y0 * CS, x1 = AX0 + X1 * CS, y1 = AY0 + Y1 * CS;
+  x.globalAlpha = .55 * a; P.line(x0 + 1, y0, x1 + 1, y1, '#ffd6d0'); x.globalAlpha = a; P.line(x0, y0, x1, y1, '#f6a0a0');
+  for (let k = 0; k < 4; k++) { const ang = G.t * 9 + k * 1.57; P.px(Math.round(x1 + Math.cos(ang) * 4), Math.round(y1 + Math.sin(ang) * 3), '#fff1b0'); }
+  x.globalAlpha = 1;
+}
+function jtDrawGreenFire(x, f, a, fx, fy) {
+  disc(x, fx, fy, f.r * CS, '#5fc04a', 0.22 * a);
+  for (let i = 0; i < 7; i++) {
+    const ang = i * 1.3 + f.x * 3, rr = f.r * CS * (0.2 + 0.55 * ((i * 0.37) % 1)), fr = fmod(G.t * 7 + i, 2);
+    P.spr(fr ? ['.a.', 'aba', 'bcb', '.c.'] : ['a..', '.ab', 'bcb', '.c.'], { a: '#c8f59a', b: '#7cd86a', c: '#3f8a3a' }, Math.round(fx + Math.cos(ang) * rr) - 1, Math.round(fy + Math.sin(ang) * rr * 0.8) - 4);
+  }
+}
+// a creature turned to gold: its own pixels repainted in gold, darker where it was dark (kept per sprite)
+const CHF_GOLDC = new WeakMap();
+function jtGoldSprite(s) {
+  if (!s || !s.cv) return s;
+  let g = CHF_GOLDC.get(s.cv); if (g) return g;
+  const [c, x] = mkCanvas(s.cv.width, s.cv.height); x.drawImage(s.cv, 0, 0);
+  const im = x.getImageData(0, 0, s.cv.width, s.cv.height), d = im.data;
+  for (let i = 0; i < d.length; i += 4) {
+    if (!d[i + 3]) continue;
+    const l = (d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11) / 255, q = l > .62 ? [255, 241, 176] : l > .42 ? [227, 200, 106] : l > .25 ? [173, 145, 80] : [122, 90, 26];
+    d[i] = q[0]; d[i + 1] = q[1]; d[i + 2] = q[2];
+  }
+  x.putImageData(im, 0, 0);
+  g = Object.assign({}, s, { cv: c }); CHF_GOLDC.set(s.cv, g); return g;
+}
+function jtGoldGlint(cr, cx, top, s) { if (fmod(G.t * 6 + cr.id, 4) === 0) { P.px(cx - 3, top + 2, '#fff1b0'); P.px(cx + 3, top + 5, '#ffffff'); } else if (fmod(G.t * 6 + cr.id, 4) === 2) P.px(cx + 1, top - 1, '#fff1b0'); }
+
+/* ---------------------------------------------------------------- the bots: their two paths, then their masterpiece */
+function jtBotChef(k) {
+  const b = G.b[k]; if (!b.bot || !b.jt) return false;
+  const av = jtChefAvail(b); if (!av.length || b.gold < CHF_COST + 10) return false;
+  const type = av[(Math.random() * av.length) | 0], walls = b.grid.filter(t => t && t.type === 'wall');
+  if (walls.length) return convert(k, walls[(Math.random() * walls.length) | 0], type);
+  // no wall left (they turn them all into towers): the free cell that sees the most of the route, the passage kept open
+  const route = new Set(spawnsOf().flatMap(sp => pathCells(b, sp))), R2 = T[type].range * T[type].range, spots = [];
+  for (let i = 0; i < COLS * ROWS; i++) {
+    if (route.has(i) || b.grid[i]) continue;
+    const c = i % COLS, r = (i / COLS) | 0;
+    let s = 0; for (const j of route) { const dc = j % COLS - c, dr = ((j / COLS) | 0) - r; if (dc * dc + dr * dr <= R2) s++; }
+    if (s) spots.push([s + Math.random() * 0.5, c, r]);
+  }
+  spots.sort((a, z) => z[0] - a[0]);
+  for (const [, c, r] of spots.slice(0, 24)) if (!buildReason(b, c, r)) return build(k, type, c, r) === '';
+  return false;
+}
+// while a masterpiece waits, a bot keeps its gold instead of sending (most of the time)
+const jtBotSaving = me => !!(me.bot && jtChefAvail(me).length && me.gold < CHF_COST + 10 && Math.random() < 0.85);
+
+/* ---------------------------------------------------------------- the art (same pen as the towers) */
+const CHF_GOLD = ['#5a4310', '#ad9150', '#e3c86a', '#fff1b0'];
+const CHF_STONE = () => [K.s1, K.s2, K.s3, K.s5, K.s4, K.s1];
+const CHF_MARBLE = ['#b9b1a0', '#e0dace', '#f3f0e8', '#ffffff', '#d3ccbd', '#9d947f'];
+const CHF_DARK = ['#383c47', '#474c59', '#585e6d', '#7a8090', '#636876', '#2a2d35'];
+const CHF_BRASS = ['#6b4a1a', '#a8812e', '#e3c86a', '#fff1b0'];
+const CHF_GOLDP = ['#3a2a08', '#7a5a1a', '#ad9150', '#e3c86a', '#fff1b0'];
+const CHF_GOLDD = ['#3a2a08', '#5a4310', '#7a5a1a', '#ad9150', '#e3c86a'];
+const CHF_BRZ = ['#6a3c1a', '#94592a', '#bd7a3a', '#dfa55e', '#f6d494'];
+const CHF_GLD = ['#7a5a1a', '#ad9150', '#d9bd62', '#ecd27e', '#fff1b0'];
+const CHF_RED = ['#6a2018', '#8f2e22', '#b8402a', '#d8644a'];
+const CHF_FEATH = ['#2c4378', '#3f5fa8', '#7a9ad8', '#f4efe2'];
+const CHF_STONE_RIM = () => [K.s5, K.s4];
+function chfShaft(x, top, base, w, pal) {
+  const cx = x + 12, ledge = top + Math.round((base - top) * .5);
+  const facets = (x0, wd, y0, y1) => { const l = Math.round(wd * .22), r = Math.round(wd * .2); P.rect(x0, y0, l, y1 - y0, pal[0]); P.rect(x0 + l, y0, wd - l - r, y1 - y0, pal[1]); P.rect(x0 + wd - r, y0, r, y1 - y0, pal[2]); };
+  facets(cx - w / 2, w, top, ledge);
+  facets(cx - w / 2 - 1, w + 2, ledge + 2, base);
+  P.hl(cx - w / 2 - 1, ledge, w + 2, pal[3]); P.hl(cx - w / 2 - 1, ledge + 1, w + 2, pal[4]);
+  P.hl(cx - w / 2 - 1, base - 1, w + 2, pal[5]);
+  return ledge;
+}
+function chfBand(cx, y, w) { P.rect(cx - w / 2, y, w, 3, CHF_GOLD[2]); P.hl(cx - w / 2, y, w, CHF_GOLD[3]); P.hl(cx - w / 2, y + 3, w, CHF_GOLD[1]); }
+function chfPlaque(cx, y, col) {
+  P.rect(cx - 3, y, 7, 6, CHF_GOLD[1]); P.hl(cx - 3, y, 7, CHF_GOLD[2]); P.rect(cx - 2, y + 1, 5, 4, col);
+  P.px(cx, y + 2, '#ffffff'); P.px(cx - 1, y + 3, tint(col, .35)); P.px(cx + 1, y + 3, tint(col, -.35, '#000000'));
+}
+function chfPennant(px, py, col) {
+  P.vl(px, py, 17, K.w0); P.px(px, py - 1, CHF_GOLD[2]); P.px(px, py - 2, CHF_GOLD[3]);
+  const dk = tint(col, -.35, '#000000');
+  for (let j = 0; j < 6; j++) { const w = j === 2 || j === 3 ? 8 : 10; P.hl(px + 1, py + j, w, j === 0 ? CHF_GOLD[2] : j === 5 ? dk : col); }
+  P.px(px + 1, py + 1, CHF_GOLD[1]); P.px(px + 1, py + 4, CHF_GOLD[1]);
+}
+function chfDoor(cx, base) { P.spr(['.ddd.', 'ddddd', 'ddddd', 'ddddd', 'ddddd'], { d: K.dk }, cx - 2, base - 6); P.hl(cx - 2, base - 7, 5, K.s4); }
+const CHF_BODY = {
+  // the storm crossbow: a broad tower wound with copper coils, sparks running on them
+  orage(x, y) {
+    const cx = x + 12, base = y + 23, w = 18, top = base - 28 + 9;
+    castEll(cx, base - 5, 12, 5, 34);
+    const ledge = chfShaft(x, top, base, w, CHF_STONE());
+    chfDoor(cx, base);
+    for (let j = 0; j < 2; j++) { const yy = ledge + 4 + j * 4; P.hl(cx - w / 2 - 1, yy, w + 2, COPPER[1]); P.hl(cx - w / 2 - 1, yy + 1, w + 2, COPPER[0]); P.px(cx + w / 2 - 2, yy, COPPER[2]); }
+    for (const [a, b] of [[cx - 6, ledge + 3], [cx + 3, ledge + 7]]) { P.px(a, b, '#9fd4ff'); P.px(a + 1, b + 1, '#ffffff'); P.px(a + 2, b, '#cfe8ff'); P.px(a + 3, b + 1, '#9fd4ff'); }
+    chfBand(cx, top + 1, w); chfPlaque(cx, top + 6, CHF.orage.col);
+    merlons(cx, top - 9, w + 2, 'gold'); octTop(cx, top - 9, 'dark', 'gold', w + 2);
+    chfPennant(cx + w / 2 + 1, top - 23, CHF.orage.col);
+    addGlow(cx, top - 6, 22, '#bfe0ff', .22, .8);
+  },
+  // the culverin: a slender tall tower, bronze bands, the long gun on its rampart carriage up there
+  couleuvrine(x, y) {
+    const cx = x + 12, base = y + 23, w = 16, top = base - 33 + 9;
+    castEll(cx, base - 5, 11, 5, 40);
+    const ledge = chfShaft(x, top, base, w, CHF_STONE());
+    chfDoor(cx, base);
+    for (const yy of [ledge + 5, ledge + 10]) { P.hl(cx - w / 2 - 1, yy, w + 2, '#c08a4a'); P.hl(cx - w / 2 - 1, yy + 1, w + 2, '#8a5a34'); }
+    P.vl(cx - 4, ledge - 6, 3, K.dk); P.vl(cx + 4, ledge - 6, 3, K.dk);
+    chfBand(cx, top + 1, w); chfPlaque(cx, top + 6, CHF.couleuvrine.col);
+    merlons(cx, top - 9, w + 2, 'gold'); octTop(cx, top - 9, 'planks', 'gold', w + 2);
+    chfPennant(cx + w / 2 + 1, top - 23, CHF.couleuvrine.col);
+  },
+  // the golden arrow: the archers' tower, coins set in the stone, battlements of plain stone so the gold stands out
+  fleche(x, y) {
+    const cx = x + 12, base = y + 23, w = 16, top = base - 31 + 9, rim = CHF_STONE_RIM();
+    castEll(cx, base - 5, 11, 5, 38);
+    const ledge = chfShaft(x, top, base, w, CHF_STONE());
+    chfDoor(cx, base);
+    P.vl(cx - w / 2 + 3, ledge + 4, 3, K.dk);
+    for (let i = -6; i <= 6; i += 4) { P.rect(cx + i - 1, ledge + 6, 3, 3, CHF_GOLD[2]); P.px(cx + i - 1, ledge + 6, CHF_GOLD[3]); P.px(cx + i + 1, ledge + 8, CHF_GOLD[1]); }
+    chfBand(cx, top + 1, w); chfPlaque(cx, top + 6, CHF.fleche.col);
+    merlons(cx, top - 9, w + 2, rim); octTop(cx, top - 9, 'planks', rim, w + 2);
+    chfPennant(cx + w / 2 + 1, top - 24, CHF.fleche.col);
+    addGlow(cx, top - 6, 20, '#fff3cf', .2, .8);
+  },
+  // the Greek fire: a dark alchemist's tower, brass pipes up its sides, green light
+  gregeois(x, y) {
+    const cx = x + 12, base = y + 23, w = 18, top = base - 27 + 9;
+    castEll(cx, base - 5, 12, 5, 32);
+    const ledge = chfShaft(x, top, base, w, CHF_DARK);
+    P.spr(['.ddd.', 'ddddd', 'dgggd', 'ddddd', 'ddddd'], { d: '#1b1f27', g: '#5fc04a' }, cx - 2, base - 6);
+    for (const sx of [cx - w / 2 + 1, cx + w / 2 - 2]) { P.vl(sx, top + 2, base - top - 4, CHF_BRASS[1]); P.vl(sx + 1, top + 2, base - top - 4, CHF_BRASS[0]); P.px(sx, ledge + 3, CHF_BRASS[3]); P.px(sx, top + 2, CHF_BRASS[2]); }
+    for (const [a, b] of [[cx - 4, ledge + 7], [cx + 3, ledge + 10]]) { P.px(a, b, '#7cd86a'); P.px(a, b + 1, '#3f8a3a'); }
+    chfBand(cx, top + 1, w); chfPlaque(cx, top + 6, CHF.gregeois.col);
+    merlons(cx, top - 9, w + 2, 'gold'); octTop(cx, top - 9, 'dark', 'gold', w + 2);
+    chfPennant(cx + w / 2 + 1, top - 23, CHF.gregeois.col);
+    addGlow(cx, top - 6, 26, '#9ff07a', .26, .8);
+  },
+  // the philosophers' stone: a white marble column, gilded rings, an open crown where the stone floats
+  pierre(x, y) {
+    const cx = x + 12, base = y + 23, w = 14, top = base - 31 + 9;
+    castEll(cx, base - 5, 10, 5, 36);
+    const ledge = chfShaft(x, top, base, w, CHF_MARBLE);
+    P.spr(['.ddd.', 'ddddd', 'ddddd', 'ddddd', 'ddddd'], { d: '#7a7262' }, cx - 2, base - 6);
+    for (let i = -w / 2 + 2; i < w / 2; i += 3) P.vl(cx + i, ledge + 3, base - ledge - 6, '#cfc8b8');
+    for (const yy of [ledge + 2, base - 3]) { P.hl(cx - w / 2 - 1, yy, w + 2, CHF_GOLD[2]); P.hl(cx - w / 2 - 1, yy + 1, w + 2, CHF_GOLD[1]); }
+    chfBand(cx, top + 1, w); chfPlaque(cx, top + 6, CHF.pierre.col);
+    P.rect(cx - 8, top - 3, 17, 3, CHF_GOLD[2]); P.hl(cx - 8, top - 3, 17, CHF_GOLD[3]); P.hl(cx - 8, top - 1, 17, CHF_GOLD[1]);
+    for (let i = -8; i <= 8; i += 4) { P.vl(cx + i, top - 6, 3, CHF_GOLD[2]); P.px(cx + i, top - 7, CHF_GOLD[3]); }
+    chfPennant(cx + w / 2 + 2, top - 22, CHF.pierre.col);
+    addGlow(cx, top - 10, 24, '#ffb0a0', .24, .8);
+  },
+  // the golden cannon: a squat bastion, gold straps, coins set in the stone, battlements of plain stone
+  canon(x, y) {
+    const cx = x + 12, base = y + 23, w = 20, top = base - 22 + 7;
+    castEll(cx, base - 5, 12, 5, 26);
+    const ledge = chfShaft(x, top, base, w, CHF_STONE());
+    chfDoor(cx, base);
+    for (const sx of [cx - w / 2 + 2, cx + w / 2 - 3]) { P.vl(sx, ledge + 2, base - ledge - 3, CHF_GOLD[1]); P.px(sx, ledge + 2, CHF_GOLD[3]); }
+    for (let i = -5; i <= 5; i += 5) { P.rect(cx + i - 1, ledge + 4, 3, 3, CHF_GOLD[2]); P.px(cx + i - 1, ledge + 4, CHF_GOLD[3]); P.px(cx + i + 1, ledge + 6, CHF_GOLD[1]); }
+    chfBand(cx, top + 1, w); chfPlaque(cx, top + 6, CHF.canon.col);
+    merlons(cx, top - 9, w + 2, CHF_STONE_RIM()); octTop(cx, top - 9, 'dark', CHF_STONE_RIM(), w + 2);
+    chfPennant(cx + w / 2 + 1, top - 21, CHF.canon.col);
+    addGlow(cx, top - 6, 20, '#fff3cf', .2, .8);
+  },
+};
+for (const k of CHF_KEYS) TOWER_BODY['ch_' + k] = (x, y) => CHF_BODY[k](x, y);
+// where each top sits, relative to the cell origin
+const CHF_AT = { ch_orage: [12, 23 - 28 + 9 - 5], ch_couleuvrine: [12, -3], ch_fleche: [12, -1], ch_gregeois: [12, 23 - 27 + 9 - 5], ch_pierre: [12, 23 - 31 + 9 - 12], ch_canon: [12, 23 - 22 + 7 - 5] };
+// a raised barrel in clean pixel steps, shaded top to bottom, no outline (the golden cannon)
+function chfBarrel(put, o) {
+  const { x0, y0, L, step, th, pal, rings = [], ringPal = pal } = o, h = th >> 1;
+  for (let i = 0; i < L; i++) {
+    const yc = y0 - Math.floor(i / step), q = rings.includes(i) ? ringPal : pal;
+    for (let j = -h; j <= h; j++) put(x0 + i, yc + j, j === -h ? (th >= 5 ? q[4] : q[3]) : j < 0 ? q[3] : j < h || th < 5 && j === 0 ? q[2] : q[1]);
+  }
+  return [x0 + L, y0 - Math.floor((L - 1) / step)];
+}
+// a gun barrel seen from the side, column by column from the breech, one pixel higher every `rise` columns (the culverin)
+function chfGun(put, x0, y0, prof, rise, pal, ring, bore) {
+  return prof.map(([up, dn, kind], i) => {
+    const yc = y0 - Math.floor(i / rise), q = kind === 'r' ? ring : pal, n = up + dn;
+    for (let j = -up; j <= dn; j++) {
+      const t = n ? (j + up) / n : 0.5;
+      let c = n && t === 0 ? q[4] : t < 0.34 ? q[3] : t < 0.67 ? q[2] : t < 1 ? q[1] : q[0];
+      if (kind === 'k' && j > -up && j < dn) c = bore;
+      put(x0 + i, yc + j, c);
+    }
+    return yc;
+  });
+}
+// an arrow at any angle: a lit blade, a gold shaft, blue and white vanes at the tail (the sheaf)
+function chfArrow(put, tail, tip, o = {}) {
+  const [x0, y0] = tail, [x1, y1] = tip, dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+  const hl = o.hl || 4, hw = o.hw || 2.4, fl = o.fl || 5, fw = o.fw || 2.2, sw = o.sw || 0.5, glow = o.glow;
+  const lit = (nx * -1 + ny * -1) >= 0 ? 1 : -1, pts = [];
+  for (let py = Math.floor(Math.min(y0, y1) - 6); py <= Math.ceil(Math.max(y0, y1) + 6); py++) for (let px = Math.floor(Math.min(x0, x1) - 6); px <= Math.ceil(Math.max(x0, x1) + 6); px++) {
+    const u = (px - x0) * ux + (py - y0) * uy, v = (px - x0) * nx + (py - y0) * ny, side = v * lit;
+    let c = null;
+    if (u >= L - hl - 0.4 && u <= L + 0.45) { const half = hw * (L - u) / hl + 0.3; if (Math.abs(v) <= half) c = u > L - 0.8 ? (glow ? '#ffffff' : CHF_GLD[4]) : Math.abs(v) < 0.5 ? CHF_GLD[4] : side > 0 ? CHF_GLD[3] : CHF_GLD[1]; }
+    if (!c && u >= -0.4 && u < L - hl && Math.abs(v) <= sw) c = side > 0.1 ? CHF_GLD[3] : CHF_GLD[2];
+    if (!c && u >= -0.4 && u <= fl && Math.abs(v) > sw && Math.abs(v) <= fw + 0.3) {
+      const out = Math.abs(v) - sw;
+      if (out <= fw * Math.min(1, (fl - u) / (fl * 0.6)) + 0.2 && u >= out * 0.6 - 0.5) c = Math.abs(v) < 1.3 ? CHF_FEATH[3] : side > 0 ? CHF_FEATH[2] : CHF_FEATH[1];
+    }
+    if (c) pts.push([px, py, c]);
+  }
+  for (const [px, py, c] of pts) put(px, py, c);
+}
+// the storm crossbow, seen like the Baliste: the stock towards the target, the copper bow across it, a bolt of lightning loaded
+const CHF_XB = ['......................', '......................', '............cC........', '...........s.cC.......', '..........s..cC.......', '.........s....cC......', '.........s....cC......',
+  '........s......cC..b..', 'MMM....sbbbbbbbbbbbWWb', 'LLLLLLiLLLLLLLLcCLib..', 'MMMMMMMMMMMMMMMcCMI...', 'DDDDD.i.s......qc.....', 'DDD...II.s....qc......', '.........s....qc......',
+  '..........s..qc.......', '...........s.qc.......', '............qc........'];
+const CHF_TOP = {
+  orage(left, f) {
+    return bakeAt(28, 24, 14, 13, (cx, cy) => {
+      const pal = { c: COPPER[1], C: COPPER[2], q: COPPER[0], s: '#b8c8d6', L: '#c9a86f', M: '#9c7a48', D: '#6b4a2a', i: K.i1, I: K.i0, b: '#9fd4ff', W: '#ffffff' };
+      const x0 = cx - 10, y0 = cy - 9, X = i => left ? x0 + 21 - i : x0 + i;
+      P.spr(CHF_XB, pal, x0, y0, left);
+      for (let i = 9; i <= 14; i++) P.px(X(i), y0 + 11, K.dk2);
+      const sp = f ? [[12, 1, '#ffffff'], [11, 0, '#9fd4ff'], [13, 17, '#ffffff'], [17, 7, '#cfe8ff']] : [[13, 1, '#9fd4ff'], [12, 17, '#9fd4ff'], [11, 17, '#ffffff'], [17, 11, '#cfe8ff']];
+      for (const [a, b, c] of sp) P.px(X(a), y0 + b, c);
+    });
+  },
+  // a long, slender bronze gun on a rampart carriage (stepped red cheeks, small trucks), its balls stacked behind
+  couleuvrine(left, kick) {
+    return bakeAt(62, 34, 28, 30, (cx, cy) => {
+      const sg = left ? -1 : 1, put = (x, y, c) => P.px(cx + sg * x, cy + y, c), back = kick ? 1 : 0;
+      const BALL = ['#5d615a', '#7e837a', '#a9ada4', '#d2d5cd'];
+      for (const [ax, ay] of [[-15, -2], [-12, -2], [-13, -5]]) { put(ax, ay - 1, BALL[3]); put(ax + 1, ay - 1, BALL[2]); put(ax - 1, ay, BALL[2]); put(ax, ay, BALL[2]); put(ax + 1, ay, BALL[1]); put(ax, ay + 1, BALL[1]); put(ax + 1, ay + 1, BALL[0]); put(ax - 1, ay + 1, BALL[1]); }
+      for (const [a, b, top] of [[-9, -5, -4], [-4, 0, -6], [1, 5, -8]]) for (let x = a; x <= b; x++) for (let y = top; y <= -2; y++) put(x, y, y === top ? CHF_RED[3] : y === -2 ? CHF_RED[0] : CHF_RED[2]);
+      for (let x = -9; x <= 5; x++) put(x, -3, CHF_RED[1]);
+      for (const wx of [-6, 3]) for (let y = -2; y <= 1; y++) for (let x = -2; x <= 2; x++) { const d = Math.hypot(x, y + 0.5); if (d > 2.3) continue; put(wx + x, y, d > 1.4 ? (y < 0 ? '#a06c3e' : '#7f5330') : d < 0.7 ? CHF_GLD[3] : '#c48c52'); }
+      const prof = [[0, 0, 'b'], [1, 1, 'b'], [2, 3, 'r'], [2, 3, 'b'], [2, 3, 'b'], [2, 2, 'b'], [2, 2, 'b'], [2, 2, 'r'], [2, 2, 'b'], [2, 2, 'b'], [2, 2, 'b'], [2, 1, 'b'], [2, 1, 'r'], [2, 1, 'b'],
+        [1, 1, 'b'], [1, 1, 'b'], [1, 1, 'b'], [1, 1, 'b'], [1, 1, 'b'], [1, 1, 'b'], [1, 1, 'r'], [1, 1, 'b'], [1, 1, 'b'], [1, 1, 'b'], [1, 1, 'b'], [2, 2, 'b'], [2, 2, 'b'], [2, 2, 'k']];
+      const x0 = -9 - back, ys = chfGun(put, x0, -10, prof, 14, CHF_BRZ, CHF_GLD, '#4a2a12');
+      put(x0 + 12, ys[12], CHF_GLD[4]);
+      if (kick) { const mx = x0 + prof.length, my = ys[ys.length - 1]; for (const [a, b, c] of [[0, 0, '#fff6c8'], [1, -1, '#f2c46a'], [1, 1, '#f2c46a'], [2, 0, '#f2c46a'], [3, -2, K.sm1], [4, 0, K.sm1], [3, 2, K.sm1], [5, -3, K.sm1], [6, -1, K.sm1]]) put(mx + a, my + b, c); }
+    });
+  },
+  // a sheaf of three golden arrows, heads up, two crossed behind one upright, bound with a blue ribbon
+  fleche(left, f) {
+    return bakeAt(30, 32, 15, 29, (cx, cy) => {
+      const put = (x, y, c) => P.px(cx + (left ? -x : x), cy + y, c);
+      chfArrow(put, [3, -3], [-8.5, -22], { glow: f, hl: 5, hw: 3, fl: 4, fw: 2 });
+      chfArrow(put, [-3, -3], [8.5, -22], { glow: f, hl: 5, hw: 3, fl: 4, fw: 2 });
+      chfArrow(put, [0, -3], [0, -27], { glow: f, hl: 6, hw: 3.4, fl: 4, fw: 2.2 });
+      for (let x = -2; x <= 2; x++) { put(x, -10, CHF_FEATH[2]); put(x, -9, CHF_FEATH[1]); }
+      put(-3, -8, CHF_FEATH[1]); put(3, -8, CHF_FEATH[1]); put(-3, -7, CHF_FEATH[0]); put(3, -7, CHF_FEATH[0]);
+      for (let x = -3; x <= 3; x++) { put(x, -2, x < -1 ? CHF_GLD[4] : CHF_GLD[3]); put(x, -1, x < 0 ? CHF_GLD[2] : CHF_GLD[1]); put(x, 0, CHF_GLD[0]); }
+      if (f) for (const [a, b] of [[-11, -24], [11, -24], [2, -30]]) put(a, b, '#ffffff');
+    });
+  },
+  gregeois(left, f) {
+    return bakeAt(32, 30, 16, 20, (cx, cy) => {
+      const sg = left ? -1 : 1, put = (x, y, c) => P.px(cx + sg * x, cy + y, c);
+      for (let j = 0; j <= 4; j++) { const w = 6 - (j > 2 ? j - 2 : 0); for (let i = -w; i <= w; i++) put(i, j, Math.abs(i) === w ? CHF_BRASS[0] : j === 0 ? CHF_BRASS[3] : i < -2 ? CHF_BRASS[2] : CHF_BRASS[1]); }
+      for (let i = -6; i <= 6; i++) put(i, -1, CHF_BRASS[2]);
+      for (let i = 5; i <= 10; i++) { put(i, 1 - ((i - 5) >> 1), CHF_BRASS[1]); put(i, 2 - ((i - 5) >> 1), CHF_BRASS[0]); }
+      put(11, -2, '#7cd86a'); put(11, -1, '#c8f59a'); if (f) put(12, -2, '#c8f59a');
+      const fl = f ? ['..a.....a..', '.aba..a.aba.', 'abcba.abcba', 'abcdbabcdba', '.bcddcddcb.', '..bcdddcb..'] : ['....a......', '.a.aba..a..', 'abaabcbaba.', 'abcbcdcbcba', '.bcddddddb.', '..bcdddcb..'];
+      fl.forEach((row, j) => { for (let i = 0; i < row.length; i++) { const c = { a: '#2f6a2a', b: '#5fc04a', c: '#9ff07a', d: '#eaffd8' }[row[i]]; if (c) put(i - 5, j - 7, c); } });
+    });
+  },
+  pierre(f) {
+    return bakeAt(30, 30, 15, 15, (cx, cy) => {
+      const bob = f ? -1 : 0, y0 = cy - 6 + bob;
+      const gem = ['....a....', '...abb...', '..abccb..', '.abcceeb.', 'abccceeeb', 'abccdceeb', 'abcddccbb', '.abddcbb.', '..abcbb..', '...abb...', '....a....'];
+      gem.forEach((row, j) => { for (let i = 0; i < row.length; i++) { const c = { a: '#4a0a14', b: '#8a1f2a', c: '#d0473b', d: '#a8243a', e: '#f6a0a0' }[row[i]]; if (c) P.px(cx - 4 + i, y0 + j, c); } });
+      P.px(cx - 1, y0 + 3, '#ffffff'); P.px(cx + 1, y0 + 4, '#ffd6d0');
+      for (let k = 0; k < 4; k++) { const t = k / 4 * Math.PI * 2 + (f ? 0.6 : 0), sx = Math.round(cx + Math.cos(t) * 9), sy = Math.round(cy - 1 + bob + Math.sin(t) * 3.5); P.px(sx, sy, CHF_GOLD[3]); P.px(sx + 1, sy, CHF_GOLD[2]); P.px(sx, sy + 1, CHF_GOLD[1]); }
+    });
+  },
+  canon(left, kick) {
+    return bakeAt(44, 34, 19, 22, (cx, cy) => {
+      const sg = left ? -1 : 1, put = (x, y, c) => P.px(cx + sg * x, cy + y, c);
+      for (let i = -8; i <= 5; i++) { put(i, 2, K.w2); put(i, 3, K.w1); put(i, 4, K.w0); }
+      for (const i of [-7, 4]) { put(i, 5, CHF_GOLDP[2]); put(i, 6, CHF_GOLDP[1]); }
+      const back = kick ? 1 : 0, x0 = -6 - back;
+      for (let j = -2; j <= 0; j++) put(x0 - 1, j, j === -1 ? CHF_GOLDP[3] : CHF_GOLDP[2]);
+      put(x0 - 2, -1, CHF_GOLDP[2]);
+      const [mx, my] = chfBarrel(put, { x0, y0: -1, L: 13, step: 3, th: 5, pal: CHF_GOLDP, rings: [2, 3, 8], ringPal: CHF_GOLDD });
+      for (let j = -3; j <= 3; j++) { const a = Math.abs(j); put(mx, my + j, j < -1 ? CHF_GOLDP[4] : j < 2 ? CHF_GOLDP[3] : CHF_GOLDP[2]); put(mx + 1, my + j, a === 3 ? (j < 0 ? CHF_GOLDP[3] : CHF_GOLDP[1]) : '#5a4012'); }
+      if (kick) for (const [a, b, c] of [[2, 0, '#fff6c8'], [3, -1, '#f2c46a'], [3, 1, '#f2c46a'], [4, -3, K.sm1], [5, -1, K.sm1], [4, 2, K.sm1], [6, -4, K.sm1]]) put(mx + a, my + b, c);
+    });
+  },
+};
+// the top as it stands now: towards its target, in its firing frame (the stone bobs, the fire flickers)
+function jtChefTop(type, ang, kick) {
+  const key = chfKey(type), left = Math.cos(ang ?? -1.57) < -0.15, now = G ? G.t : 0;
+  const f = key === 'pierre' ? Math.sin(now * 3) > 0 : key === 'gregeois' ? fmod(now * 6, 2) === 1 : !!kick;
+  return sprGet(`chf${key}${+left}${+f}`, () => key === 'pierre' ? CHF_TOP.pierre(f) : CHF_TOP[key](left, f));
+}
+// its picture in the bar and in the herald's panel: the top alone
+function jtChefIcon(type) {
+  const s = jtChefTop(type, -1.57, false); if (!s || !s.cv) return '';
+  const w = s.w + 2, h = s.h + 2, k = h > 22 ? 1.5 : 2;
+  return pxImg(spriteURL([[s, 0, 0]], w, h, 1 - s.ox, 1 - s.oy, 2), Math.round(w * k), Math.round(h * k), 'ico');
+}
 
 /* =============== La Grande Joute · the Interlude: the palet =============== */
 // Once per game, at mid-game, the herald stops the joust. Each House throws two palets at the jack, in turn; you may knock
@@ -8814,7 +9626,8 @@ function finData() {
   const hist = (jt.hist || []).slice(); if (!hist.length || hist[hist.length - 1] !== Math.max(0, me.lives)) hist.push(Math.max(0, me.lives));
   return { me, won, rank: s.order.indexOf(G.me) + 1, N: G.N, order: s.order, wave: G.wave, t: G.t, col: pcol(G.me), maison: EMB[jt.maison] ? jt.maison : 'cerf',
     em: jt.em || null, hist, kills: me.st.kills, sent: jt.sent || 0, stolen: me.st.stolen, chests: me.st.chests,
-    relics: jt.relics ? Object.keys(jt.relics) : [], palet: !!jt.palet, mvp: s.mvp, alive: me.alive };
+    relics: jt.relics ? Object.keys(jt.relics).filter(r => !VOIE_RELIC.has(r)) : [], palet: !!jt.palet, mvp: s.mvp, alive: me.alive,
+    voie: VOIES[jt.voie] ? jt.voie : '', steps: VOIES[jt.voie] ? jtStepsOwned(me, jt.voie) : 0 };
 }
 // ---- the picture under the words
 function finArt(d) {
@@ -8905,7 +9718,7 @@ function finHTML(d) {
 <div class="ft l" data-txt style="top:calc(var(--fs)*134);left:calc(var(--fs)*14)">TES VIES, VAGUE APRÈS VAGUE</div>
 ${tile(creepIcon('skel', -1), d.kills, 'tuées', 0)}${NET.mode === 'client' ? tile(ICON.coin, '+' + d.me.income, 'revenu', 1) : tile(creepIcon('troll', d.col), d.sent, 'envoyées', 1)}${tile(ICON.heart, d.stolen, 'vies volées', 2)}${tile(ICON.chest, d.chests, 'coffres', 3)}
 <div class="fe" style="top:calc(var(--fs)*195)"><span class="lv" data-txt>${em ? 'Niv. ' + ['I', 'II', 'III', 'IV'][em.lvl - 1] : ''}</span><span class="pw" data-txt>${esc(pw)}</span><span class="rl">${relics}</span></div>
-<div class="ft f" data-txt style="top:calc(var(--fs)*208)">${fmt(d.t)}${d.mvp ? ' · tour MVP : ' + esc(d.mvp.name) : ''}</div>`;
+<div class="ft f" data-txt style="top:calc(var(--fs)*208)">${fmt(d.t)}${d.voie ? ' · ' + esc(VOIES[d.voie].n) + ' ' + STEP_ROMAN[Math.max(0, d.steps - 1)] : ''}${d.mvp ? ' · MVP : ' + esc(d.mvp.name) : ''}</div>`;
 }
 // ---- the gleam: a dithered band that runs across the card as it tilts, and a few sparks on it
 function finShine(cv, rx, ry, seed) {
