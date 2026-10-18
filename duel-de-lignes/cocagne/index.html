@@ -722,7 +722,7 @@ b,strong{font-weight:700}
 .tb-ter{display:flex;flex-direction:column;gap:8px;margin:12px 20px 0;flex:none}
 .tb-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .tc{display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:0;padding:6px 6px 7px;border:0;border-radius:var(--rad);background:var(--panel2);color:var(--ink);text-align:center;box-shadow:inset 0 0 0 1px var(--line)}
-.tc .tv{display:block;height:48px;background:#101b21 left center/144px 48px no-repeat;background-image:var(--tex,none);image-rendering:pixelated;image-rendering:crisp-edges}
+.tc .tv{display:block;height:48px;background:#101b21 center/144px 48px no-repeat;background-image:var(--tex,none);image-rendering:pixelated;image-rendering:crisp-edges}
 .tc .tn{display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;line-height:15px;color:var(--cap)}
 .tc[aria-pressed="true"]{background:var(--line);box-shadow:inset 0 0 0 2px var(--gold)}
 .tc[aria-pressed="true"] .tn{color:var(--ink)}
@@ -5752,20 +5752,51 @@ function themeUI() {
 }
 
 /* ---------------------------------------------------------------- terrain cards
-   The terrain choice shows each ground close up: a strip of its painted ground along the left edge of the field (the trees, the wheat
-   or the dunes next to the grass, the snow or the sand), cut from the terrain's own art at its own pixels, so the card can show it
-   enlarged a whole number of times. The terrains are drawn the first time they are needed; the cut itself costs nothing. */
-const TEXS = {}, TEX_W = 72, TEX_H = 24, TEX_AT = [2, 140];
-function terrainTex(key) {
-  if (TEXS[key]) return TEXS[key];
+   The terrain choice shows each ground as it is in play: a patch of the lawn (or the snow, the sand) cut from the terrain's own art, with a
+   corner of the creatures' trail across it, painted the way the lane painter paints it (same colours, same ragged edge). So the card shows,
+   enlarged a whole number of times, what the field really looks like, not the scenery around it. The terrains are drawn the first time they
+   are needed; the cut and the trail cost almost nothing. */
+const TEXS = {}, TEX_W = 72, TEX_H = 24;
+// where the patch is cut in each terrain: inside the playing field, clear of the scenery, on a tone change so the lawn reads
+const TEX_AT = { nuit: [97, 230], riviere: [120, 190], champs: [110, 250], neige: [100, 200], automne: [101, 166], desert: [130, 120] };
+// the trail across a patch (patch pixels): in from the left, along, then up and out at the top: an elbow in the left third, so most of the card is lawn
+const texRoute = (w, h) => [[-8, Math.round(h * .7)], [Math.round(w * .36), Math.round(h * .7)], [Math.round(w * .36), -8]];
+function terrainPic(key, w, h, at, route, core = 6) {
   const keep = { TERKEY, TER, K, SK, SPR_T };
   try {
-    const T = getTerrain(key), [c, x] = mkCanvas(TEX_W, TEX_H);
-    x.putImageData(T.base, -TEX_AT[0], -TEX_AT[1], TEX_AT[0], TEX_AT[1], TEX_W, TEX_H);
-    return (TEXS[key] = c.toDataURL());
+    const T = getTerrain(key), p = T.pal, [c, x] = mkCanvas(w, h, true);
+    at = at || TEX_AT[key] || [100, 200]; route = route || texRoute(w, h);
+    x.putImageData(T.base, -at[0], -at[1], at[0], at[1], w, h);
+    const im = x.getImageData(0, 0, w, h), d = im.data;
+    // the trail: a stroke inside a wider one whose fringe is broken up by noise (as in trailMask, with a slimmer band: 10 and 15 px there)
+    const [, mx] = mkCanvas(w, h, true);
+    mx.lineCap = 'round'; mx.lineJoin = 'round';
+    const path = () => { mx.beginPath(); route.forEach(([a, b], n) => n ? mx.lineTo(a, b) : mx.moveTo(a, b)); };
+    path(); mx.strokeStyle = '#ff0000'; mx.lineWidth = core + 3; mx.stroke();
+    path(); mx.strokeStyle = '#ffff00'; mx.lineWidth = core; mx.stroke();
+    const md = mx.getImageData(0, 0, w, h).data, tm = new Uint8Array(w * h), gm = T.gmask;
+    const gi = i => (at[1] + ((i / w) | 0)) * AW + at[0] + (i % w);
+    for (let i = 0; i < w * h; i++) {
+      if (md[i * 4] < 128) continue;
+      if (md[i * 4 + 1] >= 128 || vnoise((at[0] + i % w) / 4, (at[1] + ((i / w) | 0)) / 4, 33) > .5) tm[i] = 1;
+    }
+    const on = i => tm[i] && gm[gi(i)], t0 = hexRgb(p.t0), t1 = hexRgb(p.t1), te = hexRgb(p.te);
+    for (let i = 0; i < w * h; i++) {
+      if (!gm[gi(i)]) continue;
+      const q = i * 4, X = i % w, Y = (i / w) | 0;
+      let col = null;
+      if (on(i)) col = vnoise((at[0] + X) / 9, (at[1] + Y) / 9, 47) > .66 ? t1 : t0;
+      else if ((X > 0 && on(i - 1)) || (X < w - 1 && on(i + 1)) || (Y > 0 && on(i - w)) || (Y < h - 1 && on(i + w))) col = te;
+      if (col) { d[q] = col[0]; d[q + 1] = col[1]; d[q + 2] = col[2]; }
+    }
+    x.putImageData(im, 0, 0);
+    return c;
   } finally {
     TERKEY = keep.TERKEY; TER = keep.TER; K = keep.K; SK = keep.SK; SPR_T = keep.SPR_T;
   }
+}
+function terrainTex(key) {
+  return TEXS[key] || (TEXS[key] = terrainPic(key, TEX_W, TEX_H).toDataURL());
 }
 // once the page is up, prepare the other terrains in the background so the picker opens at once
 function warmTerrains() {
@@ -5792,7 +5823,7 @@ function drawSummaryCard() {
   if (A) { drawLaneArt(b); x0.drawImage(A.cv, (AW - w) >> 1, AY0 + 3 * CS, w, 92, 0, 0, w, 92); }
   p.rect(0, 92, w, 1, K.ui2);
   for (let i = 0; i < G.N; i++) p.rect(12 + i * 18, 102, 14, 3, PCOL[pcol(i)]);
-  PXF.text(p, 'DUEL DE LIGNES', 12, 111, K.um, { bold: true });
+  PXF.text(p, 'DOMUS TD', 12, 111, K.um, { bold: true });
   const title = resultTitle(), big = PXF.measure(title, { bold: true }) * 3 < w - 24 ? 3 : 2;
   const [tc, tx] = mkCanvas(w, 12), tp = mkPen(tx); PXF.text(tp, title, 0, 2, won ? K.ua : K.ut, { bold: true });
   x0.drawImage(tc, 0, 0, w, 12, 12, 122, w * big, 12 * big);
@@ -5824,7 +5855,7 @@ function drawSummaryCard() {
       PXF.text(p, `${s.mvp.name} · ${s.mvp.kills} éliminations`, 20, y + 15, K.ut, { bold: true });
     }
   }
-  PXF.text(p, WEB ? gameUrl().replace(/^https?:\/\//, '') : 'Prototype jouable · La Grande Joute', 12, h - 14, K.um);
+  PXF.text(p, WEB ? gameUrl().replace(/^https?:\/\//, '') : 'Prototype jouable · Domus TD', 12, h - 14, K.um);
   const [c, x] = mkCanvas(1080, 1350); x.fillStyle = K.ui0; x.fillRect(0, 0, 1080, 1350); x.drawImage(c0, 0, 0, w * S4, h * S4);
   return c;
 }
@@ -6255,7 +6286,7 @@ function renderSummary(final) {
 }
 function shareText() {
   const s = summaryData(), me = s.me;
-  const lines = [`La Grande Joute · ${resultTitle()} en ${fmt(G.t)}`, s.order.map((k, i) => `${i + 1}. ${G.b[k].name}`).join('  ')];
+  const lines = [`Domus TD · ${resultTitle()} en ${fmt(G.t)}`, s.order.map((k, i) => `${i + 1}. ${G.b[k].name}`).join('  ')];
   if (!G.spec) {
     if (s.mvp) lines.push(`Tour MVP : ${s.mvp.name} (${s.mvp.kills} éliminations)`);
     lines.push(`${me.st.kills} créatures tuées · ${me.st.stolen} vies volées · ${me.st.goldens} créatures dorées · ${me.st.chests} coffres`);
@@ -6307,7 +6338,7 @@ $('saveBtn').addEventListener('click', async () => {
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
   drawSummaryCard().toBlob(async blob => {
     if (!blob) return;
-    try { await DL.save({ filename: 'la-grande-joute.png', data: blob }); $('copied').textContent = 'Image enregistrée'; }
+    try { await DL.save({ filename: 'domus-td.png', data: blob }); $('copied').textContent = 'Image enregistrée'; }
     catch (e) { if (!e || e.code !== 'declined') $('copied').textContent = "L'image n'a pas pu être enregistrée ici"; }
   }, 'image/png');
 });
@@ -6647,12 +6678,12 @@ async function cardBlob() {
 }
 async function shareImage() {
   const blob = await cardBlob(); if (!blob) return '';
-  const file = new File([blob], 'la-grande-joute.png', { type: 'image/png' });
+  const file = new File([blob], 'domus-td.png', { type: 'image/png' });
   if (touchUI() && navigator.canShare && navigator.canShare({ files: [file] })) {
-    try { await navigator.share({ files: [file], title: 'La Grande Joute' }); return ''; }
+    try { await navigator.share({ files: [file], title: 'Domus TD' }); return ''; }
     catch (e) { if (e && e.name === 'AbortError') return ''; }
   }
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'la-grande-joute.png';
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'domus-td.png';
   document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
   return 'Image enregistrée';
 }
@@ -6706,9 +6737,9 @@ $('invJoin').addEventListener('click', () => {
 $('invBack').addEventListener('click', () => { dropPeek(); setHash(''); showPanel('home'); });
 $('inviteBtn').addEventListener('click', async () => {
   audioInit(); sfx('click');
-  const url = inviteUrl(), text = `${nick} t'invite à une partie de La Grande Joute`;
+  const url = inviteUrl(), text = `${nick} t'invite à une partie de Domus TD`;
   if (touchUI() && navigator.share) {
-    try { await navigator.share({ title: 'La Grande Joute', text, url }); return; }
+    try { await navigator.share({ title: 'Domus TD', text, url }); return; }
     catch (e) { if (e && e.name === 'AbortError') return; }
   }
   const ok = await copyText(url);
@@ -10223,7 +10254,7 @@ function finHTML(d) {
   const tile = (ic, v, l, k) => `<div class="fs" style="left:calc(var(--fs)*${14 + k * 31});top:calc(var(--fs)*166)">${ic}<b data-txt>${v}</b><i data-txt>${l}</i></div>`;
   const pw = em && em.pw.length ? em.pw.map(p => EPOW[em.k] && EPOW[em.k][p] ? EPOW[em.k][p][0] : '').filter(Boolean).join(' · ') : 'aucun pouvoir';
   const relics = d.relics.map(r => jtIcon(r, 1)).join('') + (d.palet ? jtPaletMark() : '');
-  return `<div class="ft k" data-txt style="top:calc(var(--fs)*97)">LA GRANDE JOUTE · VAGUE ${ROMAN(Math.max(1, d.wave))}</div>
+  return `<div class="ft k" data-txt style="top:calc(var(--fs)*97)">DOMUS TD · VAGUE ${ROMAN(Math.max(1, d.wave))}</div>
 <div class="ft h${d.won ? ' gold' : ''}" data-txt style="top:calc(var(--fs)*104)">${title}</div>
 <div class="ft s" data-txt style="top:calc(var(--fs)*123)">${name} · ${esc(embName)}</div>
 <div class="ft l" data-txt style="top:calc(var(--fs)*134);left:calc(var(--fs)*14)">TES VIES, VAGUE APRÈS VAGUE</div>
