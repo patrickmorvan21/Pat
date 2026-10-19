@@ -591,18 +591,26 @@ b,strong{font-weight:700}
    The multiplayer panels keep the card, over the same moving picture, darkened. Sizes here are plain pixels (they follow the mock-ups). */
 #startOv{--scn:#0b1317;--cap:var(--muted);--rad:0px;--veil:.2}
 #startOv:not(.scene){--veil:.6}
-#startOv.scene{background:var(--scn);padding:0;overflow:hidden;display:block;transition:background-color .8s ease}
+#startOv.scene{background:var(--scn);padding:0;overflow:hidden;display:block}
 #startOv.scene>.card{display:none}
 #startOv:not(.scene){background:var(--scn)}         /* the picture box covers it: the same opaque colour, so that what Safari takes for the bars is the same wherever it looks */
 #startOv>.card{position:relative;z-index:1}
 /* the picture behind everything: a column the width of a phone, the rest is dark. The canvas is drawn by js_bg.js (1 art pixel = 2 CSS pixels) and fades in once its first picture is ready */
-.sbg{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;justify-content:center;background:var(--scn);transition:background-color .8s ease}
+.sbg{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;justify-content:center;background:var(--scn)}
 .hbg{position:relative;flex:none;width:min(100%,max(440px,56vh));width:min(100%,max(440px,56dvh));height:100%;overflow:hidden;background:var(--scn)}
 #hbgCv{position:absolute;left:0;top:0;display:block;image-rendering:crisp-edges;image-rendering:pixelated;will-change:transform;opacity:0;transition:opacity .8s ease}
 .hbg.on #hbgCv{opacity:1}
-/* The bars of a phone (Safari's status bar above and toolbar below, where a page cannot draw) are filled with the colour of the fixed box that touches the edges, that is .sbg.
-   Where the picture is as wide as the screen (a phone, or any narrow window) the home and the online panels give it the colour of the ground (--tint, set by js_bg.js from
-   the picture itself) and the picture melts into it at both ends; the doors and the table keep their dark, and so does a wide screen, where the picture is a column. */
+/* The bars of a phone (Safari's status bar above and toolbar below, where a page cannot draw; a page opened from the Home Screen has the whole height) are filled by Safari
+   with a colour it reads from the page: that of the fixed box that touches the edge. It reads it once for a box as big as the screen (#startOv, .sbg) and keeps that first
+   colour, but it reads again, at every change, the colour of a thin fixed strip along the edge. So two strips (.bst, .bsb, made by js_bg.js) carry the colour of the bars:
+   --bar, the ground of the picture on the home and behind the online panels, the dark of the screens that have no picture. Only their background-color is read (their opacity
+   has to stay above 10 %); a mask with nothing in it keeps them from drawing anything, and they let the finger through. Over a phone's width the picture also melts into that
+   colour at both ends: blurred more and more toward the edge (.hbe, drawn by js_bg.js) and covered by a fade of the colour itself (.hbg::after); the doors and the table keep
+   their dark, and so does a wide screen, where the picture is a column. */
+.bst,.bsb{position:fixed;left:0;right:0;height:16px;z-index:2147483647;pointer-events:none;opacity:.14;background-color:var(--bar,#0b1317);-webkit-mask-image:linear-gradient(#0000,#0000);mask-image:linear-gradient(#0000,#0000)}
+.bst.a,.bsb.a{height:17px}                  /* the height goes 16 / 17 / 16 at every change of colour: a second way to make Safari look again */
+.bst{top:0}
+.bsb{bottom:0}
 .hbg::after{content:"";position:absolute;inset:0;background:rgba(11,19,23,var(--veil));pointer-events:none;opacity:0;transition:opacity .8s ease}
 .hbg.on::after{opacity:1}
 @media (max-width:440px),(max-aspect-ratio:56/100){
@@ -616,7 +624,20 @@ b,strong{font-weight:700}
       linear-gradient(to top,var(--tint,transparent) var(--bi),var(--f1) calc(var(--bi) + 12px),var(--f2) calc(var(--bi) + 28px),var(--f3) calc(var(--bi) + 46px),var(--f4) calc(var(--bi) + 64px),var(--f5) calc(var(--bi) + 78px),transparent calc(var(--bi) + 88px)) 0 100%/100% calc(var(--bi) + 88px) no-repeat,
       rgba(11,19,23,var(--veil))}
   }
+  /* the soft edges: the picture's two ends, copied and blurred more and more toward the edge (five copies, each shown by a mask over a shorter stretch than the one before) */
+  .hbg .hbe{display:block}
 }
+.hbe{position:absolute;left:0;right:0;display:none;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .8s ease}
+.hbg.on .hbe{opacity:1}
+.hbe.t{top:0;height:calc(var(--ti,0px) + 96px);--md:to bottom;--o:var(--ti,0px)}
+.hbe.b{bottom:0;height:calc(var(--bi,0px) + 104px);--md:to top;--o:var(--bi,0px)}
+.hbl{position:absolute;inset:0;-webkit-mask-image:linear-gradient(var(--md),#000 calc(var(--o) + var(--a)),transparent calc(var(--o) + var(--b)));mask-image:linear-gradient(var(--md),#000 calc(var(--o) + var(--a)),transparent calc(var(--o) + var(--b)))}
+.hbl canvas{position:absolute;left:0;top:0;display:block;image-rendering:crisp-edges;image-rendering:pixelated;will-change:transform;filter:blur(var(--s));-webkit-filter:blur(var(--s))}
+.hbl.l1{--a:52px;--b:94px;--s:1.4px}
+.hbl.l2{--a:40px;--b:76px;--s:3px}
+.hbl.l3{--a:28px;--b:58px;--s:6px}
+.hbl.l4{--a:16px;--b:42px;--s:11px}
+.hbl.l5{--a:6px;--b:26px;--s:18px}
 #startOv[data-view=doors] .hbg,#startOv[data-view=table] .hbg{display:none}
 
 /* a scene: one column, scrolls only if the screen is really too short */
@@ -820,7 +841,7 @@ body:has(#startOv:not([hidden])) .toasts .toast{text-align:center}
   .dr,.dr>*{transition:none!important}
   .dr.on .mist,.dr.on .lamp{animation:none}
   .shb,.sheet,.shw.out .sheet,.shw.out .shb{animation:none}
-  #hbgCv{transition:none}
+  #hbgCv,.hbe{transition:none}
 }
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
@@ -10191,6 +10212,63 @@ function resetSim() {
 const stage = $('hbg'), view = $('hbgCv'), vx = view.getContext('2d', { alpha: false });
 let DPR = 1, SA = 6, CW = 200, CHT = 430, devW = 400, devH = 860;
 const LAY = { x0: 0, y0: 0 };
+const NARROW = window.matchMedia ? window.matchMedia('(max-width:440px),(max-aspect-ratio:56/100)') : { matches: true };     // the picture is as wide as the screen (same condition as in css.css)
+
+/* ---------------------------------------------------------------- the soft edges
+   Over a phone's width the two ends of the picture are blurred more and more toward the edge of the screen, and melt into the colour of Safari's bars. Five copies of the
+   ends of the picture (a small canvas each, drawn from the picture itself after every frame) are blurred by the stylesheet with a different strength each, and a mask
+   shows each one over a shorter stretch than the one before (css.css: .hbe .hbl). The copies are padded beyond the edge with the last row / column repeated, so that the blur
+   has something to take there instead of nothing. Not a backdrop-filter: Safari does not take a colour for its bars through one, and the Linux engines used for the tests do not draw it. */
+const SOFT = { ok: false, on: false, lv: 5, t: null, b: null, a: 2, pc: 0, pr: 0, k: 0 };
+function softInit() {
+  try {
+    const mk = cls => {
+      const w = document.createElement('div'); w.className = 'hbe ' + cls; w.setAttribute('aria-hidden', 'true');
+      const E = { w, h: 0, n: 0, m: document.createElement('canvas'), L: [] };
+      E.mx = E.m.getContext('2d', { alpha: false });
+      for (let i = 1; i <= SOFT.lv; i++) {
+        const l = document.createElement('div'); l.className = 'hbl l' + i;
+        const c = document.createElement('canvas'); l.appendChild(c); w.appendChild(l);
+        E.L.push({ c, x: c.getContext('2d', { alpha: false }) });
+      }
+      stage.appendChild(w); return E;
+    };
+    SOFT.t = mk('t'); SOFT.b = mk('b'); SOFT.ok = !!(SOFT.t.mx && SOFT.b.mx);
+  } catch (e) { SOFT.ok = false; }
+}
+function softSize() {                                // after the picture's size is known: the copies are as wide as it is, and as tall as the stretch the stylesheet gives them
+  SOFT.on = SOFT.ok && NARROW.matches;
+  if (!SOFT.on) return;
+  const a = SA / DPR; SOFT.a = a;
+  SOFT.pc = SOFT.pr = Math.ceil(3 * 18 / a) + 1;      // padding: three times the strongest blur (18 px)
+  for (const E of [SOFT.t, SOFT.b]) {
+    E.h = E.w.getBoundingClientRect().height || E.h || 140;
+    E.n = Math.min(CHT, Math.ceil(E.h / a) + 4);
+    const w = CW + 2 * SOFT.pc, h = E.n + SOFT.pr;
+    for (const c of [E.m, ...E.L.map(l => l.c)]) { if (c.width !== w) c.width = w; if (c.height !== h) c.height = h; }
+    E.mx.imageSmoothingEnabled = false;
+    for (const l of E.L) { l.x.imageSmoothingEnabled = false; l.c.style.width = (w * a) + 'px'; l.c.style.height = (h * a) + 'px'; }
+  }
+}
+function softDraw(sx, sy) {                          // the ends of the picture as it is now; the same glide as the picture's own (sx, sy device pixels)
+  const a = SOFT.a, pc = SOFT.pc, pr = SOFT.pr, W = CW + 2 * pc;
+  const t = SOFT.t, b = SOFT.b, tn = t.n, bn = b.n, th = tn + pr, bh = bn + pr;
+  // top: the first rows, row 0 repeated above them, then the first and last columns repeated at the sides
+  t.mx.drawImage(view, 0, 0, CW, tn, pc, pr, CW, tn);
+  t.mx.drawImage(view, 0, 0, CW, 1, pc, 0, CW, pr);
+  t.mx.drawImage(t.m, pc, 0, 1, th, 0, 0, pc, th);
+  t.mx.drawImage(t.m, pc + CW - 1, 0, 1, th, pc + CW, 0, pc, th);
+  // bottom: the last rows, the last row repeated below them
+  b.mx.drawImage(view, 0, CHT - bn, CW, bn, pc, 0, CW, bn);
+  b.mx.drawImage(view, 0, CHT - 1, CW, 1, pc, bn, CW, pr);
+  b.mx.drawImage(b.m, pc, 0, 1, bh, 0, 0, pc, bh);
+  b.mx.drawImage(b.m, pc + CW - 1, 0, 1, bh, pc + CW, 0, pc, bh);
+  const x0 = -pc * a - sx / DPR;
+  const ty = -pr * a - sy / DPR;                     // the top copy hangs pr rows above the stretch
+  const by = ((CHT - bn) * SA - sy) / DPR - (devH / DPR - b.h);      // the bottom copy: its first row is the picture's row CHT - bn
+  for (const l of t.L) { l.x.drawImage(t.m, 0, 0); l.c.style.transform = `translate(${x0}px,${ty}px)`; }
+  for (const l of b.L) { l.x.drawImage(b.m, 0, 0); l.c.style.transform = `translate(${x0}px,${by}px)`; }
+}
 
 function resizeView() {
   const r = stage.getBoundingClientRect();
@@ -10203,6 +10281,7 @@ function resizeView() {
   cam.vw = devW / SA; cam.vh = devH / SA;
   vx.imageSmoothingEnabled = false;
   pen.fs = null;
+  softSize();
 }
 
 /* ---------------------------------------------------------------- the pen */
@@ -10450,6 +10529,7 @@ function renderFrame(dt) {
   drawFx(ix, iy);
   drawAmbient(dt, ix, iy);
   vx.globalAlpha = 1;
+  if (SOFT.on && (dt === 0 || (SOFT.k ^= 1) === 0)) softDraw(sx, sy);      // 30 times a second is plenty for what is blurred
 }
 
 
@@ -10533,11 +10613,23 @@ function pickTerrainForLaunch() {                    // another terrain than the
 
 /* ---------------------------------------------------------------- the bars of the phone
    Safari on an iPhone keeps two strips for itself, the status bar above and the toolbar below, and does not let a page draw there (a page opened from the Home Screen
-   does: it has the whole height). What a page can do is choose their colour: Safari fills them with the colour of the fixed box that touches the edge, here the start
-   screen's picture box. So the home gives them the colour of its own ground, the mean of the two ends of the picture as it is drawn, and the picture melts into
-   that colour at both ends (css.css), whatever the terrain. Computed again when the picture is drawn again (boot, resize). */
+   does: it has the whole height). What a page can do is choose their colour: Safari fills them with the colour of the fixed box that touches the edge. For a box as big as
+   the screen (here the start screen) it reads that colour once, at the very first moment, when the page is still dark, and keeps it. For a thin fixed strip along the edge it
+   reads it again at every change. So two such strips (.bst, .bsb: almost invisible, css.css) carry the colour: the ground of the picture on the home and behind the online
+   panels (the mean of the two ends of the picture as it is drawn, before the veil), the dark of the screens without a picture (the doors, the table), and the picture
+   melts into that colour at both ends (css.css, and the soft edges above). Computed again when the picture is drawn again (boot, resize). */
 const NAVY = [11, 19, 23];                        // the dark of the screens that have no picture (the doors, the table)
-let MEAN = null, MEAN0 = null;                    // the ends of the picture as drawn, before the veil: [r, g, b]; MEAN0 is the guess made from the terrain's palette, good until the picture exists
+const NAVY_HEX = '#' + NAVY.map(v => v.toString(16).padStart(2, '0')).join('');
+let MEAN = null, MEAN0 = null;                    // the ends of the picture as drawn, before the veil: [r, g, b]; MEAN0 is the guess, good until the picture exists
+// what the ends of each terrain's picture come to on a phone (measured), so that the first colour of the bars is already the right one
+const MEAN_OF = { nuit: [119, 152, 146], riviere: [138, 152, 116], champs: [156, 166, 135], neige: [193, 203, 210], automne: [171, 159, 110], desert: [204, 174, 129] };
+const BAR = { t: null, b: null };                 // the two strips along the edges of the screen
+let barFlip = false;
+function barsInit() {
+  try {
+    for (const k of ['t', 'b']) { const e = document.createElement('div'); e.className = 'bs' + k; e.hidden = true; e.setAttribute('aria-hidden', 'true'); document.body.appendChild(e); BAR[k] = e; }
+  } catch (e) {}
+}
 let edgeMs = 0;
 function edgeMean() {
   const t0 = performance.now();
@@ -10589,6 +10681,8 @@ function* bootGen(terr, x0, y0) {
   edgeMean();
 }
 
+softInit(); barsInit();
+
 const API = (() => {
   const st = { boot: null, ready: false, dead: false, started: false, resizeDirty: true, last: 0, rm: false, frames: 0, bootMs: 0, bootT0: 0 };
   let ov = null;
@@ -10599,7 +10693,6 @@ const API = (() => {
   const shown = v => v !== '' && v !== 'doors' && v !== 'table';       // the doors and the table have no picture behind them
   // the colour of the bars: the picture's own ground on the home and behind the online panels (under their veil), the dark of the screens without a picture
   let barV = null, meta = null, tutoEl = null;
-  const NARROW = window.matchMedia ? window.matchMedia('(max-width:440px),(max-aspect-ratio:56/100)') : { matches: true };     // the picture is as wide as the screen (same condition as in css.css)
   function bars(force) {
     const v = view_(), tuto = !!(tutoEl || (tutoEl = $('tutoOv'))) && !tutoEl.hidden;       // the "how to play" card is a dark sheet over the whole screen: the bars go dark with it
     const picture = v !== '' && v !== 'doors' && v !== 'table' && !tuto && NARROW.matches;
@@ -10608,7 +10701,12 @@ const API = (() => {
     const root = document.documentElement.style;
     const t = picture ? barTint(v === 'home' ? .2 : .6) : null;       // the veil is 0.2 on the home, 0.6 behind a panel
     if (t) root.setProperty('--tint', t); else root.removeProperty('--tint');
-    st.tint = t;
+    const bc = t || NAVY_HEX;
+    if (bc !== st.bar) { barFlip = !barFlip; for (const k of ['t', 'b']) if (BAR[k]) BAR[k].classList.toggle('a', barFlip); }       // a change of colour also changes the strips' height by a pixel
+    root.setProperty('--bar', bc);
+    const on = v !== '' || tuto;                                      // a start screen (or the "how to play" sheet) is up: the strips carry the colour of the bars; in the game they are gone
+    for (const k of ['t', 'b']) if (BAR[k] && BAR[k].hidden === on) BAR[k].hidden = !on;
+    st.tint = t; st.bar = bc; st.strips = on;
     try {
       if (!meta) { meta = document.querySelector('meta[name=theme-color]'); if (!meta) { meta = document.createElement('meta'); meta.name = 'theme-color'; document.head.appendChild(meta); st.metaMade = true; } if (!st.metaOrig) st.metaOrig = meta.getAttribute('content') || ''; }
       meta.setAttribute('content', t || (v === '' ? (getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || st.metaOrig) : '#0b1317'));
@@ -10633,7 +10731,7 @@ const API = (() => {
   function start(terr) {
     if (st.started) return; st.started = true;
     try { st.terr = terr && TERRAINS[terr] ? terr : pickTerrainForLaunch(); st.boot = bootGen(st.terr); } catch (e) { fail(e); }
-    try { const g = terrainPal(st.terr).g2; MEAN0 = [1, 3, 5].map(i => parseInt(g.slice(i, i + 2), 16)); bars(true); } catch (e) {}      // the bars have the ground's colour from the first frame
+    try { MEAN0 = MEAN_OF[st.terr] || (g => [1, 3, 5].map(i => parseInt(g.slice(i, i + 2), 16)))(terrainPal(st.terr).g2); bars(true); } catch (e) {}      // the bars have the ground's colour from the first frame
   }
   // called by the game on every frame
   function tick(now) {
@@ -10659,7 +10757,7 @@ const API = (() => {
   return {
     start, tick, st,
     // for the tests
-    state() { return { t: +SIM.t.toFixed(2), cam: [+cam.x.toFixed(1), +cam.y.toFixed(1)], creeps: SIM.creeps.length, towers: SIM.tv.length, chunks: CHUNKS.size, stats: Object.assign({}, STATS), sa: SA, dpr: DPR, view: [cam.vw, cam.vh], seed: SEED, terr: TK, mean: MEAN && MEAN.map(Math.round), mean0: MEAN0, edgeMs: +edgeMs.toFixed(2), tint: st.tint || '', ready: st.ready, dead: st.dead, frames: st.frames, bootMs: st.bootMs }; },
+    state() { return { t: +SIM.t.toFixed(2), cam: [+cam.x.toFixed(1), +cam.y.toFixed(1)], creeps: SIM.creeps.length, towers: SIM.tv.length, chunks: CHUNKS.size, stats: Object.assign({}, STATS), sa: SA, dpr: DPR, view: [cam.vw, cam.vh], seed: SEED, terr: TK, mean: MEAN && MEAN.map(Math.round), mean0: MEAN0, edgeMs: +edgeMs.toFixed(2), tint: st.tint || '', bar: st.bar || '', strips: !!st.strips, soft: SOFT.on, ready: st.ready, dead: st.dead, frames: st.frames, bootMs: st.bootMs }; },
     advance(sec, step = 1 / 30) {
       const n = Math.round(sec / step);
       for (let i = 0; i < n; i++) { simStep(step); if ((i & 31) === 0) { const r = wantedChunks(WANT); pumpChunks(WANT, 0.5); evictChunks(r[0], r[1], r[2], r[3]); } }
