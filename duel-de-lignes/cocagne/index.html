@@ -589,18 +589,34 @@ b,strong{font-weight:700}
 /* ===== Domus TD: the home, the four doors, the table =====
    Full-bleed scenes (no card): the home with a world that plays itself behind the logo, then the Houses as four tall doors, then the table.
    The multiplayer panels keep the card, over the same moving picture, darkened. Sizes here are plain pixels (they follow the mock-ups). */
-#startOv{--scn:#0b1317;--cap:var(--muted);--rad:0px}
-#startOv.scene{background:var(--scn);padding:0;overflow:hidden;display:block}
+#startOv{--scn:#0b1317;--cap:var(--muted);--rad:0px;--veil:.2}
+#startOv:not(.scene){--veil:.6}
+#startOv.scene{background:var(--scn);padding:0;overflow:hidden;display:block;transition:background-color .8s ease}
 #startOv.scene>.card{display:none}
-#startOv:not(.scene){background:rgba(11,19,23,.46)}
+#startOv:not(.scene){background:var(--scn)}         /* the picture box covers it: the same opaque colour, so that what Safari takes for the bars is the same wherever it looks */
 #startOv>.card{position:relative;z-index:1}
 /* the picture behind everything: a column the width of a phone, the rest is dark. The canvas is drawn by js_bg.js (1 art pixel = 2 CSS pixels) and fades in once its first picture is ready */
-.sbg{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;justify-content:center;background:var(--scn)}
+.sbg{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;justify-content:center;background:var(--scn);transition:background-color .8s ease}
 .hbg{position:relative;flex:none;width:min(100%,max(440px,56vh));width:min(100%,max(440px,56dvh));height:100%;overflow:hidden;background:var(--scn)}
 #hbgCv{position:absolute;left:0;top:0;display:block;image-rendering:crisp-edges;image-rendering:pixelated;will-change:transform;opacity:0;transition:opacity .8s ease}
 .hbg.on #hbgCv{opacity:1}
-.hbg::after{content:"";position:absolute;inset:0;background:rgba(11,19,23,.2);pointer-events:none}
-#startOv:not(.scene) .hbg::after{background:rgba(11,19,23,.6)}
+/* The bars of a phone (Safari's status bar above and toolbar below, where a page cannot draw) are filled with the colour of the fixed box that touches the edges, that is .sbg.
+   Where the picture is as wide as the screen (a phone, or any narrow window) the home and the online panels give it the colour of the ground (--tint, set by js_bg.js from
+   the picture itself) and the picture melts into it at both ends; the doors and the table keep their dark, and so does a wide screen, where the picture is a column. */
+.hbg::after{content:"";position:absolute;inset:0;background:rgba(11,19,23,var(--veil));pointer-events:none;opacity:0;transition:opacity .8s ease}
+.hbg.on::after{opacity:1}
+@media (max-width:440px),(max-aspect-ratio:56/100){
+  #startOv:not([data-view=doors]):not([data-view=table]){--scn:var(--tint,#0b1317)}
+  body:has(#startOv:not([hidden]):not([data-view=doors]):not([data-view=table])){background:var(--tint,var(--bg))}
+  .hbg{--ti:env(safe-area-inset-top,0px);--bi:env(safe-area-inset-bottom,0px);
+    --f1:color-mix(in srgb,var(--tint,transparent) 86%,transparent);--f2:color-mix(in srgb,var(--tint,transparent) 62%,transparent);--f3:color-mix(in srgb,var(--tint,transparent) 38%,transparent);--f4:color-mix(in srgb,var(--tint,transparent) 18%,transparent);--f5:color-mix(in srgb,var(--tint,transparent) 6%,transparent)}
+  @supports (color:color-mix(in srgb,red 50%,transparent)){
+    .hbg::after{background:
+      linear-gradient(to bottom,var(--tint,transparent) var(--ti),var(--f1) calc(var(--ti) + 10px),var(--f2) calc(var(--ti) + 24px),var(--f3) calc(var(--ti) + 40px),var(--f4) calc(var(--ti) + 56px),var(--f5) calc(var(--ti) + 68px),transparent calc(var(--ti) + 76px)) 0 0/100% calc(var(--ti) + 76px) no-repeat,
+      linear-gradient(to top,var(--tint,transparent) var(--bi),var(--f1) calc(var(--bi) + 12px),var(--f2) calc(var(--bi) + 28px),var(--f3) calc(var(--bi) + 46px),var(--f4) calc(var(--bi) + 64px),var(--f5) calc(var(--bi) + 78px),transparent calc(var(--bi) + 88px)) 0 100%/100% calc(var(--bi) + 88px) no-repeat,
+      rgba(11,19,23,var(--veil))}
+  }
+}
 #startOv[data-view=doors] .hbg,#startOv[data-view=table] .hbg{display:none}
 
 /* a scene: one column, scrolls only if the screen is really too short */
@@ -800,6 +816,7 @@ body:has(#startOv:not([hidden])) .toasts .toast{text-align:center}
 }
 @media (prefers-reduced-motion:reduce){
   .sp{animation:none}
+  .sbg,#startOv.scene,.hbg::after{transition:none}
   .dr,.dr>*{transition:none!important}
   .dr.on .mist,.dr.on .lamp{animation:none}
   .shb,.sheet,.shw.out .sheet,.shw.out .shb{animation:none}
@@ -6307,7 +6324,7 @@ function finish(winner) {
   $('endMain').disabled = NET.mode === 'client';
   $('endAlt').textContent = NET.mode === 'solo' ? 'Retour au menu' : 'Quitter la partie';
   showOv('menuOv', false);
-  setTimeout(() => showOv('endOv', true), 600);
+  setTimeout(() => { if (G && G.ended) showOv('endOv', true); }, 600);
 }
 function showSpectate() {
   const ghost = G.b[G.me].ghost;
@@ -10514,9 +10531,40 @@ function pickTerrainForLaunch() {                    // another terrain than the
   return k;
 }
 
+/* ---------------------------------------------------------------- the bars of the phone
+   Safari on an iPhone keeps two strips for itself, the status bar above and the toolbar below, and does not let a page draw there (a page opened from the Home Screen
+   does: it has the whole height). What a page can do is choose their colour: Safari fills them with the colour of the fixed box that touches the edge, here the start
+   screen's picture box. So the home gives them the colour of its own ground, the mean of the two ends of the picture as it is drawn, and the picture melts into
+   that colour at both ends (css.css), whatever the terrain. Computed again when the picture is drawn again (boot, resize). */
+const NAVY = [11, 19, 23];                        // the dark of the screens that have no picture (the doors, the table)
+let MEAN = null, MEAN0 = null;                    // the ends of the picture as drawn, before the veil: [r, g, b]; MEAN0 is the guess made from the terrain's palette, good until the picture exists
+let edgeMs = 0;
+function edgeMean() {
+  const t0 = performance.now();
+  try {
+    const rows = Math.max(2, Math.min(CHT >> 2, Math.round(80 * DPR / SA)));       // about 80 CSS pixels at each end: what the fade covers
+    let r = 0, g = 0, b = 0, n = 0;
+    for (const y0 of [0, CHT - rows]) {
+      const d = vx.getImageData(0, y0, CW, rows).data;
+      for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; }
+    }
+    if (n) MEAN = [r / n, g / n, b / n];
+  } catch (e) {}                                  // the canvas cannot be read: the guess made from the palette stays
+  edgeMs = performance.now() - t0;
+}
+const hex2 = c => c.map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+const lum = c => { const f = v => { v /= 255; return v <= .04045 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }; return .2126 * f(c[0]) + .7152 * f(c[1]) + .0722 * f(c[2]); };
+function barTint(veil) {                          // the ground as it is seen, under the veil of the moment; never brighter than white text can sit on
+  const m = MEAN || MEAN0; if (!m) return null;
+  let c = m.map((v, i) => v * (1 - veil) + NAVY[i] * veil);
+  const L = lum(c), MAXL = .3;
+  if (L > MAXL) { let a = 0, bb = 1; for (let k = 0; k < 14; k++) { const m = (a + bb) / 2, t = c.map((v, i) => v * (1 - m) + NAVY[i] * m); if (lum(t) > MAXL) a = m; else bb = m; } c = c.map((v, i) => v * (1 - bb) + NAVY[i] * bb); }
+  return '#' + hex2(c);
+}
+
 /* ---------------------------------------------------------------- the boot, in slices: the home stays alive while the world is made (the picture fades in at the end) */
 function* bootGen(terr, x0, y0) {
-  TK = terr; T = terrOf(terr); stage.style.background = T.bg;
+  TK = terr; T = terrOf(terr);
   resizeView();
   SEED = HOME_SEED; gDens = OPT.dens; LSCALE = LSC[gDens]; setSeed(SEED);
   resetWorld(); resetSim(); TOPS.clear();
@@ -10538,6 +10586,7 @@ function* bootGen(terr, x0, y0) {
   gatherTowers();
   for (const tw of SIM.tv) { warmTower(tw); yield; }
   renderFrame(0);
+  edgeMean();
 }
 
 const API = (() => {
@@ -10548,6 +10597,23 @@ const API = (() => {
   if (RMQ.addEventListener) RMQ.addEventListener('change', () => { st.rm = RMQ.matches; });
   const view_ = () => { if (!ov) ov = $('startOv'); return ov.hidden ? '' : ov.dataset.view; };
   const shown = v => v !== '' && v !== 'doors' && v !== 'table';       // the doors and the table have no picture behind them
+  // the colour of the bars: the picture's own ground on the home and behind the online panels (under their veil), the dark of the screens without a picture
+  let barV = null, meta = null, tutoEl = null;
+  const NARROW = window.matchMedia ? window.matchMedia('(max-width:440px),(max-aspect-ratio:56/100)') : { matches: true };     // the picture is as wide as the screen (same condition as in css.css)
+  function bars(force) {
+    const v = view_(), tuto = !!(tutoEl || (tutoEl = $('tutoOv'))) && !tutoEl.hidden;       // the "how to play" card is a dark sheet over the whole screen: the bars go dark with it
+    const picture = v !== '' && v !== 'doors' && v !== 'table' && !tuto && NARROW.matches;
+    const key = picture ? v + (MEAN ? '+' : MEAN0 ? '~' : '-') : v + (tuto ? 't' : '') + (NARROW.matches ? '' : 'w');
+    if (!force && key === barV) return; barV = key;
+    const root = document.documentElement.style;
+    const t = picture ? barTint(v === 'home' ? .2 : .6) : null;       // the veil is 0.2 on the home, 0.6 behind a panel
+    if (t) root.setProperty('--tint', t); else root.removeProperty('--tint');
+    st.tint = t;
+    try {
+      if (!meta) { meta = document.querySelector('meta[name=theme-color]'); if (!meta) { meta = document.createElement('meta'); meta.name = 'theme-color'; document.head.appendChild(meta); st.metaMade = true; } if (!st.metaOrig) st.metaOrig = meta.getAttribute('content') || ''; }
+      meta.setAttribute('content', t || (v === '' ? (getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || st.metaOrig) : '#0b1317'));
+    } catch (e) {}
+  }
   function fail(e) { st.dead = true; st.boot = null; try { console.error('HomeBG', e); } catch (_) {} }
   function frameWork(dt) {
     simStep(dt);
@@ -10560,24 +10626,26 @@ const API = (() => {
     st.resizeDirty = false;
     const cx = cam.x + cam.vw / 2, cy = cam.y + cam.vh / 2;
     resizeView(); cam.x = cx - cam.vw / 2; cam.y = cy - cam.vh / 2;
-    gatherTowers(); wantedChunks(WANT); pumpChunks(WANT, Infinity); renderFrame(0);
+    gatherTowers(); wantedChunks(WANT); pumpChunks(WANT, Infinity); renderFrame(0); edgeMean(); bars(true);
   }
   window.addEventListener('resize', () => { st.resizeDirty = true; });
   window.addEventListener('orientationchange', () => { st.resizeDirty = true; });
   function start(terr) {
     if (st.started) return; st.started = true;
     try { st.terr = terr && TERRAINS[terr] ? terr : pickTerrainForLaunch(); st.boot = bootGen(st.terr); } catch (e) { fail(e); }
+    try { const g = terrainPal(st.terr).g2; MEAN0 = [1, 3, 5].map(i => parseInt(g.slice(i, i + 2), 16)); bars(true); } catch (e) {}      // the bars have the ground's colour from the first frame
   }
   // called by the game on every frame
   function tick(now) {
     if (st.dead || !st.started) return;
     try {
       const v = view_();
+      bars();
       if (!shown(v)) { st.last = now; return; }
       if (st.boot) {
         if (!st.bootT0) st.bootT0 = performance.now();
         const t0 = performance.now();
-        while (performance.now() - t0 < 5) { const r = st.boot.next(); if (r.done) { st.boot = null; st.ready = true; st.resizeDirty = false; stage.classList.add('on'); st.bootMs = Math.round(performance.now() - st.bootT0); break; } }
+        while (performance.now() - t0 < 5) { const r = st.boot.next(); if (r.done) { st.boot = null; st.ready = true; st.resizeDirty = false; stage.classList.add('on'); st.bootMs = Math.round(performance.now() - st.bootT0); bars(true); break; } }
         st.last = now; return;
       }
       if (!st.ready) return;
@@ -10591,7 +10659,7 @@ const API = (() => {
   return {
     start, tick, st,
     // for the tests
-    state() { return { t: +SIM.t.toFixed(2), cam: [+cam.x.toFixed(1), +cam.y.toFixed(1)], creeps: SIM.creeps.length, towers: SIM.tv.length, chunks: CHUNKS.size, stats: Object.assign({}, STATS), sa: SA, dpr: DPR, view: [cam.vw, cam.vh], seed: SEED, terr: TK, ready: st.ready, dead: st.dead, frames: st.frames, bootMs: st.bootMs }; },
+    state() { return { t: +SIM.t.toFixed(2), cam: [+cam.x.toFixed(1), +cam.y.toFixed(1)], creeps: SIM.creeps.length, towers: SIM.tv.length, chunks: CHUNKS.size, stats: Object.assign({}, STATS), sa: SA, dpr: DPR, view: [cam.vw, cam.vh], seed: SEED, terr: TK, mean: MEAN && MEAN.map(Math.round), mean0: MEAN0, edgeMs: +edgeMs.toFixed(2), tint: st.tint || '', ready: st.ready, dead: st.dead, frames: st.frames, bootMs: st.bootMs }; },
     advance(sec, step = 1 / 30) {
       const n = Math.round(sec / step);
       for (let i = 0; i < n; i++) { simStep(step); if ((i & 31) === 0) { const r = wantedChunks(WANT); pumpChunks(WANT, 0.5); evictChunks(r[0], r[1], r[2], r[3]); } }
@@ -10600,7 +10668,7 @@ const API = (() => {
     render() { gatherTowers(); wantedChunks(WANT); pumpChunks(WANT, Infinity); renderFrame(0); },
     restart(terr) {                                   // the same world on another terrain, built at once
       const g = bootGen(terr); while (!g.next().done);
-      st.ready = true; st.boot = null; st.terr = terr; stage.classList.add('on');
+      st.ready = true; st.boot = null; st.terr = terr; stage.classList.add('on'); bars(true);
     },
     perf(frames = 120) {
       const ts = []; for (let i = 0; i < frames; i++) { const t0 = performance.now(); frameWork(1 / 60); ts.push(performance.now() - t0); }
