@@ -843,6 +843,26 @@ body:has(#startOv:not([hidden])) .toasts .toast{text-align:center}
   .shb,.sheet,.shw.out .sheet,.shw.out .shb{animation:none}
   #hbgCv,.hbe{transition:none}
 }
+/* ---- version 41: the home-screen tip, the guided game's notes, the highlights, the spectator's commentary ---- */
+.a2hs{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:3;width:min(392px,calc(100% - 32px));box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:8px 6px 8px 12px;background:rgba(24,36,42,.94);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);font-size:15px;line-height:1.3;animation:a2in .3s steps(4)}
+.a2hs-ic{flex:none;color:var(--gold)}
+.a2hs-t{margin:0;flex:1;min-width:0}
+.a2hs-t b{color:var(--gold);font-weight:700}
+.a2hs-go{flex:none;border:0;background:var(--gold);color:var(--panel);font:700 14px var(--f);padding:8px 12px;cursor:pointer}
+.a2hs-x{flex:none;width:40px;height:40px;border:0;padding:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer}
+@keyframes a2in{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translateX(-50%)}}
+.guide{position:fixed;left:10px;right:10px;z-index:7;display:flex;justify-content:center;pointer-events:none}
+.guide-in{pointer-events:auto;width:100%;max-width:430px;box-sizing:border-box;padding:12px 14px 10px;display:flex;flex-direction:column;gap:8px;animation:jtin .22s steps(3)}
+.guide-in p{margin:0;font-size:16px;line-height:1.35;font-weight:600}
+.guide-r{display:flex;align-items:center;gap:8px;min-height:36px}
+.guide-n{margin-right:auto;font-size:13px;font-weight:700;color:var(--pmut)}
+.guide .link{color:var(--pmut);padding:6px 8px;font-size:14px}
+.guide .go{padding:8px 16px;font-size:15px;color:var(--pink)}
+.guide-hl{position:relative;z-index:2;animation:ghl 1s steps(2) infinite}
+@keyframes ghl{0%{box-shadow:inset 0 0 0 3px var(--gold),0 0 0 2px var(--gold)}50%{box-shadow:inset 0 0 0 3px transparent,0 0 0 2px transparent}}
+.toast.spec{background:var(--parch);color:var(--pink);box-shadow:inset calc(var(--u)*2) 0 0 var(--gold);font-weight:600}
+@media (max-height:700px){.guide-in{padding:9px 12px 8px;gap:6px}.guide-in p{font-size:15px;line-height:1.3}}
+@media (prefers-reduced-motion:reduce){.a2hs,.guide-in{animation:none}.guide-hl{animation:none;box-shadow:inset 0 0 0 3px var(--gold)}}
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
 </head>
@@ -852,7 +872,7 @@ body:has(#startOv:not([hidden])) .toasts .toast{text-align:center}
 
 <header class="hud" id="hud">
   <div class="hud-row">
-    <button type="button" class="who me" id="meChip" aria-label="Tes vies · réactions rapides"></button>
+    <div class="who me" id="meChip" role="group" aria-label="Tes vies" style="cursor:default"></div>
     <div class="wave"><span class="jt-fan" id="jtFan" hidden><b id="jtFanN"></b></span><span class="jt-wtx"><b id="waveT">dans 8 s</b><span id="waveNum">Vague 1</span></span><span class="an-chip" id="anChip" hidden></span></div>
     <div class="pill gold" id="goldPill" aria-label="Ton or et ton revenu">
       <span id="coinIcon" data-icon="coin"></span>
@@ -864,6 +884,7 @@ body:has(#startOv:not([hidden])) .toasts .toast{text-align:center}
   <div class="rivals" id="rivals"></div>
 </header>
 
+<div class="guide" id="guide" hidden><div class="guide-in parch" role="dialog" aria-live="polite" aria-label="Partie guidée"><p id="guideT"></p><div class="guide-r"><span class="guide-n" id="guideN"></span><button class="link" id="guideSkip" type="button">Passer le guide</button><button class="go" id="guideBtn" type="button">Suivant</button></div></div></div>
 <div class="toasts" id="toasts"><div class="buffs" id="buffs"></div></div>
 <div class="roulette" id="roulette" hidden><canvas id="rlCv" class="px" width="110" height="64" style="--w:110;--h:64" aria-hidden="true"></canvas><div class="plate" aria-live="polite"><b id="rlName"></b><span id="rlDesc"></span></div></div>
 <div class="pop" id="pop" hidden></div>
@@ -915,6 +936,12 @@ body:has(#startOv:not([hidden])) .toasts .toast{text-align:center}
       <button class="hm-sec" id="multiBtn" type="button" disabled>Jouer en ligne · connexion…</button>
       <p class="note" id="multiNote" hidden>Le jeu en ligne marche sur claude.ai, entre personnes invitées.</p>
       <button class="link help" id="tutoBtn" type="button"><span data-icon="help"></span>Comment jouer</button>
+    </div>
+    <div class="a2hs" id="a2hs" hidden role="note">
+      <svg class="a2hs-ic" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M11 14V3M7 7l4-4 4 4M5 10v9h12v-9" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+      <p class="a2hs-t" id="a2hsT"></p>
+      <button class="a2hs-go" id="a2hsGo" type="button" hidden>Installer</button>
+      <button class="a2hs-x" id="a2hsX" type="button" aria-label="Fermer ce conseil"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 2 L12 12 M12 2 L2 12" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/></svg></button>
     </div>
   </div></div>
 
@@ -974,8 +1001,11 @@ body:has(#startOv:not([hidden])) .toasts .toast{text-align:center}
         <div class="sh-grp" id="gateRow"><span class="cp">Difficulté</span>
           <div class="tb-seg" id="gateChoice" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="sg" type="button" data-g="1" aria-pressed="true">1 entrée</button><button class="sg" type="button" data-g="2" aria-pressed="false">2 entrées</button></div>
         </div>
-        <div class="sh-grp" id="soundRow"><span class="cp">Sons du jeu</span>
-          <div class="tb-seg" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="sg" id="snAll" type="button" aria-pressed="true">Sons : oui</button><button class="sg" id="snTw" type="button" aria-pressed="true">Tours : oui</button><button class="sg" id="snMus" type="button" aria-pressed="true" style="grid-column:1/-1">Musique : oui</button></div>
+        <div class="sh-grp" id="quickRow"><span class="cp">Durée</span>
+          <div class="tb-seg" id="quickChoice" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="sg" type="button" data-q="0" aria-pressed="true">Normale</button><button class="sg" type="button" data-q="1" aria-pressed="false">Rapide · 5 min</button></div>
+        </div>
+        <div class="sh-grp" id="soundRow"><span class="cp">Sons et vibrations</span>
+          <div class="tb-seg" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="sg" id="snAll" type="button" aria-pressed="true">Sons : oui</button><button class="sg" id="snTw" type="button" aria-pressed="true">Tours : oui</button><button class="sg" id="snMus" type="button" aria-pressed="true">Musique : oui</button><button class="sg" id="snVib" type="button" aria-pressed="true">Vibrations : oui</button></div>
         </div>
       </div>
     </div>
@@ -1041,6 +1071,7 @@ body:has(#startOv:not([hidden])) .toasts .toast{text-align:center}
     <div class="share" id="shareRow"><button class="sec" id="copyBtn" type="button">Copier le résumé</button><button class="sec" id="saveBtn" type="button">Enregistrer l'image</button></div>
     <div class="copied" id="copied" aria-live="polite"></div>
     <textarea class="sharetext" id="shareText" readonly hidden aria-label="Résumé à copier"></textarea>
+    <button class="go" id="endRe" type="button" hidden>Revanche</button>
     <button class="go" id="endMain" type="button">Rejouer</button>
     <button class="sec" id="endAlt" type="button">Retour au menu</button>
   </div></div>
@@ -1336,8 +1367,37 @@ const SXS = {  click: { tr: 6.14, fn: () => {sxTone({f:520,f2:380,d:.05,type:'sq
   palet: { tr: 1.4, big: 1, fn: () => {sxNoise({d:.9,a:.15,v:.3,type:'lowpass',f:250,f2:120});sxTone({f:60,f2:50,d:.9,a:.15,type:'sine',v:.3})} },
   kill: { tr: 1, fn: null },
 };
+/* ---- the phone buzzes (version 41): Android through the vibration API; an iPhone has none, a hidden switch gives a tick, on a touch only ---- */
+const DEV = {
+  ios: /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1),
+  standalone: navigator.standalone === true || !!(window.matchMedia && matchMedia('(display-mode: standalone)').matches),
+  framed: (() => { try { return window.top !== window.self; } catch (e) { return true; } })(),
+};
+try { if (localStorage.getItem('ddl-a2hs-test') === 'ios') { DEV.ios = true; DEV.standalone = false; DEV.framed = false; } } catch (e) {}
+const VIB = { on: true, last: 0, sw: null };
+try { VIB.on = localStorage.getItem('ddl-vib') !== 'off'; } catch (e) {}
+const VIB_P = { build: 12, upgrade: [10, 30, 14], evolve: [14, 40, 14, 40, 26], sell: 10, send: 16, leak: [45, 50, 70], wave: 24, boss: [60, 60, 60],
+  win: [30, 50, 30, 50, 140], lose: [240], chef: [20, 40, 20, 40, 20, 40, 70], palet: 16, error: [12, 40, 12], jackpot: [18, 30, 18, 30, 18] };
+const canVib = () => !!navigator.vibrate || DEV.ios;
+function buzz(name) {
+  const p = VIB_P[name]; if (!p || !VIB.on) return;
+  const now = performance.now(); if (now - VIB.last < 70) return; VIB.last = now;
+  try { if (navigator.vibrate) { navigator.vibrate(p); return; } } catch (e) {}
+  if (!DEV.ios) return;
+  try {
+    if (!VIB.sw) {
+      const l = document.createElement('label'), i = document.createElement('input');
+      i.type = 'checkbox'; i.setAttribute('switch', ''); i.tabIndex = -1;
+      l.setAttribute('aria-hidden', 'true'); l.style.cssText = 'position:fixed;left:-200px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none';
+      l.addEventListener('click', e => e.stopPropagation()); i.addEventListener('click', e => e.stopPropagation());
+      l.appendChild(i); document.body.appendChild(l); VIB.sw = l;
+    }
+    VIB.sw.click();
+  } catch (e) {}
+}
 const sxLast = {}, sxRecent = [];
 function sfx(name) {
+  try { buzz(name); } catch (e) {}
   if (!SFX.on || !SFX.ctx) return;
   const v = SXS[name];
   if (!v) return sfxOld(name);
@@ -1416,6 +1476,8 @@ function newGame(seats, me, diff, opts = {}) {
         wave: 0, nextWave: FIRST_WAVE, incT: 0, mode: 'build', tool: 'arrow', sel: null, pending: 0, kills: 0,
         floats: [], flyers: [], coins: [], shake: 0, flash: 0, flashGold: 0, bad: null, hover: null, D: DIFF[diff] || DIFF.normal, userCam: false, quiet: false };
   seats.forEach((s, k) => G.b.push(newBoard(k, s)));
+  if (opts.quick) { G.quick = true; G.nextWave = 5; for (const b of G.b) b.gold = 70; }
+  if (opts.guide) G.guide = { step: -1, ok: false, t0: 0, hold: true, botOff: true, cells: null, cellsKind: '' };
   { const used = new Set(); for (const b of G.b) { if (b.col >= 0 && !used.has(b.col)) used.add(b.col); else b.col = -1; } for (const b of G.b) if (b.col < 0) { let c = used.has(b.k) ? 0 : b.k; while (used.has(c)) c++; b.col = c; used.add(c); } }
   jtNewGame(seats, opts);
   G.b.forEach(b => b.dist = bfs(b.grid));
@@ -1697,6 +1759,7 @@ function killFx(b, cr, bounty) {
   G.floats.push({ k: b.k, x: cr.x, y: cr.y - 0.3, txt: '+' + bounty, color: C.gold, t: big ? 1.3 : 0.8, ttl: big ? 1.3 : 0.8, big });
 }
 function leakFx(b, cr) {
+  specLeak(b, cr);
   G.floats.push({ k: b.k, x: 4.5, y: 12, txt: '−' + cr.lives, color: C.danger, t: 1, ttl: 1, big: true });
   if (fxOn(b.k)) {
     sfx('leak'); G.flash = cr.lives > 1 ? 0.8 : 0.5; G.shake = Math.max(G.shake, 6 + cr.lives * 2); bumpEl('meChip', 'hurt');
@@ -1707,6 +1770,7 @@ function leakFx(b, cr) {
   }
 }
 function arrivalFx(b, kind) {
+  if (kind === 'boss' && b.k !== G.me) specSay('boss' + b.k, `Un boss marche sur ${b.name}.`, 8);
   if (!fxOn(b.k)) return;
   if (kind === 'gold') sfx('sparkle');
   else if (kind === 'boss') sfx('boss');
@@ -1804,6 +1868,7 @@ function eliminate(b) {
   if (!G.elim.includes(b.k)) G.elim.push(b.k);
   const alive = G.b.filter(x => x.alive);
   if (alive.length <= 1) return finish(alive.length ? alive[0].k : -1);
+  specElim(b, alive.length);
   if (!G.quiet && !G.spec) sfx(b.k === G.me ? 'out' : 'outx');
   if (b.k === G.me) { toast(b.ghost ? 'Tu es éliminé : tu deviens un fantôme' : 'Tu es éliminé', 'bad'); showSpectate(); }
   updateCrown();
@@ -1897,7 +1962,7 @@ function updateCrown() {
 function crownFx(c) {
   cache.rivals = null; cache.me = null;
   if (c < 0 || !G.running || G.t - G.crownToastT < 6) return;
-  G.crownToastT = G.t; sfx('crown');
+  G.crownToastT = G.t; sfx('crown'); specSay('crown', `${G.b[c].name} prend la tête.`, 10);
 
 }
 function tickTimers(b, dt) {
@@ -2112,18 +2177,20 @@ function waveFx(sp, n) { sfx('wave'); }
 function step(dt) {
   G.t += dt;
   G.incT += dt;
-  if (G.incT >= INCOME_EVERY) {
-    G.incT -= INCOME_EVERY;
+  const IE = incEvery();
+  if (G.incT >= IE) {
+    G.incT -= IE;
     for (const b of G.b) if (b.alive) b.gold += b.bot ? Math.round(b.income * G.D.ai) : b.income;
     payoutFx();
   }
-  G.nextWave -= dt;
+  if (!(G.guide && G.guide.hold)) G.nextWave -= dt;
   if (G.jt) jtTick(dt); else if (!G.spn && isSpecial(G.wave + 1) && G.nextWave <= 5) { G.spn = pickSpecial(G.wave + 1); announceSpecial(G.spn); }
-  if (G.nextWave <= 0) { if (jtEntracteDue()) return; G.wave++; G.nextWave = WAVE_EVERY; G.spc = G.jt ? jtModAt(G.wave) : G.spn; G.spn = ''; startWave(); jtWaveStarted(); }
-  for (const b of G.b) if (b.bot && (b.alive || b.ghost)) { b.aiT -= dt; if (b.aiT <= 0) { if (b.alive) { b.aiT = G.D.think; aiThink(b.k); } else { b.aiT = 4 + Math.random() * 5; botGhost(b.k); } } }
+  if (G.nextWave <= 0) { if (jtEntracteDue()) return; G.wave++; G.nextWave = G.quick ? QUICK_WAVE : WAVE_EVERY; G.spc = G.jt ? jtModAt(G.wave) : G.spn; G.spn = ''; startWave(); jtWaveStarted(); }
+  for (const b of G.b) if (b.bot && (b.alive || b.ghost) && !(G.guide && G.guide.botOff)) { b.aiT -= dt; if (b.aiT <= 0) { if (b.alive) { b.aiT = G.D.think; aiThink(b.k); } else { b.aiT = 4 + Math.random() * 5; botGhost(b.k); } } }
   for (const b of G.b) { stepBoard(b, dt); if (G.ended) return; }
   updateCrown();
   stepShared(dt);
+  if (G.quick && !G.ended && G.t >= QUICK_SECS) quickEnd();
 }
 function stepShared(dt) {
   for (const f of G.floats) f.t -= dt;
@@ -2286,7 +2353,7 @@ function pushInputs() { if (NET.game) NET.game.presence({ role: 'player', name: 
 const seatCount = () => NET.seats.slice(0, NET.N).filter(s => s && !s.bot).length;
 function hostPresence() {
   if (!NET.game) return;
-  const base = { role: 'host', name: nick, ph: NET.phase, N: NET.N, tr: TERKEY, gt: gatesPref, seats: NET.seats.map(s => s ? [s.name, s.peer || '', s.bot ? 1 : 0, s.col ?? -1] : null) };
+  const base = { role: 'host', name: nick, ph: NET.phase, gi: NET.gid | 0, N: NET.N, tr: TERKEY, gt: gatesPref, seats: NET.seats.map(s => s ? [s.name, s.peer || '', s.bot ? 1 : 0, s.col ?? -1] : null) };
   let o = base;
   if (NET.phase !== 'lobby' && G) for (let maxC = WEB ? 80 : 50; maxC >= 0; maxC -= 10) { o = Object.assign({}, base, snapObj(maxC)); if (JSON.stringify(o).length <= (WEB ? 12000 : 3900)) break; }
   NET.game.presence(o).catch(() => {});
@@ -2379,7 +2446,9 @@ function clientOnPeers(ch) {
     if (G && G.net) { G.running = false; G.net = false; showOv('endOv', false); showOv('menuOv', false); showOv('startOv', true); demo(); showPanel('table'); }
     showLobby();
   } else if (pr.ph === 'play' || pr.ph === 'end') {
-    if (!G || !G.net) startClientGame();
+    if (G && G.net && G.ended && pr.ph === 'play' && (pr.gi | 0) !== (NET.cgid | 0)) { showOv('endOv', false); showOv('menuOv', false); startClientGame(); }
+    else if (!G || !G.net) startClientGame();
+    NET.cgid = pr.gi | 0;
     applySnap(pr);
   }
 }
@@ -2455,7 +2524,7 @@ function hostLaunch() {
     if (!NET.seats[k]) NET.seats[k] = { name: 'Bot ' + nb++, bot: true, col: freeColor() };
     seats.push({ name: NET.seats[k].name, bot: !!NET.seats[k].bot, col: NET.seats[k].col, maison: k === NET.hostSeat ? myMaison : NET.seats[k].maison });
   }
-  NET.phase = 'play'; NET.lastSeq.clear();
+  NET.phase = 'play'; NET.lastSeq.clear(); NET.gid = (NET.gid | 0) + 1;
   newGame(seats, NET.hostSeat, NET.diff, { terrain: TERKEY, gates: gatesPref }); G.running = true; G.net = true;
   audioInit(); G.userCam = false; layout(); Object.assign(cam, homeCam()); cam.goal = null;
   setMode('build'); showOv('startOv', false); toast('C\'est parti ! Touche une case pour poser une tour');
@@ -2800,7 +2869,7 @@ $('rivals').addEventListener('click', e => {
   if (aimPicksPlayer()) { if (G.b[k] && G.b[k].alive) aimAt(k); return; }
   sfx('click'); closePop(); goCam(laneCam(k));
 });
-$('meChip').addEventListener('click', () => { if (!G || !G.running || G.ended) return; sfx('click'); closePop(); toggleWheel(); });
+
 $('camBtn').addEventListener('click', () => { if (!G) return; sfx('click'); closePop(); if (isHome()) goCam(allCam()); else goCam(homeCam()); });
 function toggleWheel(open) {
   const w = $('wheel'); if (open === undefined) open = w.hidden;
@@ -2810,14 +2879,14 @@ function toggleWheel(open) {
 }
 $('wheel').addEventListener('click', e => { const b = e.target.closest('[data-em]'); if (!b) return; act(['m', +b.dataset.em]); toggleWheel(false); });
 let tauntT = null;
-function showTaunt() {
+function showTaunt() { return;
   if (!$('wheel').hidden || !G || G.spec) return;
   const t = $('taunt'), r = $('meChip').getBoundingClientRect();
   t.style.left = Math.max(16, r.left) + 'px'; t.style.top = (r.bottom + 8) + 'px'; t.hidden = false;
   clearTimeout(tauntT); tauntT = setTimeout(() => { t.hidden = true; }, 3000);
 }
 $('taunt').addEventListener('click', () => { act(['m', 0]); $('taunt').hidden = true; });
-function showBubble(k, i) {
+function showBubble(k, i) { return;
   const el = k === G.me ? $('meChip') : document.querySelector(`#rivals .who[data-k="${k}"]`);
   if (!el || !EMOTES[i]) return;
   const old = document.querySelector(`.bubble[data-k="${k}"]`); if (old) old.remove();
@@ -4909,6 +4978,7 @@ function drawLaneArt(b) {
     if (G.tool !== 'wall') P.dots(hx + 12, hy + 12, T_RANGE(G.tool) * CS, K.gh, 2, 5, 1);
   }
   if (mine && G.aim && G.aim.key === 'm' && G.hover) { const [hx, hy] = acell(G.hover.c, G.hover.r); P.dots(hx + 12, hy + 12, 1.4 * CS, K.fire1, 3, 4, 1); }
+  if (mine && G.guide) guideDraw(x);
   if (mine && G.bad) { const [bx, by] = acell(G.bad.c, G.bad.r); x.globalAlpha = 0.5 * G.bad.t / 0.4; P.rect(bx + 1, by + 1, 22, 22, K.hpR); x.globalAlpha = 1; }
   if (sel) {
     const [sx, sy] = acell(sel.c, sel.r);
@@ -6301,7 +6371,7 @@ function openTuto(i = 0) {
 }
 function closeTuto() { showOv('tutoOv', false); }
 function tutoGo(d) { const n = tutoI + d; if (n < 0) return; if (n >= TUTO.length) { sfx('click'); closeTuto(); return; } tutoI = n; sfx('click'); renderTuto(); }
-$('tutoBtn').addEventListener('click', () => { audioInit(); sfx('click'); openTuto(0); });
+$('tutoBtn').addEventListener('click', () => { audioInit(); sfx('click'); startGuide(); });
 $('tutoBtn2').addEventListener('click', () => { sfx('click'); openTuto(0); });
 $('tutoNext').addEventListener('click', () => tutoGo(1));
 $('tutoPrev').addEventListener('click', () => tutoGo(-1));
@@ -6339,7 +6409,7 @@ function updateUI() {
   renderHud();
   setTxt('gold', String(Math.max(0, me.gold - G.pending)));
   setTxt('inc', '+' + me.income);
-  $('payRing').style.width = (100 * G.incT / INCOME_EVERY).toFixed(1) + '%';
+  $('payRing').style.width = (100 * G.incT / incEvery()).toFixed(1) + '%';
   if (G.jt) jtWaveHud();
   else { jtWaveHudOff(); setTxt('waveNum', G.spc ? SPECIALS[G.spc].n : `Vague ${G.wave + 1}`); $('waveNum').classList.toggle('sp', !!G.spc); setTxt('waveT', `${G.spc ? 'suite' : 'dans'} ${Math.ceil(G.nextWave)} s`); }
   if (cache.free !== me.free && G.mode === 'build') renderItems();
@@ -6368,12 +6438,12 @@ function updateUI() {
 }
 
 /* =============== flow =============== */
-function showOv(id, on) { $(id).hidden = !on; if (id === 'startOv') { try { musCheck(); } catch (e) {} } }
+function showOv(id, on) { $(id).hidden = !on; if (id === 'startOv') { try { musCheck(); } catch (e) {} try { a2Check(); } catch (e) {} } }
 // the table's places and its small state: declared here, before the first screen can be shown (a page opened from an invitation link shows one at once)
-var TB = { N: 2, me: 0 }, TBX = { msg: '', edit: false, sheet: '', busy: false, link: false, say: '', sayT: 0 };
+var TB = { N: 2, me: 0 }, TBX = { msg: '', edit: false, sheet: '', busy: false, link: false, say: '', sayT: 0, quick: (() => { try { return localStorage.getItem('ddl-quick') === '1'; } catch (e) { return false; } })() };
 function showPanel(p) {
   document.querySelectorAll('#startOv [data-p]').forEach(el => el.hidden = el.dataset.p !== p);
-  const ov = $('startOv'); ov.classList.toggle('scene', p === 'home' || p === 'doors' || p === 'table'); ov.dataset.view = p; try { musCheck(); } catch (e) {}
+  const ov = $('startOv'); ov.classList.toggle('scene', p === 'home' || p === 'doors' || p === 'table'); ov.dataset.view = p; try { musCheck(); } catch (e) {} try { a2Check(); } catch (e) {}
   if (p !== 'table') { tbNameDone(); sheetClose(true); }
   if (p === 'doors' || p === 'table') renderSoloSetup();
   if (p === 'multi') $('nick').value = nick;
@@ -6396,7 +6466,7 @@ function renderSoloSetup() {
   if (!$('table').hidden) renderTable();
 }
 function startSolo() {
-  audioInit(); leaveRoom(); newGame(botSeats(soloN), Math.min(soloSeat, soloN - 1), diffKey, { gates: gatesPref }); G.running = true; G.userCam = false; setDock(); layout(); Object.assign(cam, homeCam()); cam.goal = null;
+  audioInit(); leaveRoom(); newGame(botSeats(soloN), Math.min(soloSeat, soloN - 1), diffKey, { gates: gatesPref, quick: TBX.quick }); G.running = true; G.userCam = false; setDock(); layout(); Object.assign(cam, homeCam()); cam.goal = null;
   setMode('build'); toast('Touche une case pour poser une tour'); showOv('startOv', false);
 }
 let DL;
@@ -6455,6 +6525,7 @@ function finish(winner) {
   $('endMain').textContent = NET.mode === 'solo' ? 'Rejouer' : NET.mode === 'host' ? 'Revenir au salon' : 'En attente de l\'hôte…';
   $('endMain').disabled = NET.mode === 'client';
   $('endAlt').textContent = NET.mode === 'solo' ? 'Retour au menu' : 'Quitter la partie';
+  endButtons(won);
   showOv('menuOv', false);
   setTimeout(() => { if (G && G.ended) showOv('endOv', true); }, 600);
 }
@@ -6463,7 +6534,7 @@ function showSpectate() {
   $('endKick').textContent = 'Éliminé'; $('endTitle').textContent = 'Ta clairière est tombée';
   $('endText').textContent = ghost ? 'Tu deviens un fantôme : maudis ou bénis les joueurs encore en jeu jusqu\'à la fin.' : 'La partie continue entre les autres joueurs. Tu peux la regarder jusqu\'au bout.';
   renderSummary(false); jtFinHide();
-  $('endMain').textContent = ghost ? 'Continuer en fantôme' : 'Regarder la fin'; $('endMain').disabled = false; $('endAlt').textContent = 'Quitter la partie';
+  $('endMain').textContent = ghost ? 'Continuer en fantôme' : 'Regarder la fin'; $('endMain').disabled = false; $('endAlt').textContent = 'Quitter la partie'; $('endRe').hidden = true; $('endMain').className = 'go';
   G.watching = true; G.aim = null; closePop(); toggleWheel(false); setDock(); layout();
   setTimeout(() => { if (G.watching && !G.ended) showOv('endOv', true); }, 500);
 }
@@ -6519,7 +6590,7 @@ $('nick').value = nick;
 function setNick(v) { nick = cleanName(v); hadNick = true; try { localStorage.setItem('ddl-nick', nick); } catch (e) {} if (G && !G.running && G.b[G.me]) { G.b[G.me].name = nick; } tbNameSync(); }
 $('nick').addEventListener('input', () => setNick($('nick').value));
 $('nick').addEventListener('blur', () => { $('nick').value = nick; });
-$('soloBtn').addEventListener('click', () => { audioInit(); sfx('door'); showPanel('doors'); });
+$('soloBtn').addEventListener('click', () => { audioInit(); sfx('door'); if (guideAuto()) return; showPanel('doors'); });
 $('multiBtn').addEventListener('click', () => { audioInit(); showPanel('multi'); });
 $('hostBtn').addEventListener('click', hostCreate);
 $('joinBtn').addEventListener('click', () => clientJoin($('codeIn').value.trim().toLowerCase()));
@@ -6552,14 +6623,16 @@ $('resumeBtn').addEventListener('click', closeMenu);
 $('speedBtn').addEventListener('click', () => { G.speed = G.speed === 1 ? 2 : 1; $('speedBtn').textContent = `Vitesse : ×${G.speed}`; });
 function soundLabel() { $('soundBtn').textContent = `Son : ${SFX.on ? 'activé' : 'coupé'}`; }
 $('soundBtn').addEventListener('click', () => { SFX.on = !SFX.on; try { localStorage.setItem('ddl-sound', SFX.on ? 'on' : 'off'); } catch (e) {} soundLabel(); audioInit(); sfx('click'); });
-// the sound settings: two switches, in the pause menu and in the table's settings sheet
+// the sound settings: switches in the pause menu and in the table's settings sheet (sounds, towers, music, vibrations)
 function soundSync() {
   const mt = $('soundBtn'), tw = $('towerSndBtn'); if (!mt || !tw) return;
   const mu = $('snMus'); if (mu) { mu.textContent = `Musique : ${MUS.on ? 'oui' : 'non'}`; mu.setAttribute('aria-pressed', MUS.on ? 'true' : 'false'); mu.disabled = !SFX.on; }
   mt.textContent = `Son : ${SFX.on ? 'activé' : 'coupé'}`; tw.textContent = `Sons des tours : ${SFX.tw ? 'activés' : 'coupés'}`; tw.disabled = !SFX.on;
+  const vb = $('snVib'); if (vb) { vb.hidden = !canVib(); vb.textContent = `Vibrations : ${VIB.on ? 'oui' : 'non'}`; vb.setAttribute('aria-pressed', VIB.on ? 'true' : 'false'); }
   const a = $('snAll'), b = $('snTw'); if (a && b) { a.textContent = `Sons : ${SFX.on ? 'oui' : 'non'}`; b.textContent = `Tours : ${SFX.tw ? 'oui' : 'non'}`; a.setAttribute('aria-pressed', SFX.on ? 'true' : 'false'); b.setAttribute('aria-pressed', SFX.tw ? 'true' : 'false'); b.disabled = !SFX.on; }
 }
 function soundSet(which) {
+  if (which === 'vib') { VIB.on = !VIB.on; try { localStorage.setItem('ddl-vib', VIB.on ? 'on' : 'off'); } catch (e) {} soundSync(); sfx('click'); buzz('upgrade'); return; }
   if (which === 'mus') { MUS.on = !MUS.on; try { localStorage.setItem('ddl-music', MUS.on ? 'on' : 'off'); } catch (e) {} soundSync(); musCheck(); sfx('click'); return; }
   if (which === 'all') { SFX.on = !SFX.on; try { localStorage.setItem('ddl-sound', SFX.on ? 'on' : 'off'); } catch (e) {} }
   else { SFX.tw = !SFX.tw; try { localStorage.setItem('ddl-sound-tw', SFX.tw ? 'on' : 'off'); } catch (e) {} }
@@ -6569,6 +6642,7 @@ $('towerSndBtn').addEventListener('click', () => soundSet('tw'));
 $('snAll').addEventListener('click', () => soundSet('all'));
 $('snTw').addEventListener('click', () => soundSet('tw'));
 $('snMus').addEventListener('click', () => soundSet('mus'));
+$('snVib').addEventListener('click', () => soundSet('vib'));
 $('soundBtn').addEventListener('click', () => setTimeout(soundSync, 0));
 soundSync();
 // a hidden tab is silent, and wakes up with the page (iPhone Safari keeps the sound going otherwise)
@@ -6910,6 +6984,198 @@ $('invJoin').addEventListener('click', () => {
   clientJoin(NET.inviteCode);
 });
 $('invBack').addEventListener('click', () => { dropPeek(); setHash(''); showPanel('home'); });
+/* =============== version 41 (20/10): what Patrick said "go" to =============== */
+
+/* ---------------------------------------------------------------- the home: a quiet tip to put the game on the home screen
+   an iPhone in Safari (outside the home screen): how to add it; Android: one tap to install, when the browser offers it.
+   Never inside claude.ai (a frame), never on the first visit, never again once closed. */
+var A2EV = null, VISITS = 1;   // var, not let: the game's own code can run before these lines (the menu's background game)
+try { VISITS = (parseInt(localStorage.getItem('ddl-visits'), 10) || 0) + 1; localStorage.setItem('ddl-visits', String(VISITS)); } catch (e) {}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); A2EV = e; a2Check(); });
+function a2Check() {
+  const el = $('a2hs'); if (!el) return;
+  let off = false; try { off = localStorage.getItem('ddl-a2hs') === 'off'; } catch (e) {}
+  const ov = $('startOv'), home = !ov.hidden && (ov.dataset.view || 'home') === 'home';
+  const can = !DEV.standalone && !DEV.framed && !off && VISITS >= 2 && (DEV.ios || !!A2EV);
+  const show = can && home;
+  if (show) {
+    const ios = DEV.ios, html = ios ? 'Pour jouer en plein écran : touche <b>Partager</b>, puis <b>Sur l’écran d’accueil</b>.' : 'Installe Domus TD : il s’ouvrira en plein écran, comme une appli.';
+    const t = $('a2hsT'); if (t.dataset.h !== html) { t.dataset.h = html; t.innerHTML = html; }
+    $('a2hsGo').hidden = ios || !A2EV;
+  }
+  if (el.hidden === show) el.hidden = !show;
+}
+$('a2hsX').addEventListener('click', () => { try { localStorage.setItem('ddl-a2hs', 'off'); } catch (e) {} sfx('back'); a2Check(); });
+$('a2hsGo').addEventListener('click', async () => {
+  const ev = A2EV; if (!ev) return;
+  sfx('click');
+  try { ev.prompt(); const r = await ev.userChoice; if (r && r.outcome === 'accepted') { try { localStorage.setItem('ddl-a2hs', 'off'); } catch (e) {} } } catch (e) {}
+  A2EV = null; a2Check();
+});
+a2Check();
+
+/* ---------------------------------------------------------------- a game of five minutes (solo): waves every 15 s, income every 7 s,
+   more gold to start with, the Interlude at wave 7; at 5:00 the House with the most lives wins */
+var QUICK_SECS = 300, QUICK_WAVE = 15, QUICK_INC = 7;
+function incEvery() { return G && G.quick ? 7 : INCOME_EVERY; }
+function quickClock() { return fmt(Math.max(0, 300 - G.t)); }
+choice('quickChoice', 'data-q', v => { TBX.quick = v === '1'; try { localStorage.setItem('ddl-quick', TBX.quick ? '1' : '0'); } catch (e) {} sfx('click'); rowsSync(); });
+function quickEnd() {
+  const alive = G.b.filter(b => b.alive).sort((a, c) => c.lives - a.lives || c.st.kills - a.st.kills || a.k - c.k);
+  G.timeUp = true;
+  finish(alive.length ? alive[0].k : -1);
+}
+
+/* ---------------------------------------------------------------- the end card: the rematch in one tap
+   solo: "Rejouer" after a win, "Revanche" after a loss (the same table, at once, as before);
+   online: the host gets "Revanche" (the same players and Houses, at once, everyone is taken along), "Revenir au salon" stays */
+function endButtons(won) {
+  const re = $('endRe'), main = $('endMain');
+  re.hidden = NET.mode !== 'host';
+  main.className = NET.mode === 'host' ? 'sec' : 'go';
+  if (NET.mode === 'solo') main.textContent = won ? 'Rejouer' : 'Revanche';
+  if (NET.mode === 'client') main.textContent = 'L’hôte peut lancer la revanche';
+  if (G.timeUp) {
+    const w = G.winner >= 0 && G.b[G.winner] ? G.b[G.winner].name : '';
+    $('endText').textContent = won ? 'Temps écoulé : ta Maison garde le plus de vies. La Couronne des Lices est à toi.' : `Temps écoulé : ${w ? 'le blason de ' + w : 'un autre blason'} garde plus de vies que le tien.`;
+  }
+  if (G.guided) { try { localStorage.setItem('ddl-guide', 'done'); } catch (e) {} }
+}
+function hostRematch() {
+  if (NET.mode !== 'host' || NET.busy) return;
+  sfx('click');
+  NET.phase = 'lobby';
+  NET.seats = NET.seats.map((s, k) => (k === NET.hostSeat ? s : (s && !s.bot ? s : null)));
+  showOv('endOv', false); showOv('menuOv', false);
+  hostLaunch();
+}
+$('endRe').addEventListener('click', hostRematch);
+
+/* ---------------------------------------------------------------- the first game, guided and played
+   1 against 1, an easy bot that waits; the waves wait for each step; a note above the bar says what to do, gold squares show where */
+const GUIDE_STEPS = [
+  { say: 'Les créatures entrent en haut et descendent vers ta Maison, tout en bas. Chaque créature qui passe te coûte des vies.', btn: 'Suivant' },
+  { say: 'Pose un Archer : touche une des cases dorées, au bord du chemin.', tool: 'arrow', cells: 'side', done: me => me.grid.some(t => t && t.type !== 'wall') },
+  { say: 'Une tour bloque aussi le passage : les créatures font le tour. Choisis Mur en bas, puis pose deux murs sur les cases dorées pour allonger leur chemin.',
+    cells: 'path', hl: () => (G.tool === 'wall' ? '' : '#items [data-tool="wall"]'), done: me => me.grid.filter(t => t && t.type === 'wall').length >= 2 },
+  { say: 'La première vague arrive. Tes tours tirent toutes seules.', wave: true, done: me => G.wave >= 1 && G.t - G.guide.t0 > 5 && !me.creeps.length && !me.queue.length, max: 45 },
+  { say: 'Chaque créature tuée rapporte de l’or, et ton revenu tombe toutes les 10 secondes. Touche ton Archer, puis Améliorer.', gold: 40, cells: 'tower',
+    hl: () => (document.querySelector('#pop:not([hidden]) [data-act="u"]') ? '#pop [data-act="u"]' : ''), done: me => me.grid.some(t => t && t.type !== 'wall' && t.lvl >= 2) },
+  { say: 'Envoie des créatures chez ton rival : elles le gênent et font monter ton revenu. Ouvre Envoyer, puis touche le Rat.', gold: 20,
+    hl: () => (G.mode === 'send' ? '#items [data-send="rat"]' : '#dock [data-mode="send"]'), done: me => !!(me.jt && me.jt.sent > 0) },
+  { say: 'La statue au milieu de ton terrain, c’est l’emblème de ta Maison : il frappe les créatures autour de lui et gagne des niveaux. Construis près de lui.', btn: 'Suivant', cells: 'emblem' },
+  { say: 'Au niveau 3, une tour prend sa forme. Au niveau 4, quand deux familles (l’Arc, les Arcanes, la Poudre) ont chacune une tour au sommet, un chef-d’œuvre s’ouvre dans Construire : une tour unique, une seule par partie.', btn: 'Suivant' },
+  { say: 'À toi de jouer : fais tomber le blason de ton rival.', btn: 'C’est parti', last: true },
+];
+// a brand-new player's first "Jouer" starts the guided game; "Comment jouer" starts it any time
+function guideAuto() {
+  let go = false;
+  try {
+    const f = k => localStorage.getItem(k);
+    if (f('ddl-guide')) return false;
+    const fresh = !(f('ddl-tuto') || f('jt-maison') || f('ddl-nick') || f('ddl-col'));
+    go = f('ddl-guide-test') === '1' || (fresh && !navigator.webdriver);
+  } catch (e) {}
+  if (!go) return false;
+  startGuide(); return true;
+}
+function startGuide() {
+  audioInit(); leaveRoom();
+  const keep = soloSeat; soloSeat = 0; const seats = botSeats(2); soloSeat = keep;
+  newGame(seats, 0, 'easy', { gates: 1, guide: true });
+  G.running = true; G.userCam = false; setDock(); layout(); Object.assign(cam, homeCam()); cam.goal = null;
+  setMode('build'); showOv('startOv', false);
+  try { localStorage.setItem('ddl-tuto', '1'); } catch (e) {}
+  $('tutoBtn').classList.remove('fresh');
+  guideGo(0);
+}
+// the cells to show: beside the path near the top, on the path lower down (walls make it longer), the player's tower, around the emblem
+function guideCells(kind) {
+  const me = G.b[G.me], out = [], ok = (c, r) => c >= 0 && c < COLS && r >= 0 && r < ROWS && !buildReason(me, c, r) && !out.some(([a, b]) => a === c && b === r);
+  if (kind === 'tower') { for (const t of me.grid) if (t && t.type !== 'wall') out.push([t.c, t.r]); return out.slice(0, 3); }
+  if (kind === 'emblem') { const em = me.jt && me.jt.em; if (!em) return null; for (const [dc, dr] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) if (ok(em.c + dc, em.r + dr)) out.push([em.c + dc, em.r + dr]); return out; }
+  const path = pathCells(me, SPAWN).map(i => [i % COLS, (i / COLS) | 0]);
+  if (kind === 'side') { for (const [c, r] of path) if (r >= 1 && r <= 5) for (const dc of [-1, 1]) if (out.length < 4 && ok(c + dc, r)) out.push([c + dc, r]); return out; }
+  if (kind === 'path') { for (const [c, r] of path) if (r >= 3 && r <= 7 && out.length < 3 && ok(c, r)) out.push([c, r]); return out; }
+  return null;
+}
+function guideGo(i) {
+  const GD = G && G.guide; if (!GD) return;
+  const st = GUIDE_STEPS[i];
+  if (!st) { guideEnd(); return; }
+  GD.step = i; GD.ok = false; GD.t0 = G.t;
+  const me = G.b[G.me];
+  if (st.gold && me.gold < st.gold) me.gold = st.gold;
+  if (st.tool && G.tool !== st.tool) { G.tool = st.tool; renderItems(); }
+  GD.hold = !st.wave && !st.last; GD.botOff = !st.last;
+  if (st.wave) G.nextWave = Math.min(G.nextWave, 3);
+  GD.cellsKind = st.cells || ''; GD.cells = st.cells ? guideCells(st.cells) : null;
+  $('guideT').textContent = st.say; $('guideN').textContent = `${i + 1} / ${GUIDE_STEPS.length}`;
+  $('guideBtn').hidden = !st.btn; if (st.btn) $('guideBtn').textContent = st.btn;
+  $('guideSkip').hidden = !!st.last;
+  guideLayout();
+}
+function guideEnd() {
+  if (G && G.guide) { G.guide = null; G.guided = true; }
+  try { localStorage.setItem('ddl-guide', 'done'); } catch (e) {}
+  $('guide').hidden = true; guideHL('');
+}
+function guideLayout() { const r = $('dock').getBoundingClientRect(), el = $('guide'); el.style.bottom = Math.max(12, Math.round(innerHeight - (r.top || innerHeight)) + 10) + 'px'; }
+var guideHlEl = null;
+function guideHL(sel) {
+  const el = sel ? document.querySelector(sel) : null;
+  if (el === guideHlEl) return;
+  if (guideHlEl) guideHlEl.classList.remove('guide-hl');
+  guideHlEl = el; if (el) el.classList.add('guide-hl');
+}
+function guideTick() {
+  const el = $('guide'), live = !!(G && G.guide && G.running && !G.ended && $('startOv').hidden && $('endOv').hidden);
+  if (!live) { if (!el.hidden) el.hidden = true; guideHL(''); return; }
+  if (el.hidden) { el.hidden = false; guideLayout(); }
+  const GD = G.guide, st = GUIDE_STEPS[GD.step], me = G.b[G.me];
+  if (!st) return;
+  guideHL(typeof st.hl === 'function' ? st.hl() : st.hl || '');
+  if (GD.cellsKind && GD.cellsKind !== 'emblem') GD.cells = guideCells(GD.cellsKind);
+  if (!GD.ok && st.done && (st.done(me) || (st.max && G.t - GD.t0 > st.max))) { GD.ok = true; sfx('upgrade'); const n = GD.step + 1; setTimeout(() => { if (G && G.guide && G.guide.step === n - 1) guideGo(n); }, 700); }
+}
+setInterval(() => { try { guideTick(); } catch (e) {} }, 200);
+addEventListener('resize', () => { if (!$('guide').hidden) guideLayout(); });
+$('guideBtn').addEventListener('click', () => {
+  const GD = G && G.guide; if (!GD) return;
+  sfx('click');
+  if (GUIDE_STEPS[GD.step] && GUIDE_STEPS[GD.step].last) guideEnd(); else guideGo(GD.step + 1);
+});
+$('guideSkip').addEventListener('click', () => { sfx('back'); guideEnd(); });
+// the gold squares on the lane, drawn by the game's own pen, in the terrain's accent
+function guideDraw(x) {
+  const cells = G.guide && G.guide.cells; if (!cells || !cells.length) return;
+  const a = 0.5 + 0.35 * Math.sin(G.t * 5.5);
+  for (const [c, r] of cells) {
+    const [gx, gy] = acell(c, r);
+    x.globalAlpha = 0.18 * a; P.rect(gx + 1, gy + 1, 22, 22, K.ua); x.globalAlpha = a;
+    for (const [px, py, dx, dy] of [[gx + 1, gy + 1, 1, 1], [gx + 22, gy + 1, -1, 1], [gx + 1, gy + 22, 1, -1], [gx + 22, gy + 22, -1, -1]]) { P.hl(dx > 0 ? px : px - 4, py, 5, K.ua); P.vl(px, dy > 0 ? py : py - 4, 5, K.ua); }
+    x.globalAlpha = 1;
+  }
+}
+
+/* ---------------------------------------------------------------- the spectator's commentary: once out (or watching), the herald's notes tell what happens elsewhere */
+var SPECM = { last: {}, low: {} };
+function specOn() { return !!(G && G.running && !G.ended && !G.quiet && (G.spec || (G.b[G.me] && !G.b[G.me].alive))); }
+function specSay(key, txt, gap = 6) {
+  if (!specOn() || !SPECM) return;
+  const now = performance.now(); if (now - (SPECM.last[key] || 0) < gap * 1000) return; SPECM.last[key] = now;
+  toast(txt, 'spec');
+}
+function specLeak(b, cr) {
+  if (!specOn() || b.k === G.me) return;
+  if (cr.lives >= 3) specSay('leak' + b.k, `${b.name} perd ${cr.lives} vies d’un coup.`, 5);
+  if (b.alive && b.lives > 0 && b.lives <= 5 && !SPECM.low[b.k]) { SPECM.low[b.k] = 1; specSay('low' + b.k, `${b.name} n’a plus que ${b.lives} vie${b.lives > 1 ? 's' : ''}.`, 0); }
+}
+function specElim(b, left) {
+  if (b.k === G.me) return;
+  specSay('elim' + b.k, `${b.name} est éliminé. ${left === 2 ? 'Duel final !' : `Plus que ${left} Maisons.`}`, 0);
+}
+
 /* =============== multiplayer bootstrap =============== */
 if (WEB) {
   $('multiBtn').disabled = false; $('multiBtn').textContent = 'Jouer en ligne';
@@ -7077,7 +7343,7 @@ const charsBy = w => G.jt.chars.filter((c, i) => charWave(i) <= w);
 const slotWave = s => 3 + 2 * s;
 function jtGen(s) {
   const w = slotWave(s), J = G.jt, recent = J.prog.slice(-2).map(e => e.k);
-  if (w === 11 && G.b.filter(b => b.alive).length >= 2) return { w, k: 'entracte' };
+  if (w === (G.quick ? 7 : 11) && G.b.filter(b => b.alive).length >= 2) return { w, k: 'entracte' };
   // no more votes: where one used to be, the herald draws the event himself from a family it did not draw last time
   if (s % 3 === 2) {
     const fams = ['assaut', 'bonus', 'carte', 'ombre', 'caractere'].filter(f => f !== J.lastVoteFam);
@@ -8644,7 +8910,7 @@ function anBar(V, I, dot) {
   const ic = anIcon(I.sign, 1), secs = Math.max(0, Math.ceil(G.nextWave)) + ' s';
   const iB = `<span class="an-i" aria-hidden="true">i${dot ? '<span class="an-dot"></span>' : ''}</span>`;
   if (V === 'A') return `<span class="anA-fan" style="background:${I.col}"><b>${ROMAN(I.w)}</b></span><span class="anA-ic">${ic}</span><span class="an-tx"><b>${secs}</b><span>vague ${G.wave + 1}</span></span>${iB}`;
-  if (V === 'B') return `<span class="an-st anB-sh">${anShield(I.col)}${ic}</span><span class="an-tx anB-tx"><b>VAGUE ${I.w}</b><span>${anHourglass()}${secs}</span></span>${iB}`;
+  if (V === 'B') return `<span class="an-st anB-sh">${anShield(I.col)}${ic}</span><span class="an-tx anB-tx"><b>${G.quick ? quickClock() : 'VAGUE ' + I.w}</b><span>${anHourglass()}${secs}</span></span>${iB}`;
   if (V === 'C') return `<span class="an-st anC-m">${anMedal(I.col)}${ic}<span class="anC-n">${I.w}</span><span class="an-i${dot ? ' hot' : ''}" aria-hidden="true">i</span></span><span class="an-tx anC-tx"><b>${anHourglass()}${secs}</b></span>`;
   return `<span class="anD-sc"><b>${ROMAN(I.w)}</b>${ic}${iB}</span><span class="an-tx"><b>${anHourglass()}${secs}</b></span>`;
 }
@@ -9204,7 +9470,7 @@ function rowsSync(over) {
   $('terThumb').style.backgroundImage = `url('${TEXS[ter].xs}')`;
   $('terName').textContent = TERRAINS[ter].n;
   const g = guest ? NET.gt || 1 : gatesPref, en = `${g} entrée${g > 1 ? 's' : ''}`;
-  $('setVal').textContent = guest ? en : `${LEVEL_N[host ? NET.diff : diffKey] || 'Normal'} · ${en}`;
+  $('setVal').textContent = guest ? en : `${LEVEL_N[host ? NET.diff : diffKey] || 'Normal'} · ${en}${NET.mode === 'solo' && TBX.quick ? ' · Rapide' : ''}`;
   $('terRow').disabled = $('setRow').disabled = guest;
 }
 function tableLayout() {
@@ -9265,7 +9531,7 @@ function sheetOpen(kind) {
   const sh = $('tbSheet'); TBX.sheet = kind; sh.dataset.kind = kind; sh.classList.remove('out');
   $('shTitle').textContent = kind === 'ter' ? 'Terrain' : 'Réglages';
   if (kind === 'ter') renderTerSheet();
-  else { setChoice('diffChoice', 'data-d', NET.mode === 'host' ? NET.diff : diffKey); setChoice('gateChoice', 'data-g', String(gatesPref)); }
+  else { setChoice('diffChoice', 'data-d', NET.mode === 'host' ? NET.diff : diffKey); setChoice('gateChoice', 'data-g', String(gatesPref)); setChoice('quickChoice', 'data-q', TBX.quick ? '1' : '0'); $('quickRow').hidden = NET.mode !== 'solo'; }
   sh.hidden = false; $('tbCol').setAttribute('inert', ''); $('shClose').focus({ preventScroll: true });
 }
 function sheetClose(now) {
