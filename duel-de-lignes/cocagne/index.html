@@ -860,7 +860,7 @@ body:has(#startOv:not([hidden])) .toasts .toast{text-align:center}
 .guide .go{padding:8px 16px;font-size:15px;color:var(--pink)}
 .guide-hl{position:relative;z-index:2;animation:ghl 1s steps(2) infinite}
 @keyframes ghl{0%{box-shadow:inset 0 0 0 3px var(--gold),0 0 0 2px var(--gold)}50%{box-shadow:inset 0 0 0 3px transparent,0 0 0 2px transparent}}
-.toast.spec{background:var(--parch);color:var(--pink);box-shadow:inset calc(var(--u)*2) 0 0 var(--gold);font-weight:600}
+.toast.specnote{background:var(--parch);color:var(--pink);box-shadow:inset calc(var(--u)*2) 0 0 var(--gold);font-weight:600}
 @media (max-height:700px){.guide-in{padding:9px 12px 8px;gap:6px}.guide-in p{font-size:15px;line-height:1.3}}
 @media (prefers-reduced-motion:reduce){.a2hs,.guide-in{animation:none}.guide-hl{animation:none;box-shadow:inset 0 0 0 3px var(--gold)}}
 </style>
@@ -7164,7 +7164,7 @@ function specOn() { return !!(G && G.running && !G.ended && !G.quiet && (G.spec 
 function specSay(key, txt, gap = 6) {
   if (!specOn() || !SPECM) return;
   const now = performance.now(); if (now - (SPECM.last[key] || 0) < gap * 1000) return; SPECM.last[key] = now;
-  toast(txt, 'spec');
+  toast(txt, 'specnote');
 }
 function specLeak(b, cr) {
   if (!specOn() || b.k === G.me) return;
@@ -7173,7 +7173,7 @@ function specLeak(b, cr) {
 }
 function specElim(b, left) {
   if (b.k === G.me) return;
-  specSay('elim' + b.k, `${b.name} est éliminé. ${left === 2 ? 'Duel final !' : `Plus que ${left} Maisons.`}`, 0);
+  specSay('elim' + b.k, `${b.name} tombe. ${left === 2 ? 'Duel final !' : `Plus que ${left} Maisons.`}`, 0);
 }
 
 /* =============== multiplayer bootstrap =============== */
