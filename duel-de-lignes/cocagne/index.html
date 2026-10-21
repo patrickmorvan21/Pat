@@ -1117,6 +1117,70 @@ body.fou-late .fou-qbar i{background:#e5806d}
 .pf-rec .cp{margin-right:auto}
 .pf-rec b{font:400 22px/1 var(--fb);color:var(--ink);margin-right:3px}
 @media (max-height:700px){.pf-stage{height:clamp(270px,42vh,340px)}.pf-gn{font-size:26px;line-height:26px}}
+/* ---------------------------------------------------------------- fourche « Bandeau » (4e vague): the band of a touched player, the launch room A */
+.bd{position:fixed;left:0;right:0;z-index:2;pointer-events:none;overflow:hidden;transform:translateX(-101%)}
+.bd.in{transform:none;transition:transform .2s steps(4,end)}
+.bd.out{transform:translateX(-101%);transition:transform .2s steps(4,end)}
+.bd .bd-bg{position:absolute;inset:0}
+.bd canvas{position:absolute;display:block;image-rendering:pixelated}
+.bd .bd-tx{position:absolute;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;text-align:right}
+.bd .bd-ti{font-family:var(--f);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#e3c97f;white-space:nowrap}
+.bd .bd-ti[hidden]{display:none}
+.bd .bd-nm{font-family:var(--ft);font-weight:400;color:#fbf6ea;text-shadow:0 3px 0 rgba(8,14,18,.55);white-space:nowrap}
+.lr{position:fixed;inset:0;z-index:13;background:#0f181e;overflow:hidden;touch-action:manipulation;-webkit-user-select:none;user-select:none;font-family:var(--f);color:#e0e5e6}
+.lr [hidden]{display:none!important}
+.lr .abs{position:absolute}
+.lr .lr-bands,.lr .lr-fx{position:absolute;inset:0}
+.lr .lr-fx{pointer-events:none}
+.lr .lr-band{position:absolute;inset:0;pointer-events:none;transform:translateX(var(--from,-110vw));filter:brightness(.62) saturate(.7)}
+.lr .lr-band.in{transform:none;transition:transform .3s steps(4,end)}
+.lr .lr-band.now{transition:none}
+.lr .lr-band.rd{filter:none}
+.lr .lr-clip{position:absolute;inset:0}
+.lr canvas{position:absolute;display:block;image-rendering:pixelated}
+.lr .lr-tag{position:absolute;display:flex;flex-direction:column}
+.lr .lr-nm{font-family:var(--ft);font-weight:400;color:#fbf6ea;line-height:1;text-shadow:0 3px 0 rgba(8,14,18,.55);white-space:nowrap}
+.lr .lr-ti{font-weight:700;color:#e3c97f;letter-spacing:.14em;text-transform:uppercase;line-height:1.15;white-space:nowrap}
+.lr .lr-dot{position:absolute;background:#e0e5e6;animation:lrDot .9s steps(1) infinite}
+@keyframes lrDot{0%{opacity:.25}33%{opacity:1}66%{opacity:.25}}
+.lr .lr-band.rd .lr-dots{display:none}
+.lr .lr-ck{position:absolute;background:#d5bf7b;box-shadow:inset 0 -3px 0 #a88d4e;display:flex;align-items:center;justify-content:center;opacity:0}
+.lr .lr-ck img{display:block;image-rendering:pixelated}
+.lr .lr-band.rd .lr-ck{opacity:1;animation:lrPop .3s steps(3)}
+@keyframes lrPop{0%{transform:scale(.2)}50%{transform:scale(1.35)}100%{transform:none}}
+.lr .lr-fl{position:absolute;inset:0;background:#fbf6ea;opacity:0}
+.lr .lr-band.flash .lr-fl{animation:lrFl .3s steps(3) forwards}
+@keyframes lrFl{0%{opacity:.85}100%{opacity:0}}
+.lr .lr-st{position:absolute;inset:0;opacity:0}
+.lr .lr-band.arrive .lr-st{animation:lrSt .34s steps(1) forwards}
+@keyframes lrSt{0%{opacity:1}100%{opacity:0}}
+.lr .lr-seam{position:absolute;inset:0;background:#d5bf7b}
+.lr .lr-arw{position:absolute;border:0;background:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;pointer-events:auto}
+.lr .lr-arw img{display:block;image-rendering:pixelated;animation:lrArw .5s steps(1) infinite}
+@keyframes lrArw{50%{transform:scale(1.15)}}
+.lr .lr-sp{position:absolute;opacity:0;image-rendering:pixelated}
+.lr .lr-sp.on{animation:lrSp .45s steps(4) forwards}
+@keyframes lrSp{0%{opacity:1;transform:scale(.3)}20%{opacity:1;transform:none}100%{opacity:0;transform:scale(1.4)}}
+.lr .lr-back{position:absolute;left:10px;top:calc(10px + env(safe-area-inset-top,0px));width:44px;height:44px;border:0;background:none;padding:0;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2}
+.lr .lr-pips{position:absolute;left:0;right:0;bottom:calc(98px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;gap:8px;z-index:2}
+.lr .lr-pip{position:relative;width:12px;height:12px;box-shadow:inset 0 0 0 2px #5d737a}
+.lr .lr-pip.on::after{content:'';position:absolute;inset:0;background:#d5bf7b}
+.lr .lr-go{position:absolute;left:20px;right:20px;bottom:calc(30px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto;height:54px;border:0;border-radius:0;background:#d5bf7b;color:#1b2b34;font:700 17px var(--f);letter-spacing:.16em;text-transform:uppercase;box-shadow:inset 0 -4px 0 #b39c5b;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;z-index:2}
+.lr .lr-go img{display:block;image-rendering:pixelated}
+.lr .lr-go.on{transform:translateY(3px);box-shadow:inset 0 -1px 0 #b39c5b;background:#cdb571}
+.lr .lr-go:disabled{cursor:default}
+.lr .lr-go:disabled:not(.on){background:#27373e;color:#8ea2a7;box-shadow:none;letter-spacing:.08em}
+.lr .lr-cd{position:absolute;left:0;right:0;text-align:center;font-family:var(--ft);line-height:1;color:#fbf0c4;text-shadow:0 8px 0 rgba(8,14,18,.6);pointer-events:none;z-index:3}
+.lr .lr-cd.pop{animation:lrCd .5s steps(5) forwards}
+@keyframes lrCd{0%{transform:scale(1.6)}40%{transform:none}}
+.lr .lr-flash{position:absolute;inset:0;background:#fbf6ea;opacity:0;pointer-events:none;z-index:4}
+.lr .lr-probe{position:absolute;left:0;width:0;top:env(safe-area-inset-top,0px);height:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none}
+.lr.flash{background:transparent;pointer-events:none}
+.lr.flash .lr-bands,.lr.flash .lr-fx,.lr.flash .lr-back,.lr.flash .lr-pips,.lr.flash .lr-go,.lr.flash .lr-cd{visibility:hidden}
+.lr.flash .lr-flash{animation:lrFlash .45s steps(5) forwards}
+@keyframes lrFlash{0%{opacity:1}100%{opacity:0}}
+body:has(#lrOv:not([hidden])) .toasts{z-index:14;left:12px;right:12px;max-width:none;align-items:center;top:calc(env(safe-area-inset-top,0px) + 60px)!important}
+@media (prefers-reduced-motion: reduce){.bd.in,.bd.out,.lr .lr-band.in{transition:none}.lr *{animation-duration:.01s!important}}
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
 </head>
@@ -2632,7 +2696,7 @@ function hostPresence() {
   if (!NET.game) return;
   const base = { role: 'host', name: nick, ph: NET.phase, gi: NET.gid | 0, N: NET.N, tr: TERKEY, gt: gatesPref, seats: NET.seats.map((s, k) => s ? [s.name, s.peer || '', s.bot ? 1 : 0, s.col ?? -1, k === NET.hostSeat ? profWire(myMaison) : profWireOf(s.cos)] : null) };
   let o = base;
-  if (NET.phase !== 'lobby' && G) for (let maxC = WEB ? 80 : 50; maxC >= 0; maxC -= 10) { o = Object.assign({}, base, snapObj(maxC)); if (JSON.stringify(o).length <= (WEB ? 12000 : 3900)) break; }
+  if (NET.phase !== 'lobby' && NET.phase !== 'launch' && G) for (let maxC = WEB ? 80 : 50; maxC >= 0; maxC -= 10) { o = Object.assign({}, base, snapObj(maxC)); if (JSON.stringify(o).length <= (WEB ? 12000 : 3900)) break; }
   NET.game.presence(o).catch(() => {});
   const lob = NET.phase === 'lobby' ? { c: NET.code, n: nick, p: seatCount(), N: NET.N } : null, key = JSON.stringify(lob);
   if (NET.lobby && key !== NET.lobbyKey) { NET.lobbyKey = key; NET.lobby.presence({ g: lob }).catch(() => {}); }
@@ -8099,6 +8163,522 @@ showOv = function (id, on) {
 };
 window.addEventListener('resize', () => { if (PODX.res && !$('endOv').hidden) requestAnimationFrame(podLayout); });
 $('finShare').addEventListener('click', () => { sfx('click'); $('saveBtn').click(); });
+
+/* ================================================================ fourche « Bandeau » (4e vague, Patrick 20/10, 23 h 33)
+   1. Touching a player's place at the top shows a band under the places for two seconds: their general at the left, cut by the edge and
+      by the band's bottom above the feet (as Léa's Ours on the board), their banner behind him (b.cos.motif, b.cos.stars), their title
+      (b.cos.title; no line when there is none) and their name at the right. No stats (they are for the end).
+   2. The launch room A (the slanted bands, validated with its 3rd-round retouch): every game from the table starts there. One band per
+      player: the general against their edge, the banner whole on the free side, the name at the far end; waiting dots, Prêt, the gold
+      check, then 3, 2, 1 and the game. Against bots and online: the host runs it (the Houses, who is ready and the countdown travel with
+      its presence, field `lr`), a guest says it is ready with its own (field `rd`). A player not ready yet may still change House (‹ ›).
+   Under automation the room is skipped, like the guided first game (navigator.webdriver), unless localStorage 'ddl-launch-test' is '1'.
+   The cosmetics come from b.cos in a game, from the seats in the room (seat.cos), with the defaults of the common contract. */
+
+// a player's cosmetics, from a board (b.cos) or a seat (seat.cos), with the defaults
+function bdCos(src) {
+  const c = (src && src.cos) || {};
+  return {
+    tenue: typeof c.tenue === 'string' && c.tenue ? c.tenue : 'bois',
+    motif: typeof BANNER !== 'undefined' && BANNER.MOTIFS[c.motif] ? c.motif : 'chevrons',
+    title: typeof c.title === 'string' ? c.title.trim().slice(0, 32) : '',
+    stars: Math.max(0, Math.min(3, c.stars | 0)),
+  };
+}
+function bdMix(a, b, t) {
+  const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), A = p(a), B = p(b);
+  return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join('');
+}
+// a general's idle frames in a player's colour (and outfit, when the game knows outfits); null until the art has loaded
+function bdFrames(m, col, tenue) { const R = chrOf(m); if (!R.L) { chrLoad(m); return null; } return chrTint(m, col, tenue); }
+// per art row, the leftmost and rightmost opaque pixel over the idle frames (to place a general by what shows of him)
+var BDROWS = {};
+function bdRows(m) {
+  if (BDROWS[m]) return BDROWS[m];
+  const R = chrOf(m), C = CHAMP[m]; if (!R.L) { chrLoad(m); return null; }
+  const cv = champCanvas(C.W, C.H), x = cv.getContext('2d', { willReadFrequently: true }), lo = new Array(C.H).fill(C.W), hi = new Array(C.H).fill(-1);
+  for (const fi of new Set(C.seq)) {
+    x.clearRect(0, 0, C.W, C.H); x.drawImage(R.L[fi], 0, 0);
+    const a = x.getImageData(0, 0, C.W, C.H).data;
+    for (let y = 0; y < C.H; y++) for (let i = 0; i < C.W; i++) if (a[(y * C.W + i) * 4 + 3] > 40) { if (i < lo[y]) lo[y] = i; if (i > hi[y]) hi[y] = i; }
+  }
+  return (BDROWS[m] = { lo, hi });
+}
+function bdExtent(m, r0, r1) {
+  const R = bdRows(m), C = CHAMP[m]; if (!R) return [0, C.W - 1];
+  let lo = C.W, hi = -1;
+  for (let y = Math.max(0, Math.floor(r0)); y <= Math.min(C.H - 1, Math.floor(r1)); y++) { if (R.lo[y] < lo) lo = R.lo[y]; if (R.hi[y] > hi) hi = R.hi[y]; }
+  return hi < 0 ? [0, C.W - 1] : [lo, hi];
+}
+// where each general's face is, in art pixels; where it stands in the band, from the left edge (CSS px on a 402 px wide screen)
+var BD_FACE = { cerf: [32, 34], ours: [46, 17], griffon: [44, 22], renard: [57, 34] };
+var BD_FX = { cerf: 56, ours: 39, griffon: 58, renard: 58 };
+var BD_CUT = 0.88;          // the band's bottom crosses every general at 88 % of his height: never his feet
+
+/* ---------------------------------------------------------------- 1. the band */
+var BDS = { el: null, k: -1, g: null, m: '', col: 0, tenue: '', frames: null, ban: null, t0: 0, until: 0, off: 0, fi: -1, bi: -1, raf: 0 };
+function bdEl() {
+  if (BDS.el) return BDS.el;
+  const d = document.createElement('div'); d.className = 'bd'; d.id = 'bdBand'; d.hidden = true; d.setAttribute('role', 'status');
+  d.innerHTML = '<div class="bd-bg"></div><canvas class="bd-bn" aria-hidden="true"></canvas><canvas class="bd-gn" aria-hidden="true"></canvas>' +
+    '<div class="bd-tx"><span class="bd-ti"></span><span class="bd-nm"></span></div>';
+  document.body.appendChild(d); BDS.el = d; return d;
+}
+function bdShow(k) {
+  if (!G || !G.b || !G.b[k] || !$('startOv').hidden) return;
+  const b = G.b[k], el = bdEl(), m = b.jt && CHAMP[b.jt.maison] ? b.jt.maison : 'cerf', C = CHAMP[m], col = b.col >= 0 ? b.col : 0, cos = bdCos(b);
+  const W = innerWidth, dpr = Math.min(3, window.devicePixelRatio || 1), s = Math.max(0.78, Math.min(1.25, W / 402));
+  const Hb = Math.round(156 * s), top = Math.round($('hud').getBoundingClientRect().bottom + 36 * s);
+  el.style.top = top + 'px'; el.style.height = Hb + 'px';
+  el.querySelector('.bd-bg').style.cssText = `background:${bdMix(PDARK[col], '#16222a', .38)};box-shadow:inset 0 3px 0 ${PCOL[col]},inset 0 -3px 0 ${PCOL[col]}`;
+  // the general: his head under the band's top, the band's bottom across him above the feet; whole device pixels per art pixel
+  const cut = Math.floor(C.H * BD_CUT), top0 = 10 * s;
+  let n = Math.max(1, Math.round((Hb - top0) / cut * dpr)), g = n / dpr;
+  if (Hb - cut * g > top0 + 12 * s) { n++; g = n / dpr; }
+  const gt = Math.max(2 * s, Hb - cut * g), gl = BD_FX[m] * s - BD_FACE[m][0] * g;
+  const gcv = el.querySelector('.bd-gn');
+  if (gcv.width !== C.W || gcv.height !== C.H) { gcv.width = C.W; gcv.height = C.H; } else gcv.getContext('2d').clearRect(0, 0, C.W, C.H);
+  gcv.style.cssText = `left:${gl}px;top:${gt}px;width:${C.W * g}px;height:${C.H * g}px`;
+  const hi = bdExtent(m, 0, (Hb - gt) / g)[1], gr = gl + (hi + 1) * g;
+  // the banner: behind his right side, a third of it under him, hanging from the top
+  const bn = Math.max(1, Math.round(10 / 3 * s * dpr)), bs = bn / dpr, bw = 23 * bs, bh = 46 * bs;
+  BDS.ban = [0, 1, 2].map(f => bannerCanvas(m, col, cos.motif, { frame: f, scale: bn, stars: cos.stars }));
+  const bcv = el.querySelector('.bd-bn'); bcv.width = 23 * bn; bcv.height = 46 * bn;
+  // the words at the right: the title (only when there is one), the name
+  const tx = el.querySelector('.bd-tx'), ti = el.querySelector('.bd-ti'), nm = el.querySelector('.bd-nm');
+  ti.textContent = cos.title; ti.hidden = !cos.title; nm.textContent = b.name;
+  ti.style.fontSize = 12 * s + 'px'; ti.style.lineHeight = 15 * s + 'px'; nm.style.fontSize = 48 * s + 'px'; nm.style.lineHeight = 42 * s + 'px';
+  tx.style.right = 18 * s + 'px'; tx.style.gap = 6 * s + 'px';
+  el.hidden = false;
+  const room = W - 18 * s - tx.offsetWidth - 8 * s;
+  let bl = gr - bw * 0.34; if (bl + bw > room) bl = Math.max(gr - bw, room - bw);
+  bcv.style.cssText = `left:${bl}px;top:${Math.round(3 * s)}px;width:${bw}px;height:${bh}px`;
+  Object.assign(BDS, { k, g: G, m, col, tenue: cos.tenue, frames: bdFrames(m, col, cos.tenue), t0: performance.now(), fi: -1, bi: -1, off: 0 });
+  BDS.until = BDS.t0 + 2200;
+  if (!el.classList.contains('in')) { el.classList.remove('out'); void el.offsetWidth; el.classList.add('in'); }
+  if (!BDS.raf) BDS.raf = requestAnimationFrame(bdTick);
+}
+function bdHide() {
+  const el = BDS.el; if (!el) return;
+  el.hidden = true; el.classList.remove('in', 'out'); BDS.k = -1; BDS.off = 0;
+  if (BDS.raf) { cancelAnimationFrame(BDS.raf); BDS.raf = 0; }
+}
+function bdTick(now) {
+  BDS.raf = 0;
+  const el = BDS.el; if (!el || el.hidden) return;
+  if (!G || G !== BDS.g || G.ended || !$('startOv').hidden) { bdHide(); return; }
+  if (!BDS.off && now >= BDS.until) { el.classList.remove('in'); el.classList.add('out'); BDS.off = now + 240; }
+  if (BDS.off && now >= BDS.off) { bdHide(); return; }
+  const C = CHAMP[BDS.m], t = Math.max(0, (now - BDS.t0) / 1000), still = champStill.matches;     // a frame's time may come just before the show's
+  if (!BDS.frames) BDS.frames = bdFrames(BDS.m, BDS.col, BDS.tenue);
+  if (BDS.frames) {
+    const fi = still ? (C.still != null ? C.still : C.seq[0]) : C.seq[Math.floor(t / C.hold) % C.seq.length];
+    if (fi !== BDS.fi && BDS.frames[fi]) { BDS.fi = fi; const x = el.querySelector('.bd-gn').getContext('2d'); x.clearRect(0, 0, C.W, C.H); x.drawImage(BDS.frames[fi], 0, 0); }
+  }
+  const bi = still ? 0 : [0, 1, 0, 2][Math.floor(t / 0.26) % 4];
+  if (bi !== BDS.bi && BDS.ban && BDS.ban[bi]) { BDS.bi = bi; const c = el.querySelector('.bd-bn'), x = c.getContext('2d'); x.clearRect(0, 0, c.width, c.height); x.drawImage(BDS.ban[bi], 0, 0); }
+  BDS.raf = requestAnimationFrame(bdTick);
+}
+// the places at the top: a touch shows the band (not while a card or a spell picks its target there); read before the game's own handler
+$('rivals').addEventListener('click', e => {
+  const c = e.target.closest('[data-k]'); if (!c || !G) return;
+  if (aimPicksPlayer()) return;
+  bdShow(+c.dataset.k);
+}, true);
+
+/* ---------------------------------------------------------------- 2. the launch room */
+var LRM = { on: false, el: null, mode: '', id: 0, seats: [], game: null, me: -1, N: 0, t0: 0, go: 0, cdN: -1, started: false, start: null,
+  rd: 0, raf: 0, bands: [], geo: null, hostReadyAt: 0, passing: false, closeT: 0, rowsLate: false };
+// by number of players (the board's 402 x 874 layout): the general's zone from his edge, the banner's and the general's scales,
+// the name and title sizes, the face's height in the band, the gap and the slant between bands, the text's height in the band, the check, the arrows
+var LR_LAY = {
+  2: { zone: 170, bs: 4.2, gs: 1.5, nm: 52, tt: 13, face: .36, gap: 10, dy: 72, text: .74, cs: 34, sa: 4 },
+  4: { zone: 150, bs: 3.0, gs: 1.12, nm: 38, tt: 11, face: .40, gap: 8, dy: 40, text: .5, cs: 30, sa: 4 },
+  6: { zone: 150, bs: 2.2, gs: .86, nm: 30, tt: 10, face: .42, gap: 6, dy: 30, text: .5, cs: 24, sa: 3 },
+};
+var LR_SHRINK = { cerf: 1, ours: .86, griffon: 1, renard: .9 };     // the Ours and the Renard a little smaller: their banner must read
+var LR_GO_AFTER = 20000;          // online: once the host is ready, the latecomers are started anyway after 20 s
+function lrSkip() { try { if (localStorage.getItem('ddl-launch-test') === '1') return false; } catch (e) {} return !!navigator.webdriver; }
+var LRSP = null;
+function lrSprites() {
+  if (LRSP) return LRSP;
+  const sp = (rows, pal) => {
+    const cv = champCanvas(rows[0].length, rows.length), x = cv.getContext('2d');
+    rows.forEach((r, j) => { for (let i = 0; i < r.length; i++) if (pal[r[i]]) { x.fillStyle = pal[r[i]]; x.fillRect(i, j, 1, 1); } });
+    return cv.toDataURL();
+  };
+  return (LRSP = {
+    check: sp(['........g', '.......gg', '......gg.', 'g....gg..', 'gg..gg...', '.gggg....', '..gg.....'], { g: '#1b2b34' }),
+    arl: sp(['...g', '..gg', '.ggg', 'gggg', '.ggg', '..gg', '...g'], { g: '#f3e2a6' }),
+    arr: sp(['g...', 'gg..', 'ggg.', 'gggg', 'ggg.', 'gg..', 'g...'], { g: '#f3e2a6' }),
+    spark: sp(['...w...', '...w...', '..wyw..', 'wwyyyww', '..wyw..', '...w...', '...w...'], { w: '#fff6d8', y: '#f3d36a' }),
+  });
+}
+function lrEl() {
+  if (LRM.el) return LRM.el;
+  const d = document.createElement('div'); d.className = 'lr'; d.id = 'lrOv'; d.hidden = true;
+  d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-label', 'Lancement de la partie');
+  d.innerHTML = '<div class="lr-bands" id="lrBands"></div><div class="lr-fx" id="lrFx" aria-hidden="true"></div>' +
+    '<button class="lr-back" id="lrBack" type="button" aria-label="Retour à la table"><svg width="14" height="22" viewBox="0 0 14 22" aria-hidden="true"><path d="M11 2L3 11l8 9" fill="none" stroke="#e0e5e6" stroke-width="3" stroke-linecap="square"/></svg></button>' +
+    '<div class="lr-pips" id="lrPips" aria-hidden="true"></div><button class="lr-go" id="lrGo" type="button">Prêt</button>' +
+    '<div class="lr-cd" id="lrCd" aria-live="assertive"></div><div class="lr-flash"></div><i class="lr-probe" id="lrProbe"></i>';
+  document.body.appendChild(d); LRM.el = d;
+  $('lrGo').addEventListener('click', lrTapReady);
+  $('lrBack').addEventListener('click', lrTapBack);
+  $('lrBands').addEventListener('click', e => { const a = e.target.closest('[data-dir]'); if (a) lrTapArrow(+a.dataset.dir); });
+  return d;
+}
+// the local player's cosmetics for a House (the profile's, when the game has one)
+function lrMyCos(m, fallback) { try { if (typeof profCos === 'function') return profCos(m); } catch (e) {} return fallback || null; }
+const lrReady = k => (k === LRM.me && LRM.mode === 'client' ? LRM.rd > 0 && LRM.rd === LRM.id : !!(LRM.seats[k] && LRM.seats[k].ready));
+const lrArrive = k => 0.15 + k * (LRM.N <= 4 ? 0.4 : 0.3);
+// seats: [{ name, col, maison, cos, bot }]; me: the local player's place (-1: watching); start(): what makes the game (solo, host)
+function lrOpen(o) {
+  const el = lrEl(), fresh = !LRM.on || LRM.mode !== o.mode || LRM.id !== o.id;
+  audioInit(); MAISONS.forEach(chrLoad); bdHide();
+  clearTimeout(LRM.closeT);
+  Object.assign(LRM, { on: true, mode: o.mode, id: o.id, seats: o.seats, game: o.game || null, me: o.me, N: o.seats.length, start: o.start || null });
+  if (fresh) {
+    Object.assign(LRM, { t0: performance.now(), go: 0, cdN: -1, started: false, rd: 0, hostReadyAt: 0 });
+    LRM.seats.forEach((s, k) => { s.arrive = lrArrive(k); if (s.bot && o.mode !== 'client') s.botAt = s.arrive + 0.5 + Math.random() * 1.6; });
+    $('lrCd').textContent = ''; $('lrCd').className = 'lr-cd';
+  }
+  el.hidden = false; el.classList.remove('flash');
+  lrBuild(); lrSync();
+  if (!LRM.raf) LRM.raf = requestAnimationFrame(lrTick);
+  if (fresh) setTimeout(() => { try { if (LRM.on) $('lrGo').focus({ preventScroll: true }); } catch (e) {} }, 60);
+}
+function lrClose(flash) {
+  const el = LRM.el; LRM.on = false;
+  if (LRM.raf) { cancelAnimationFrame(LRM.raf); LRM.raf = 0; }
+  if (!el) return;
+  const done = () => { el.hidden = true; el.classList.remove('flash'); $('lrBands').innerHTML = ''; $('lrFx').innerHTML = ''; LRM.bands = []; };
+  clearTimeout(LRM.closeT);
+  if (flash && !champStill.matches) { el.classList.add('flash'); LRM.closeT = setTimeout(done, 470); } else done();
+}
+// the room's geometry for this screen: the board's 402 x 874 layout, scaled to what the screen leaves between the arrow and the button
+function lrGeom() {
+  const W = innerWidth, H = innerHeight, n = LRM.N, L = LR_LAY[n <= 2 ? 2 : n <= 4 ? 4 : 6], pr = $('lrProbe');
+  const sat = pr ? pr.offsetTop : 0, sab = pr ? pr.offsetHeight : 0;
+  const top = 60 + sat, bot = H - 136 - sab, k = Math.max(0.42, Math.min(W / 402, (bot - top) / 678));
+  const gap = L.gap * k, hb = (bot - top - (n - 1) * gap) / n;
+  return { W, H, n, L, top, bot, k, gap, hb, dy: L.dy * k, dpr: Math.min(3, window.devicePixelRatio || 1) };
+}
+// a general placed by his face, pushed toward his edge (and made smaller when he must) until what shows of his bust stays inside his zone
+function lrPlace(m, left, gsMul, faceY, hb, zone, W, k, dpr) {
+  const fx0 = BD_FACE[m][0], fy0 = BD_FACE[m][1], ts = DOOR[m] ? DOOR[m].t : 2.5, edge = 34 * k;
+  let s = gsMul * (LR_SHRINK[m] || 1), fx = 0, g = 1;
+  for (let it = 0; it < 40; it++) {
+    g = ts * s;
+    const r0 = fy0 - faceY / g, r1 = fy0 + (hb - faceY) / g, [lo, hi] = bdExtent(m, r0, r1);
+    if (left) { fx = zone - (hi + 1 - fx0) * g; if (fx >= edge || s < gsMul * 0.6) { fx = Math.max(fx, edge); break; } }
+    else { fx = (W - zone) + (fx0 - lo) * g; if (fx <= W - edge || s < gsMul * 0.6) { fx = Math.min(fx, W - edge); break; } }
+    s *= 0.95;
+  }
+  return { fx, g: Math.max(1, Math.round(g * dpr)) / dpr };
+}
+function lrBuild() {
+  const g = lrGeom(), box = $('lrBands'), fx = $('lrFx'), old = LRM.bands;
+  LRM.geo = g; LRM.bands = []; LRM.rowsLate = false;
+  box.innerHTML = ''; fx.innerHTML = '';
+  for (let k = 0; k < LRM.N; k++) LRM.bands.push(lrBand(k, g, box, fx, old[k]));
+  $('lrPips').innerHTML = LRM.seats.map(() => '<span class="lr-pip"></span>').join('');
+  const cd = $('lrCd'); cd.style.top = Math.round(g.H * 330 / 874) + 'px'; cd.style.fontSize = Math.round(150 * Math.max(.6, Math.min(1.2, g.H / 874))) + 'px';
+  $('lrBack').hidden = LRM.mode === 'client';
+}
+function lrBand(k, g, box, fxBox, prev) {
+  const s = LRM.seats[k], L = g.L, W = g.W, kk = g.k, left = k % 2 === 0, mine = k === LRM.me, SP = lrSprites();
+  const y0 = g.top + k * (g.hb + g.gap), y1 = y0 + g.hb, ytop = x => y0 + g.dy / 2 - g.dy * x / W;
+  const m = CHAMP[s.maison] ? s.maison : 'cerf', C = CHAMP[m], col = s.col >= 0 ? s.col : 0, cos = bdCos(s);
+  const zone = L.zone * kk, faceOff = g.hb * L.face;
+  if (!bdRows(m)) LRM.rowsLate = true;
+  const P = lrPlace(m, left, L.gs * kk, faceOff, g.hb, zone, W, kk, g.dpr), fy = ytop(P.fx) + faceOff;
+  const ax = left ? BD_FACE[m][0] : C.W - BD_FACE[m][0], ay = BD_FACE[m][1];
+  // the banner on the free side, right after the general's zone, hanging from the band's top
+  const bn = Math.max(1, Math.round(L.bs * kk * g.dpr)), bsz = bn / g.dpr, bw = 23 * bsz, bh = 46 * bsz;
+  const bx = left ? zone + 6 * kk : W - zone - 6 * kk - bw, by = ytop(bx + bw / 2) - bsz;
+  // the words at the far end
+  const nm = Math.max(15, L.nm * kk), tt = Math.max(9, L.tt * kk), tx = left ? W - 10 * kk : 10 * kk, title = cos.title;
+  const tyc = ytop(tx) + g.hb * L.text - (nm + (title ? tt + 6 * kk : 0)) / 2;
+  const poly = `polygon(0 ${y0 + g.dy / 2}px,${W}px ${y0 - g.dy / 2}px,${W}px ${y1 - g.dy / 2}px,0 ${y1 + g.dy / 2}px)`;
+  const side = left ? 'left' : 'right', w0 = zone + bw + 14 * kk, w1 = 40 * kk;
+  const shade = [[w0 + w1, w0 + 2 * w1, .2], [w0 + 2 * w1, W, .36]].map(([a, b, o]) => `<div class="abs" style="top:0;bottom:0;${side}:${a}px;width:${Math.max(0, b - a)}px;background:rgba(15,24,30,${o})"></div>`).join('');
+  const streaks = [0, 1, 2, 3].map(j => `<div class="abs" style="${left ? 'right' : 'left'}:${-10 + j * 37}px;top:${ytop(200) + g.hb * (0.2 + 0.18 * j)}px;width:${90 + j * 30}px;height:3px;background:rgba(251,246,234,${(0.5 - j * 0.1).toFixed(2)})"></div>`).join('');
+  const tag = `<div class="lr-tag" style="${left ? `right:${W - tx}px;align-items:flex-end;text-align:right` : `left:${tx}px;align-items:flex-start;text-align:left`};top:${tyc}px;gap:${Math.max(3, tt * .45)}px">` +
+    (title ? `<span class="lr-ti" style="font-size:${tt}px">${esc(title)}</span>` : '') + `<span class="lr-nm" style="font-size:${nm}px">${esc(s.name)}</span></div>`;
+  const el = document.createElement('div');
+  el.className = 'lr-band'; el.style.setProperty('--from', (left ? -1 : 1) * (W + 40) + 'px');
+  el.innerHTML = `<div class="lr-clip" style="clip-path:${poly};-webkit-clip-path:${poly}"><div class="abs" style="inset:0;background:${bdMix(PDARK[col], '#0f181e', .45)}"></div>` +
+    `<canvas class="lr-bn" width="${23 * bn}" height="${46 * bn}" style="left:${bx}px;top:${by}px;width:${bw}px;height:${bh}px"></canvas>` +
+    `<canvas class="lr-gn" width="${C.W}" height="${C.H}" style="left:${P.fx - ax * P.g}px;top:${fy - ay * P.g}px;width:${C.W * P.g}px;height:${C.H * P.g}px${left ? '' : ';transform:scaleX(-1)'}"></canvas>` +
+    shade + tag + `<div class="lr-dots"></div><div class="lr-ck"><img src="${SP.check}" alt=""></div><div class="lr-st">${streaks}</div><div class="lr-fl"></div></div>` +
+    (mine ? [y0, y1].map(yy => `<div class="lr-seam" style="clip-path:polygon(0 ${yy + g.dy / 2 - 2}px,${W}px ${yy - g.dy / 2 - 2}px,${W}px ${yy - g.dy / 2 + 2}px,0 ${yy + g.dy / 2 + 2}px)"></div>`).join('') : '');
+  box.appendChild(el);
+  // the marks beside the name: three dots while waiting, the gold check when ready
+  const nmEl = el.querySelector('.lr-nm'), nw = nmEl.getBoundingClientRect().width, ny = tyc + (title ? tt + Math.max(3, tt * .45) : 0);
+  const cs = Math.max(16, L.cs * kk), sa = Math.max(2, Math.round(L.sa * kk)), cx = left ? tx - nw - cs - 8 * kk : tx + nw + 8 * kk;
+  const dx0 = cx - (left ? 6 * kk : -2 * kk), dyy = ny + nm * 0.45;
+  el.querySelector('.lr-dots').innerHTML = [0, 1, 2].map(j => `<i class="lr-dot" style="left:${dx0 + j * 3 * sa}px;top:${dyy}px;width:${2 * sa}px;height:${2 * sa}px;animation-delay:${j * 0.2}s"></i>`).join('');
+  const ck = el.querySelector('.lr-ck'); ck.style.cssText = `left:${cx}px;top:${ny + nm * 0.08}px;width:${cs}px;height:${cs}px`;
+  const ci = ck.querySelector('img'); ci.style.width = Math.round(cs * 0.6) + 'px'; ci.style.height = Math.round(cs * 0.6 * 7 / 9) + 'px';
+  // the arrows around the local player's general, while not ready: another House
+  if (mine) {
+    const aw = 4 * sa, ah = 7 * sa, ya = x => ytop(x) + faceOff - ah / 2;
+    const pts = left ? [[6 * kk, ya(6 * kk)], [zone - aw - 2 * kk, ya(zone)]] : [[W - zone + 2 * kk, ya(W - zone)], [W - 6 * kk - aw, ya(W - 6 * kk)]];
+    pts.forEach(([x, y], j) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'lr-arw'; b.dataset.dir = j ? 1 : -1;
+      b.setAttribute('aria-label', j ? 'Maison suivante' : 'Maison précédente');
+      b.style.cssText = `left:${x + aw / 2 - 22}px;top:${y + ah / 2 - 28}px;width:44px;height:56px`;
+      b.innerHTML = `<img src="${j ? SP.arr : SP.arl}" alt="" style="width:${aw}px;height:${ah}px">`;
+      el.appendChild(b);
+    });
+  }
+  // two sparks for the moment it gets ready (on top of every band)
+  const sz = (g.n <= 4 ? 36 : 26) * kk, spk = (left ? [40, 300] : [W - 40, W - 300]).map((x, j) => [x, j ? ytop(x) + g.hb - 2 : ytop(x) + 2]);
+  const sp = spk.map(([x, y]) => { const im = document.createElement('img'); im.className = 'lr-sp'; im.src = SP.spark; im.alt = ''; im.style.cssText = `left:${x - sz / 2}px;top:${y - sz / 2}px;width:${sz}px;height:${sz}px`; fxBox.appendChild(im); return im; });
+  const B = { el, m, col, tenue: cos.tenue, frames: bdFrames(m, col, cos.tenue), ban: [0, 1, 2].map(f => bannerCanvas(m, col, cos.motif, { frame: f, scale: bn, stars: cos.stars })),
+    gx: el.querySelector('.lr-gn').getContext('2d'), bx: el.querySelector('.lr-bn').getContext('2d'), fi: -1, bi: -1, ph: prev ? prev.ph : Math.random() * 4, sp,
+    in: !!(prev && prev.in), rd: false };
+  if (B.in) el.classList.add('now', 'in');
+  return B;
+}
+// what the bands, the pips and the button say, from who is ready
+function lrSync() {
+  if (!LRM.on) return;
+  LRM.bands.forEach((B, k) => {
+    const rd = lrReady(k);
+    if (rd !== B.rd) { B.rd = rd; B.el.classList.toggle('rd', rd); if (rd && B.in) lrReadyFx(k); }
+  });
+  [...$('lrPips').children].forEach((p, k) => p.classList.toggle('on', lrReady(k)));
+  const go = $('lrGo'), me = LRM.me, rd = me >= 0 && lrReady(me);
+  go.disabled = me < 0 || !!LRM.go;
+  go.classList.toggle('on', rd);
+  go.innerHTML = me < 0 ? 'La partie va commencer' : rd ? `Prêt <img src="${lrSprites().check}" alt="" style="width:18px;height:14px">` : 'Prêt';
+  go.setAttribute('aria-pressed', rd ? 'true' : 'false');
+  LRM.el.querySelectorAll('.lr-arw').forEach(a => { a.hidden = rd || !!LRM.go; });
+}
+function lrReadyFx(k) {
+  const B = LRM.bands[k]; if (!B) return;
+  B.el.classList.remove('flash'); void B.el.offsetWidth; B.el.classList.add('flash');
+  B.sp.forEach(im => { im.classList.remove('on'); void im.offsetWidth; im.classList.add('on'); });
+  if (k !== LRM.me) sfx('click');
+}
+function lrTick(now) {
+  LRM.raf = 0; if (!LRM.on) return;
+  const t = Math.max(0, (now - LRM.t0) / 1000), still = champStill.matches;
+  // a guest whose room is gone: back to where the game put it
+  if (LRM.mode === 'client' && NET.mode !== 'client') { lrClose(false); return; }
+  if (LRM.mode === 'host' && (NET.mode !== 'host' || NET.phase !== 'launch')) { lrClose(false); return; }
+  // the bands come in one after the other
+  let changed = false;
+  LRM.bands.forEach((B, k) => {
+    if (B.in || t < LRM.seats[k].arrive) return;
+    B.in = true; B.el.classList.add('in', 'arrive');
+    if (k === LRM.me) sfx('back');
+    if (B.rd) lrReadyFx(k);
+  });
+  // the bots get ready (alone and for the host)
+  if (LRM.mode !== 'client' && !LRM.go) LRM.seats.forEach(s => { if (s.bot && !s.ready && t >= s.botAt) { s.ready = true; changed = true; } });
+  if (changed) { lrSync(); if (LRM.mode === 'host') hostPresence(); lrMaybeGo(); }
+  // online: the host is ready, someone is not, it has been long enough
+  if (LRM.mode === 'host' && !LRM.go && LRM.hostReadyAt && now - LRM.hostReadyAt > LR_GO_AFTER) lrGo();
+  // 3, 2, 1, then the game (made by the host or the player alone; a guest waits for the host's)
+  if (LRM.go) {
+    const c = (now - LRM.go) / 1000, n = c < 0.5 ? 3 : c < 1.0 ? 2 : c < 1.5 ? 1 : 0;
+    if (n !== LRM.cdN) {
+      LRM.cdN = n; const cd = $('lrCd'); cd.textContent = n ? String(n) : ''; cd.className = 'lr-cd';
+      if (n) { void cd.offsetWidth; cd.classList.add('pop'); sfx('click'); }
+    }
+    if (c >= 1.5 && !LRM.started && LRM.mode !== 'client') { LRM.started = true; lrLaunchNow(); return; }
+  }
+  // the art comes late (a first visit): place the generals again once it is there
+  if (LRM.rowsLate && MAISONS.every(m => chrOf(m).L)) { lrBuild(); lrSync(); }
+  // the generals breathe, the banners take the wind
+  for (const B of LRM.bands) {
+    if (!B.frames) B.frames = bdFrames(B.m, B.col, B.tenue);
+    const C = CHAMP[B.m];
+    if (B.frames) {
+      const fi = still ? (C.still != null ? C.still : C.seq[0]) : C.seq[Math.floor(t / C.hold + B.ph) % C.seq.length];
+      if (fi !== B.fi && B.frames[fi]) { B.fi = fi; B.gx.clearRect(0, 0, C.W, C.H); B.gx.drawImage(B.frames[fi], 0, 0); }
+    }
+    const bi = still ? 0 : [0, 1, 0, 2][Math.floor(t / 0.26 + B.ph) % 4];
+    if (bi !== B.bi && B.ban[bi]) { B.bi = bi; const c = B.bx.canvas; B.bx.clearRect(0, 0, c.width, c.height); B.bx.drawImage(B.ban[bi], 0, 0); }
+  }
+  LRM.raf = requestAnimationFrame(lrTick);
+}
+function lrMaybeGo() { if (LRM.mode === 'client' || LRM.go || !LRM.on) return; if (LRM.seats.every(s => s.ready)) lrGo(); }
+function lrGo() { if (LRM.go || !LRM.on) return; LRM.go = performance.now(); LRM.cdN = -1; lrSync(); if (LRM.mode === 'host') hostPresence(); }
+function lrLaunchNow() { const f = LRM.start; try { if (f) f(); } catch (e) { console.error(e); } lrClose(true); sfx('door'); }
+function lrTapReady() {
+  if (!LRM.on || LRM.go || LRM.me < 0) return;
+  audioInit();
+  const on = !lrReady(LRM.me);
+  sfx(on ? 'upgrade' : 'click');
+  if (LRM.mode === 'client') { LRM.rd = on ? LRM.id : 0; lrResend(); }
+  else {
+    LRM.seats[LRM.me].ready = on;
+    if (LRM.mode === 'host') { LRM.hostReadyAt = on ? performance.now() : 0; hostPresence(); }
+  }
+  lrSync(); lrMaybeGo();
+}
+function lrTapBack() {
+  if (!LRM.on || LRM.go || LRM.mode === 'client') return;
+  sfx('back');
+  if (LRM.mode === 'host') { lrClose(false); hostBackToLobby(); return; }
+  lrClose(false);
+  if ($('startOv').hidden) { showOv('endOv', false); showOv('menuOv', false); demo(); showOv('startOv', true); showPanel('table'); }
+}
+// another House for the local player, while not ready: saved and told as on the doors
+function lrTapArrow(dir) {
+  if (!LRM.on || LRM.go || LRM.me < 0 || lrReady(LRM.me)) return;
+  audioInit();
+  const s = LRM.seats[LRM.me], i = Math.max(0, MAISONS.indexOf(s.maison)), m = MAISONS[(i + dir + MAISONS.length) % MAISONS.length];
+  pickMaison(m);
+  s.maison = myMaison; s.cos = lrMyCos(myMaison, s.cos);
+  if (LRM.mode === 'solo' && LRM.game && LRM.game[LRM.me]) { LRM.game[LRM.me].maison = myMaison; if (s.cos) LRM.game[LRM.me].cos = s.cos; }
+  if (LRM.mode === 'host' && NET.seats[NET.hostSeat]) { NET.seats[NET.hostSeat].maison = myMaison; hostPresence(); }
+  lrBuild(); lrSync();
+}
+window.addEventListener('resize', () => { if (LRM.on) { lrBuild(); lrSync(); } });
+
+/* ---------------------------------------------------------------- the room against bots: from the table (and Rejouer / Revanche) */
+{
+  const startSolo0 = startSolo;
+  startSolo = function () {
+    if (lrSkip()) return startSolo0();
+    audioInit();
+    const me = Math.min(soloSeat, soloN - 1), game = botSeats(soloN);
+    // the bots' Houses are drawn now, as the game would (the free ones first): the room shows the generals that will play
+    const used = new Set(game.map(s => s.maison).filter(m => EMB[m])), free = shuffled(MAISONS.filter(m => !used.has(m)));
+    game.forEach(s => { if (!EMB[s.maison]) s.maison = free.length ? free.shift() : rndOf(MAISONS); });
+    const seats = game.map((s, k) => ({ name: s.name, col: s.col, maison: s.maison, cos: s.cos || (k === me ? lrMyCos(s.maison) : null), bot: !!s.bot, ready: false }));
+    lrOpen({ mode: 'solo', id: (LRM.id | 0) + 1, seats, game, me, start: () => { const keep = botSeats; botSeats = () => game; try { startSolo0(); } finally { botSeats = keep; } } });
+  };
+}
+
+/* ---------------------------------------------------------------- the room online: the host runs it */
+// every presence of the game's room carries the room's state (the host) or the guest's « prêt » (a guest)
+var LR_WRAPPED = new WeakSet();
+function lrRoom() {
+  const r = NET.game; if (!r || LR_WRAPPED.has(r)) return;
+  const send = r.presence.bind(r); let last = null;
+  const wrapped = o => {
+    last = o; let x = o;
+    if (o && typeof o === 'object') {
+      if (NET.mode === 'host' && o.role === 'host' && NET.phase === 'launch') x = Object.assign({}, o, { lr: lrWire() });
+      else if (NET.mode === 'client' && o.role === 'player' && LRM.rd) x = Object.assign({}, o, { rd: LRM.rd });
+    }
+    return send(x);
+  };
+  let ok = false;
+  try { r.presence = wrapped; ok = r.presence === wrapped; } catch (e) {}
+  const room = ok ? r : new Proxy(r, { get: (t, p) => (p === 'presence' ? wrapped : typeof t[p] === 'function' ? t[p].bind(t) : t[p]) });
+  room.__lrLast = () => last;
+  if (!ok) NET.game = room;
+  LR_WRAPPED.add(r); LR_WRAPPED.add(room);
+}
+function lrResend() {
+  lrRoom(); const r = NET.game; if (!r) return;
+  let last = r.__lrLast && r.__lrLast();
+  if (!last) {         // nothing sent yet through the room (it cannot really happen): what a guest says, its outfit when the game knows outfits
+    last = { role: 'player', name: nick, in: [], w: NET.want, mai: myMaison };
+    try { if (typeof profWire === 'function') last.cos = profWire(myMaison); } catch (e) {}
+  }
+  r.presence(last).catch(() => {});
+}
+// the room's state on the wire: its number, each place's House and readiness, and whether 3, 2, 1 has begun
+function lrWire() {
+  if (!LRM.on || LRM.mode !== 'host') return null;
+  return { id: LRM.id, m: LRM.seats.map(s => s.maison), r: LRM.seats.map(s => (s.ready ? 1 : 0)), go: LRM.go ? 1 : 0 };
+}
+{
+  const hostLaunch0 = hostLaunch;
+  hostLaunch = function () {
+    if (LRM.passing || lrSkip() || NET.mode !== 'host') return hostLaunch0();
+    audioInit();
+    // the empty places become bots now (the room shows them), with their Houses drawn as the game would
+    let nb = 1;
+    for (let k = 0; k < NET.N; k++) if (!NET.seats[k]) NET.seats[k] = { name: 'Bot ' + nb++, bot: true, col: freeColor(), filler: true, cos: null };
+    NET.seats[NET.hostSeat].maison = myMaison;
+    const used = new Set(NET.seats.slice(0, NET.N).map(s => s.maison).filter(m => EMB[m])), free = shuffled(MAISONS.filter(m => !used.has(m)));
+    for (let k = 0; k < NET.N; k++) { const s = NET.seats[k]; if (!EMB[s.maison]) s.maison = free.length ? free.shift() : rndOf(MAISONS); }
+    NET.phase = 'launch'; lrRoom();
+    const seats = NET.seats.slice(0, NET.N).map((s, k) => ({ name: s.name, col: s.col, maison: s.maison, cos: k === NET.hostSeat ? lrMyCos(myMaison, s.cos) : s.cos, bot: !!s.bot, ready: false }));
+    lrOpen({ mode: 'host', id: (LRM.id | 0) + 1, seats, me: NET.hostSeat, start: () => { LRM.passing = true; try { hostLaunch0(); } finally { LRM.passing = false; } } });
+    hostPresence();
+  };
+  const hostOnPeers0 = hostOnPeers;
+  hostOnPeers = function (ch) {
+    if (NET.phase !== 'launch') return hostOnPeers0(ch);
+    let changed = false;
+    const unwire = w => { try { return typeof profUnwire === 'function' ? profUnwire(w) : null; } catch (e) { return null; } };
+    for (const p of ch.peers) {
+      if (p.sameTab) continue;
+      const pr = p.presence || {}; if (pr.role !== 'player') continue;
+      let k = NET.peerSeat.get(p.peer);
+      // someone coming in now takes the place of a bot that filled an empty one (until 3, 2, 1)
+      if (k === undefined && !LRM.go) {
+        const f = NET.seats.findIndex((s, i) => i < NET.N && s && s.filler);
+        if (f >= 0) {
+          k = f; NET.peerSeat.set(p.peer, k);
+          NET.seats[k] = { name: cleanName(pr.name), peer: p.peer, col: NET.seats[k].col, maison: EMB[pr.mai] ? pr.mai : NET.seats[k].maison, cos: unwire(pr.cos) };
+          Object.assign(LRM.seats[k], { name: NET.seats[k].name, maison: NET.seats[k].maison, cos: NET.seats[k].cos, bot: false, ready: false });
+          sfx('join'); changed = true;
+        }
+      }
+      if (k === undefined || !NET.seats[k] || !LRM.seats[k]) continue;
+      const S = NET.seats[k], L = LRM.seats[k];
+      if (EMB[pr.mai] && S.maison !== pr.mai && !LRM.go) { S.maison = L.maison = pr.mai; const c = unwire(pr.cos); if (c) S.cos = L.cos = c; changed = true; }
+      const rd = pr.rd === LRM.id;
+      if (rd !== !!L.ready && !LRM.go) { L.ready = rd; changed = true; }
+    }
+    for (const p of ch.left) {
+      const k = NET.peerSeat.get(p.peer); if (k === undefined) continue;
+      NET.peerSeat.delete(p.peer);
+      if (NET.seats[k]) NET.seats[k].bot = true;
+      if (LRM.seats[k]) { LRM.seats[k].bot = true; LRM.seats[k].ready = true; }
+      changed = true;
+    }
+    if (changed) { if (LRM.on) { lrBuild(); lrSync(); lrMaybeGo(); } hostPresence(); }
+  };
+}
+
+/* ---------------------------------------------------------------- the room online: a guest follows the host's */
+{
+  const clientOnPeers0 = clientOnPeers;
+  clientOnPeers = function (ch) {
+    clientOnPeers0(ch);
+    if (NET.mode !== 'client') { if (LRM.on && LRM.mode === 'client') lrClose(false); return; }
+    const host = ch.peers.find(p => !p.sameTab && p.presence && p.presence.role === 'host'); if (!host) return;
+    const pr = host.presence, lr = pr.lr;
+    if (pr.ph === 'launch' && lr && typeof lr === 'object' && Array.isArray(lr.m)) {
+      if (lrSkip()) return;
+      lrRoom();
+      if (G && G.net && G.ended) { showOv('endOv', false); showOv('menuOv', false); }
+      const me = mySeat(), id = lr.id | 0, again = LRM.on && LRM.mode === 'client' && LRM.id === id;
+      const seats = [];
+      for (let k = 0; k < NET.N; k++) {
+        const s = NET.seats[k] || {}, m = EMB[lr.m[k]] ? lr.m[k] : 'cerf';
+        seats.push({ name: s.name || 'Bot', col: s.col >= 0 ? s.col : k, maison: k === me && again ? LRM.seats[k].maison : m, cos: k === me ? lrMyCos(k === me && again ? LRM.seats[k].maison : m, s.cos) : s.cos, bot: !!s.bot, ready: !!(lr.r && lr.r[k]) });
+      }
+      const sig = seats.map(s => s.name + '|' + s.col + '|' + s.maison + '|' + JSON.stringify(s.cos || null)).join(',');
+      if (!again) { lrOpen({ mode: 'client', id, seats, me }); LRM.sig = sig; }
+      else {
+        seats.forEach((s, k) => { LRM.seats[k].ready = s.ready; LRM.seats[k].bot = s.bot; });
+        if (sig !== LRM.sig || LRM.me !== me) { LRM.me = me; LRM.seats.forEach((s, k) => Object.assign(s, { name: seats[k].name, col: seats[k].col, maison: seats[k].maison, cos: seats[k].cos })); LRM.sig = sig; lrBuild(); }
+        lrSync();
+      }
+      if (lr.go && !LRM.go) lrGo();
+    } else if (LRM.on && LRM.mode === 'client' && pr.ph === 'lobby') lrClose(false);
+  };
+  const startClientGame0 = startClientGame;
+  startClientGame = function () {
+    const r = startClientGame0.apply(this, arguments);
+    LRM.rd = 0;
+    if (LRM.on && LRM.mode === 'client') { lrClose(true); sfx('door'); }
+    return r;
+  };
+}
 
 /* =============== multiplayer bootstrap =============== */
 if (WEB) {
