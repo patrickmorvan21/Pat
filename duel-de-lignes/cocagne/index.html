@@ -1018,6 +1018,8 @@ body.fou-late .fou-qbar i{background:#e5806d}
 @keyframes ftFall{0%{opacity:0;transform:translateY(-120px)}10%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateY(560px)}}
 @keyframes ftPal{0%{opacity:0}100%{opacity:1}}
 @media (prefers-reduced-motion:reduce){.fou-hd.talk,.fou-say .fs-bub.in{animation:none}}
+/* version 49: four spells to choose from with the scroll (the Fog is gone) */
+.jt-offers.five{grid-template-columns:repeat(4,1fr)}
 /* ---- v46 · fork « Profil »: the home A (Jouer and En ligne side by side, the plate of the profile under them, help and settings in the corner),
    the row of outfits on the doors, the profile screen C (one general on its ring, the table Tenue / Bannière / Titre). Patrick, 20/10, 23 h 33 ---- */
 .hm-cta{width:min(100%,350px);gap:12px}
@@ -1033,15 +1035,16 @@ body.fou-late .fou-qbar i{background:#e5806d}
 .hm-me .tx{display:flex;flex-direction:column;justify-content:center;gap:6px;flex:1;min-width:0}
 .hm-nm{font:700 17px/1 var(--f);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hm-tt{font:700 11px/1 var(--f);letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hm-rc{display:flex;align-items:center;gap:6px;flex:none;font:400 22px/1 var(--fb);color:var(--gold)}
+.hm-rc{display:flex;align-items:center;gap:5px;flex:none;font:400 16px/1 var(--fb);color:var(--gold)}
 .hm-rc b{font-weight:400}
-.hm-rc .px{display:block}
+.hm-rc .px{display:block;width:calc(var(--w) * 1px);height:calc(var(--h) * 1px)}   /* the crown at its own scale 2, whatever the screen's unit */
 .hm-me .chev{flex:none;color:#8ea2a7}
 .hm-me .dot{position:absolute;top:-5px;right:-5px;width:10px;height:10px;background:var(--gold);box-shadow:0 0 0 2px rgba(8,14,18,.6)}
 .hm-me .dot[hidden]{display:none}
-.hm-top{position:absolute;right:12px;right:calc(12px - (min(100vw, max(440px, 56vh)) - 100%) / 2);right:calc(12px - (min(100vw, max(440px, 56dvh)) - 100%) / 2);top:calc(env(safe-area-inset-top,0px) + 12px);z-index:4;display:flex;gap:8px}
-.hm-ic{position:relative;width:48px;height:48px;display:grid;place-items:center;padding:0;border:0;border-radius:0;background:rgba(11,19,23,.84);box-shadow:inset 0 0 0 1px rgba(142,162,167,.28),0 0 0 2px rgba(8,14,18,.4);color:var(--gold);cursor:pointer}
-.hm-ic .px{display:block}
+.hm-top{position:absolute;right:12px;right:calc(12px - (min(100vw, max(440px, 56vh)) - 100%) / 2);right:calc(12px - (min(100vw, max(440px, 56dvh)) - 100%) / 2);top:calc(env(safe-area-inset-top,0px) + 12px);z-index:4;display:flex;gap:6px}
+.hm-ic{position:relative;width:40px;height:40px;display:grid;place-items:center;padding:0;border:0;border-radius:0;background:rgba(11,19,23,.84);box-shadow:inset 0 0 0 1px rgba(142,162,167,.28),0 0 0 2px rgba(8,14,18,.4);color:var(--gold);cursor:pointer}
+.hm-ic .px,.hm-ic svg{display:block}
+.hm-ic .px{width:20px;height:20px}
 .hm-ic:active{transform:translateY(2px)}
 .hm-ic.fresh::after{content:"";position:absolute;top:-5px;right:-5px;width:10px;height:10px;background:var(--gold);box-shadow:0 0 0 2px rgba(8,14,18,.6)}
 /* the settings of the home: the device's only (sounds, vibrations) */
@@ -1059,15 +1062,16 @@ body.fou-late .fou-qbar i{background:#e5806d}
 /* the profile C: a scene of its own, dark like the doors */
 #startOv[data-view=profil] .hbg{display:none}
 .pf .sp-col{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 18px)}
-.pf-stage{position:relative;flex:none;height:clamp(300px,46vh,420px);height:clamp(300px,46dvh,420px);overflow:hidden;background:#0b1317;touch-action:pan-y}
+.pf-stage{position:relative;flex:none;width:100vw;margin-left:calc(50% - 50vw);height:clamp(300px,46vh,420px);height:clamp(300px,46dvh,420px);overflow:hidden;background:#0b1317;touch-action:pan-y}
 .pf-stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(to bottom,rgba(11,19,23,0),var(--scn) 92%);pointer-events:none;z-index:2}
+.pf-sx{position:absolute;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .pf-sc,.pf-bn,.pf-ch{position:absolute;display:block;image-rendering:pixelated;image-rendering:crisp-edges;-webkit-user-drag:none;pointer-events:none}
 .pf-bn{z-index:1;filter:drop-shadow(0 4px 0 rgba(8,14,18,.35))}
 .pf-ch{z-index:1}
 .pf-head{position:absolute;left:0;right:0;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 6px) 8px 0}
 .pf-nm{margin:0;font:700 17px/1 var(--f);color:var(--ink);text-shadow:0 2px 0 rgba(8,14,18,.85)}
 .pf-sp{width:44px;flex:none}
-.pf-ar{position:absolute;top:56%;z-index:3;width:44px;height:64px;transform:translateY(-50%);display:grid;place-items:center;padding:0;border:0;background:none;color:var(--ink);cursor:pointer}
+.pf-ar{position:absolute;bottom:22px;z-index:3;width:44px;height:56px;display:grid;place-items:center;padding:0;border:0;background:none;color:var(--ink);cursor:pointer}
 .pf-ar svg{display:block;filter:drop-shadow(0 2px 0 rgba(8,14,18,.7))}
 .pf-ar.l{left:2px}.pf-ar.r{right:2px}
 .pf-id{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:7px;margin-top:-10px;padding:0 16px}
@@ -1181,6 +1185,14 @@ body.fou-late .fou-qbar i{background:#e5806d}
 @keyframes lrFlash{0%{opacity:1}100%{opacity:0}}
 body:has(#lrOv:not([hidden])) .toasts{z-index:14;left:12px;right:12px;max-width:none;align-items:center;top:calc(env(safe-area-inset-top,0px) + 60px)!important}
 @media (prefers-reduced-motion: reduce){.bd.in,.bd.out,.lr .lr-band.in{transition:none}.lr *{animation-duration:.01s!important}}
+/* v49 · the profile's colours: the same seven as the doors, the same choice */
+.pf-col{margin:16px 16px 0}
+#pfCol{flex-wrap:nowrap;justify-content:space-between;gap:0;margin:0 -9px}
+#pfCol .sw{position:relative;width:44px;height:44px;flex:none;background:none;box-shadow:none;outline:none;padding:0;border:0;cursor:pointer}
+#pfCol .sw::before{content:"";position:absolute;left:9px;top:9px;width:26px;height:26px;background:var(--c);box-shadow:inset 0 -6px 0 var(--c2)}
+#pfCol .sw[aria-pressed="true"]::before{outline:2px solid var(--gold);outline-offset:3px}
+#pfCol .sw:focus-visible::before{outline:2px solid var(--ink);outline-offset:3px}
+@media (max-height:700px){.pf-col{margin-top:12px}#pfCol .sw{height:40px}#pfCol .sw::before{top:7px}}
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
 </head>
@@ -1268,6 +1280,7 @@ body:has(#lrOv:not([hidden])) .toasts{z-index:14;left:12px;right:12px;max-width:
   <!-- the profile: one general on its ring, what it wears, the titles, the records (js_profil.js) -->
   <div class="sp pf" id="profil" data-p="profil" hidden><div class="sp-col">
     <div class="pf-stage" id="pfStage">
+      <canvas class="pf-sx" id="pfScX" aria-hidden="true"></canvas>
       <img class="pf-sc" id="pfSc" alt="" draggable="false">
       <canvas class="pf-bn" id="pfBn" aria-hidden="true"></canvas>
       <canvas class="pf-ch" id="pfCh" aria-hidden="true"></canvas>
@@ -1277,6 +1290,7 @@ body:has(#lrOv:not([hidden])) .toasts{z-index:14;left:12px;right:12px;max-width:
     </div>
     <div class="pf-id"><span class="ds pf-gn" id="pfGen"></span><span class="pf-tt" id="pfTitle" hidden></span></div>
     <div class="pf-stats" id="pfStats"></div>
+    <div class="dz-col pf-col"><span class="cp">Couleur · <b id="pfColN">Azur</b></span><div class="swatches" id="pfCol"></div></div>
     <div class="pf-tabs" id="pfTabs" role="tablist"><button type="button" role="tab" data-tab="tenue" aria-selected="true">Tenue</button><button type="button" role="tab" data-tab="motif" aria-selected="false">Bannière</button><button type="button" role="tab" data-tab="titre" aria-selected="false">Titre</button></div>
     <div class="pf-list" id="pfList"></div>
     <div class="pf-rec" id="pfRec"></div>
@@ -2149,7 +2163,7 @@ function leak(b, cr) {
 }
 function dropChest(b, x, y) {
   if (b.chests.length >= 3) return;
-  const ch = { id: b.chestId = (b.chestId + 1) % 1296, x: Math.max(0.5, Math.min(COLS - 0.5, x)), y: Math.max(0.6, Math.min(ROWS - 0.6, y)), t: CHEST_LIFE, rw: pick({ o: 32, r: 18, w: 15, v: 15, m: 4, g: 4, f: 4, j: 4, t: 4 }), born: G.t };
+  const ch = { id: b.chestId = (b.chestId + 1) % 1296, x: Math.max(0.5, Math.min(COLS - 0.5, x)), y: Math.max(0.6, Math.min(ROWS - 0.6, y)), t: CHEST_LIFE, rw: pick({ o: 32, r: 18, w: 15, v: 15, m: 4, g: 4, j: 4, t: 4 }), born: G.t };
   if (b.bot && Math.random() < 0.55) ch.botAt = G.t + 0.5 + Math.random() * 1.5;
   jtChest(b, ch);
   b.chests.push(ch);
@@ -6675,7 +6689,7 @@ const TUTO = [
   { k: 'coffres', t: 'Coffres et sorts',
     p: "Une créature tuée lâche parfois un coffre : touche-le vite, il disparaît. Chaque 15e créature tuée te donne un sort (3 au plus).",
     x: () => tsec('Dans les coffres', [tchip(ICON.coin12, "Sac d'or", 'or immédiat'), tchip(ICON.rage, 'Rage', 'dégâts +50 %'), tchip(ICON.gift, 'Tour offerte', 'la prochaine'), tchip(ICON.heart12, '+2 vies', 'au-delà de 20')].join('')) +
-      tsec('Sorts', [tchip(ICON.m, 'Météore', 'boule de feu'), tchip(ICON.g, 'Gel', 'fige ton terrain'), tchip(ICON.f, 'Brouillard', 'terrain caché', { cls: 'threat' }), tchip(ICON.j, 'Sabotage', 'tirs ralentis', { cls: 'threat' }), tchip(ICON.t, 'Pillage', "vole 20 % d'or", { cls: 'threat' })].join('')) +
+      tsec('Sorts', [tchip(ICON.m, 'Météore', 'boule de feu'), tchip(ICON.g, 'Gel', 'fige ton terrain'), tchip(ICON.j, 'Sabotage', 'tirs ralentis', { cls: 'threat' }), tchip(ICON.t, 'Pillage', "vole 20 % d'or", { cls: 'threat' })].join('')) +
       `<p class="tut-hint"><span class="threat-k"></span>Les menaces tombent sur un adversaire au hasard.</p>` },
   { k: 'atelier', t: "L'Atelier",
     p: "Garde de l'or pour les grosses technologies : achetées une fois, elles servent toute la partie. Dans l'onglet Atelier, touche deux fois pour acheter.",
@@ -8765,8 +8779,8 @@ const EV = {
 for (const c of CH_WALK) EV['v_' + c] = { n: 'Vague ' + (/^[aeiouyéèêâàîô]/i.test(CH[c].pl) ? 'd’' : 'de ') + CH[c].pl, fam: 'caractere', d: CH[c].d, kind: c, mod: true };
 for (const k in EV) if (EV[k].mod && !SPECIALS[k]) SPECIALS[k] = { n: EV[k].n, d: EV[k].d };
 // the Crue and the Ruines are out of the rotation (their code stays)
-const MAP_EV = ['eboul', 'feu', 'korrigans'];
-const VOTE_PAIRS = { assaut: ['rush', 'cohorte'], bonus: ['gold', 'foire'], carte: ['eboul', 'ruines'], ombre: ['fog', 'eclipse'] };
+const MAP_EV = ['eboul', 'feu'];
+const VOTE_PAIRS = { assaut: ['rush', 'cohorte'], bonus: ['gold', 'foire'], carte: ['eboul', 'ruines'] };
 const VOTE_SECS = 5;
 
 /* ---------------------------------------------------------------- relics: the palet's prize */
@@ -8850,7 +8864,7 @@ function jtGen(s) {
   if (w === (G.quick ? 7 : 11) && G.b.filter(b => b.alive).length >= 2) return { w, k: 'entracte' };
   // no more votes: where one used to be, the herald draws the event himself from a family it did not draw last time
   if (s % 3 === 2) {
-    const fams = ['assaut', 'bonus', 'carte', 'ombre', 'caractere'].filter(f => f !== J.lastVoteFam);
+    const fams = ['assaut', 'bonus', 'carte', 'caractere'].filter(f => f !== J.lastVoteFam);
     const fam = rndOf(fams); J.lastVoteFam = fam;
     let pair;
     if (fam === 'caractere') { const cs = shuffled(charsBy(w).filter(c => c !== 'mimic')); pair = cs.length >= 2 ? ['v_' + cs[0], 'v_' + cs[1]] : VOTE_PAIRS.assaut.slice(); }
@@ -8859,7 +8873,7 @@ function jtGen(s) {
   }
   if (w === 9) return { w, k: rndOf(MAP_EV) };
   if (w === 17 || (w >= 25 && s % 4 === 3)) return { w, k: 'boss' };
-  const pool = { rush: 2, cohorte: 2, gold: 2, foire: 1.5, fog: 1.2, eclipse: 1.2, jackpot: 1, eboul: 1.4, feu: 1.3, korrigans: 1.2 };
+  const pool = { rush: 2, cohorte: 2, gold: 2, foire: 1.5, jackpot: 1, eboul: 1.4, feu: 1.3 };
   for (const c of charsBy(w)) if (c !== 'mimic') pool['v_' + c] = 0.8;
   for (const k of recent) delete pool[k];
   return { w, k: pick(pool) };
@@ -12839,8 +12853,6 @@ Object.assign(TUTO_ART, {
     creeps: b => [{ kind: 'rat', ...routeAt(b, SPAWN, 1.3) }, { kind: 'golem', ...routeAt(b, SPAWN, 3.1) }],
     over: x => {
       for (const [c, r] of [[0, 1], [1, 1], [0, 2]]) { const [fx, fy] = acell(c, r); drawFlameJt(fx + 8, fy + 17, true, 0); drawFlameJt(fx + 17, fy + 21, false, 1); }
-      const rx = cellX(7) + 12, ry = cellY(1) + 10;
-      for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; drawMushroom(Math.round(rx + Math.cos(a) * 21), Math.round(ry + Math.sin(a) * 14), i % 3 === 0 ? 1 : 0); }
       const [hx, hy] = herPos(); x.globalCompositeOperation = 'multiply'; P.ell(hx + 8, hy + HER_ROWS.ann_a.length, 5, 1, SHADOW_MUL); x.globalCompositeOperation = 'source-over'; blit(x, herSprite('ann_a'), hx, hy);
     },
     crop: [24, 0, 224, 120],
@@ -12863,8 +12875,8 @@ Object.assign(TUTO_ART, {
       p: "Dans l’onglet Envoyer, tes créatures partent chez la Maison voisine. Chaque envoi fait monter ton revenu, et les vies qu’elle perd sont pour toi. Au début, quatre créatures ; de nouvelles s’ouvrent toutes les quatre vagues.",
       x: () => `<p class="tut-hint">Plus une créature coûte cher, plus elle est forte.</p>` + tsec('Les boss des Maisons', BOSS_KINDS.map(k => tchip(ICON[k] || creepIcon(k, -1), BOSS_INFO[k].short, BOSS_INFO[k].p, { cost: S[k].cost })).join('')) + `<p class="tut-hint">Vole ${BOSS_NEED} vies à tes rivaux pour réveiller celui de ta Maison. Un seul par partie.</p>` },
     { k: 'surprises', t: 'Le fou et ses surprises',
-      p: "Chaque vague s’annonce en haut, à côté de ton nom : touche l’annonce pour savoir ce qu’elle apporte (feu de broussailles, cercle des korrigans, boss…). À mi-partie, l’Entracte : une partie de palet pour gagner une relique.",
-      x: () => tsec('Par exemple', ['feu', 'korrigans', 'boss', 'entracte'].map(k => tchip(jtIcon(k), EV[k].n, EV_TAG[k])).join('')) });
+      p: "Chaque vague s’annonce en haut, à côté de ton nom : touche l’annonce pour savoir ce qu’elle apporte (feu de broussailles, éboulement, boss…). À mi-partie, l’Entracte : une partie de palet pour gagner une relique.",
+      x: () => tsec('Par exemple', ['feu', 'eboul', 'boss', 'entracte'].map(k => tchip(jtIcon(k), EV[k].n, EV_TAG[k])).join('')) });
 })();
 
 function circlePxOn(p, cx, cy, r, col) { const n = Math.max(16, Math.round(r * 6.3)); for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2; p.px(Math.round(cx + Math.cos(t) * r), Math.round(cy + Math.sin(t) * r), col); } }
@@ -14237,6 +14249,8 @@ const FOU_WORD = ["aaaaaa...........a............................a..........","a
   for (const k of Object.keys(HER_POS)) HER_POS[k] = [HER_POS[k][0], HER_POS[k][1] - 5];
   put(JEST_ROWS, { front: FOU_ROWS.front, throw: FOU_ROWS.throw, ann: FOU_ROWS.ann });
   put(JEST_PAL, FOU_PAL);
+  // version 49: the Fog spell is no longer dealt (« il fait nuit sur la carte… on ne voit plus rien »); CARDS.f stays for an old hand
+  const fi = CARD_KEYS.indexOf('f'); if (fi >= 0) CARD_KEYS.splice(fi, 1);
 })();
 // his sprite is 17 x 18 (the herald's was 18 x 14): a bigger bake, the shadow under his feet, the tap zone and the bubble follow his size
 herSprite = function (f) { return sprGet('jher' + f, () => bakeAt(20, 22, 0, 0, () => P.spr(HER_ROWS[f], HER_PAL, 0, 0))); };
@@ -14319,20 +14333,29 @@ function fouPlace() {
   const v = Math.round(innerHeight - y) + 'px'; if (el.style.bottom !== v) el.style.bottom = v;
 }
 const fouEsc = t => esc(t).replace(/(Duel final !|Plus que \d+ Maisons\.)/, '<b>$1</b>');
-// the spectator's notes: in his voice (a note while he cannot speak is still a note)
+// version 49 (Patrick, 21/10, 12 h 34: « il parle à chaque vague, ça peut être très chiant »): he speaks rarely.
+// Only for: a boss wave; the final duel (two Houses left); for a spectator, a House that falls and a boss on its way; at the palet (its panel).
+// At most one line every FOU_GAP seconds (the final duel always passes); a line that comes too soon is not said
+// (for a spectator it stays a small note at the top). The other notes of the spectator are small notes at the top again.
+const FOU_GAP = 25;
+function fouRare(html, o = {}) {
+  const now = performance.now();
+  if (!o.force && FOU.lastRare && now - FOU.lastRare < FOU_GAP * 1000 && FOU.g === G) return false;
+  if (!fouSay(html, o)) return false;
+  FOU.lastRare = now; return true;
+}
 specSay = function (key, txt, gap = 6) {
   if (!specOn() || !SPECM) return;
   const now = performance.now(); if (now - (SPECM.last[key] || 0) < gap * 1000) return; SPECM.last[key] = now;
-  if (!fouSay(fouEsc(txt), { wink: /Duel final/.test(txt) })) toast(txt, 'specnote');
+  const rare = /^(elim|boss)/.test(key), duel = /Duel final/.test(txt);
+  if (!(rare && fouRare(fouEsc(txt), { wink: duel, force: duel }))) toast(txt, 'specnote');
 };
-// the wave's news, when the herald's queue moves on: the top panel does not open by itself for these
+// the final duel, for the two Houses still standing (the spectators hear it above)
+{ const base = specElim; specElim = function (b, left) { base(b, left); if (left === 2 && G && !G.quiet && !specOn() && b.k !== G.me) fouRare(`${esc(b.name)} tombe. <b>Duel final !</b>`, { wink: true, force: true }); }; }
+// the waves: only a boss wave makes him speak (the announcement in the top bar stays for every wave)
 function fouHerald(it) {
-  if (!it || it.type !== 'wave') return;
-  let h = '';
-  if (it.k && EV[it.k]) h = EV[it.k].fam === 'caractere' ? `Oyez ! <b>${esc(evName(it.k))}</b> !` : `Oyez ! Vague ${it.w} : <b>${esc(evName(it.k))}</b> !`;
-  else if (it.fresh && CH[it.fresh]) h = `Oyez ! Nouvelle créature : <b>${esc(CH[it.fresh].n)}</b> !`;
-  else if (it.stage) h = `Oyez ! Nouveau bestiaire : <b>${esc(it.stage)}</b> !`;
-  if (h) fouSay(h);
+  if (!it || it.type !== 'wave' || it.k !== 'boss') return;
+  fouRare('Oyez ! <b>Un boss</b> arrive : il vole 5 vies !');
 }
 { const base = herTick; herTick = function () { const H = G.jt && G.jt.her, was = H ? H.cur : null; base(); const cur = H ? H.cur : null; if (cur && cur !== was) fouHerald(cur); }; }
 { const base = jtUI; jtUI = function () { base(); fouTick(); }; }
@@ -14728,11 +14751,13 @@ function profWhen(m, fn) { const R = chrOf(m); if (R.L) { fn(); return; } chrLoa
 
 /* ---------------------------------------------------------------- small pictures: the gear, the crown, the lock, the check */
 const profPx = (rows, pal, scale = 2, cls = '') => { const w = Math.max(...rows.map(r => r.length)), h = rows.length; return pxImg(pxURL(w, h, p => { rows.forEach((r, y) => { for (let x = 0; x < r.length; x++) if (pal[r[x]]) p.px(x, y, pal[r[x]]); }); }, scale), w * scale, h * scale, cls); };
-const PROF_GEAR = ['....aa....', '.a.aaaa.a.', '.aaaaaaaa.', '..aa..aa..', 'aaa....aaa', 'aaa....aaa', '..aa..aa..', '.aaaaaaaa.', '.a.aaaa.a.', '....aa....'];
-function profCrownImg() {
-  if (PROF_CROWN && PROF_CROWN.rows) return profPx(PROF_CROWN.rows, PROF_CROWN.pal, 2, 'pf-crown');
-  const [rows] = ICON12.crown; return profPx(rows, { a: K.ua }, 3, 'pf-crown');
-}
+// the settings of the home: the sliders of the table's « Réglages » row, a little heavier to stand by the « ? » (Patrick 21/10: the gear read as a spider)
+const PROF_SLIDERS = '<svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true" shape-rendering="crispEdges"><path d="M2 6h18M2 16h18" stroke="currentColor" stroke-width="2.4"/><path d="M13 2.5v7M8 12.5v7" stroke="currentColor" stroke-width="4.4"/></svg>';
+// the record's crown, smaller on the plate (Patrick 21/10): the art fork's crown redrawn on 7×5 — three points, dark stones,
+// the band at the bottom — at scale 2 (14×10), never the 9×7 scaled by 1.5
+const PROF_CROWN7 = ['p..p..p', 'eb.b.da', 'efbcbfa', 'ebbbdda', 'ggbbdaa'];
+const PROF_CROWN_PAL = { a: '#d98b3e', b: '#f6d45e', c: '#ad8d2e', d: '#eaa944', e: '#fff6cc', f: '#7e6a2c', g: '#ffe7b6', p: '#fff2b4' };
+function profCrownImg() { return profPx(PROF_CROWN7, Object.assign({}, PROF_CROWN_PAL, PROF_CROWN && PROF_CROWN.pal || {}), 2, 'pf-crown'); }
 const PROF_LOCK = ['.aaa.', 'a...a', 'a...a', 'bbbbb', 'bbcbb', 'bbcbb', 'bbbbb'];
 const profLockImg = () => profPx(PROF_LOCK, { a: '#c9d3d5', b: '#c9d3d5', c: '#1b2b34' }, 2, 'pf-lk');
 const PROF_CHECK = ['.....a', '....aa', 'a..aa.', 'aaaa..', '.aa...'];
@@ -14765,7 +14790,7 @@ function profHomeSync() {
 $('profBtn').addEventListener('click', () => { audioInit(); sfx('click'); PF.m = EMB[myMaison] ? myMaison : 'cerf'; PF.tab = 'tenue'; showPanel('profil'); });
 // the settings of the home: only what belongs to the device (sounds, vibrations); the game's own stay on the table
 $('prefBtn').addEventListener('click', () => { audioInit(); sheetOpen('pref'); $('shTitle').textContent = 'Réglages'; });
-$('prefBtn').innerHTML = profPx(PROF_GEAR, { a: '#e9e2d0' }, 2);
+$('prefBtn').innerHTML = PROF_SLIDERS;
 
 /* ---------------------------------------------------------------- the doors: the row of outfits (no banner) */
 function profDoorTenue(m) { return profCos(m).tenue; }
@@ -14813,6 +14838,7 @@ function profRender() {
     `<span class="mt"><b>${L}</b><small>maîtrise</small><em style="--f:${Math.round(frac * 100)}%"></em></span>`;
   document.querySelectorAll('#pfTabs [data-tab]').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === PF.tab)));
   profList(m, col, cos);
+  renderSwatches($('pfCol'), col, new Set()); $('pfColN').textContent = PCOL_N[col];
   $('pfRec').innerHTML = `<span class="cp">Records</span><span><b>${PMETA.wins}</b> ${PMETA.wins > 1 ? 'victoires' : 'victoire'}</span><span><b>${PMETA.bestWave}</b> ${PMETA.bestWave > 1 ? 'vagues' : 'vague'}</span><span><b>${PMETA.bestStolen}</b> vies volées</span>`;
   profStage(m, col, cos);
 }
@@ -14853,6 +14879,12 @@ $('pfList').addEventListener('click', e => {
   if (!profHas(kind, k, m)) { const nd = profNeed(kind, k, m); toast(`${kind === 'tenue' ? 'Tenue ' + TENUE_N[k].toLowerCase() : 'Motif ' + MOTIF_N[k].toLowerCase()} : ${nd.long} (${nd.a} / ${nd.g})`, 'gold'); return; }
   profEquip(m, kind, k); profRender();
 });
+$('pfCol').addEventListener('click', e => {
+  const b = e.target.closest('[data-col]'); if (!b) return; const c = +b.dataset.col; if (!(c >= 0 && c < PCOL.length) || c === myCol) return;
+  audioInit(); sfx('click');
+  myCol = c; try { localStorage.setItem('ddl-col', c); } catch (err) {}     // the doors' choice: the same colour everywhere
+  profRender(); profHomeSync();
+});
 $('pfTabs').addEventListener('click', e => { const t = e.target.closest('[data-tab]'); if (!t || t.dataset.tab === PF.tab) return; sfx('click'); PF.tab = t.dataset.tab; profRender(); });
 function profTurn(d) { const i = (MAISONS.indexOf(PF.m) + d + MAISONS.length) % MAISONS.length; PF.m = MAISONS[i]; sfx('click'); profRender(); }
 $('pfPrev').addEventListener('click', () => profTurn(-1));
@@ -14869,22 +14901,41 @@ function profStage(m, col, cos) {
   const st = $('pfStage'), Wd = st.clientWidth, Hs = st.clientHeight; if (!Wd || !Hs) return;
   const C = CHAMP[m], D = DOOR[m], dpr = Math.max(1, window.devicePixelRatio || 1), grid = dpr < 1.5 ? dpr * 2 : dpr;
   const snap = v => Math.floor(v * grid + 1e-6) / grid, px = v => Math.round(v * dpr) / dpr;
-  const F = Hs - 18;                                                   // where the general stands
-  const bs = Hs >= 330 ? 3 : 2, hdr = $('pfHead').offsetHeight + 2;    // the banner's scale, and where it hangs (under the header)
-  let S = snap(Math.min(D.t * 0.9, (F - hdr - 25 * bs) / (C.H + 1))); S = Math.max(1.5, S);
+  const F = Hs - 18, hdr = $('pfHead').offsetHeight + 2;              // where the general stands; the header above
+  // the general keeps his size (the ring Patrick asked smaller stays so); the room above his head stays too
+  let S = snap(Math.min(D.t * 0.9, (F - hdr - 25 * (Hs >= 330 ? 3 : 2)) / (C.H + 1))); S = Math.max(1.5, S);
+  const PADX = C.pad == null ? 4 : C.pad, CW = C.W + PADX * 2, gw = C.W * S;
+  // the banner (Patrick 21/10: « plus à droite, beaucoup plus gros »): at the general's right, two thirds of the stage high
+  const bn = profBanner(m, col, cos.motif, cos.stars, 1), bs = Math.max(2, snap(Math.min(5, (F - hdr) * 0.65 / bn.height))), bw = bn.width * bs;
+  // a wide general (the bear, the fox) steps a little to the left to leave it room
+  const shift = Math.min(Wd * 0.12, Math.max(0, gw / 2 + 8 + bw + 16 - Wd / 2)), cx = px(Wd / 2 - shift);
   const v = S >= 2.999 && SCN[m][3] ? 3 : 2, sc = $('pfSc');
   if (sc.dataset.src !== SCN[m][v]) { sc.dataset.src = SCN[m][v]; sc.src = SCN[m][v]; }
-  // the scene at the general's scale, its ring on the horizon; the ring is the scene's own, the scene a little narrower than at the doors
-  sc.style.cssText = `left:${px((Wd - 130 * S) / 2)}px;top:${px(F - SCN_ROW[v][0] * S)}px;width:${130 * S}px;height:${SCN_ROW[v][1] * S}px`;
-  const PADX = C.pad == null ? 4 : C.pad, CW = C.W + PADX * 2, cv = $('pfCh');
-  cv.width = CW; cv.height = C.H + 3;
-  cv.style.cssText = `left:${px((Wd - CW * S) / 2)}px;top:${px(F - (C.H + 1) * S)}px;width:${CW * S}px;height:${(C.H + 3) * S}px`;
-  // the banner: its top under the header, behind the general's head
-  const bn = profBanner(m, col, cos.motif, cos.stars, 1), bc = $('pfBn');
-  bc.width = bn.width; bc.height = bn.height; const bx = bc.getContext('2d'); bx.imageSmoothingEnabled = false; bx.clearRect(0, 0, bc.width, bc.height); bx.drawImage(bn, 0, 0);
-  bc.style.cssText = `left:${px((Wd - bn.width * bs) / 2)}px;top:${hdr}px;width:${bn.width * bs}px;height:${bn.height * bs}px`;
+  // the scene at the general's scale, its ring under his feet; its edges go on to both sides of the screen
+  const sx = px(cx - 65 * S), sy = px(F - SCN_ROW[v][0] * S);
+  sc.style.cssText = `left:${sx}px;top:${sy}px;width:${130 * S}px;height:${SCN_ROW[v][1] * S}px`;
+  profSceneExt(sc, S, sx, sy, Wd, Hs);
+  const cv = $('pfCh'); cv.width = CW; cv.height = C.H + 3;
+  cv.style.cssText = `left:${px(cx - CW * S / 2)}px;top:${px(F - (C.H + 1) * S)}px;width:${CW * S}px;height:${(C.H + 3) * S}px`;
+  const bc = $('pfBn'); bc.width = bn.width; bc.height = bn.height;
+  const bx2 = bc.getContext('2d'); bx2.imageSmoothingEnabled = false; bx2.clearRect(0, 0, bc.width, bc.height); bx2.drawImage(bn, 0, 0);
+  const gr = cx + gw / 2, bx = Math.min(Wd - bw - 14, gr + Math.max(6, Math.min(48, (Wd - gr - bw) / 2)));
+  bc.style.cssText = `left:${px(bx)}px;top:${hdr}px;width:${bw}px;height:${bn.height * bs}px`;
   PF.S = S; PF.key = m + '|' + col + '|' + cos.tenue;
   profWhen(m, () => profDrawGen(performance.now() / 1000, true));
+}
+// the scene is a picture 130 pixels wide: on both sides its outer columns go on, mirrored then straight, to the screen's edges
+function profSceneExt(img, S, sx, sy, Wd, Hs) {
+  const cv = $('pfScX'); if (!cv) return;
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  cv.width = Math.round(Wd * dpr); cv.height = Math.round(Hs * dpr);
+  const x = cv.getContext('2d'); x.imageSmoothingEnabled = false; x.clearRect(0, 0, cv.width, cv.height);
+  if (!img.complete || !img.naturalWidth) { img.addEventListener('load', () => profSceneExt(img, S, sx, sy, Wd, Hs), { once: true }); return; }
+  const W = img.naturalWidth, H = img.naturalHeight, N = 16, sw = Math.round(N * S * dpr), y = Math.round(sy * dpr), h = Math.round(H * S * dpr);
+  let e = Math.round(sx * dpr) + 1, flip = true;                     // one device pixel under the picture: no seam where they meet
+  while (e > 0) { x.save(); if (flip) { x.translate(e, 0); x.scale(-1, 1); x.drawImage(img, 0, 0, N, H, 0, y, sw, h); } else x.drawImage(img, 0, 0, N, H, e - sw, y, sw, h); x.restore(); e -= sw; flip = !flip; }
+  e = Math.round((sx + W * S) * dpr) - 1; flip = true;
+  while (e < cv.width) { x.save(); if (flip) { x.translate(e + sw, 0); x.scale(-1, 1); x.drawImage(img, W - N, 0, N, H, 0, y, sw, h); } else x.drawImage(img, W - N, 0, N, H, e, y, sw, h); x.restore(); e += sw; flip = !flip; }
 }
 function profDrawGen(t, force) {
   const m = PF.m, C = CHAMP[m], R = chrOf(m), cv = $('pfCh'); if (!C || !R.L || !cv) return;
