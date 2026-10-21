@@ -1249,6 +1249,34 @@ body.cd-on .fou-say{visibility:hidden}
 #endOv.fin .fin-crown[hidden]{display:none}
 @keyframes finCrownBob{0%{transform:translateY(0)}11.5%{transform:translateY(calc(var(--u) * -1))}21%{transform:translateY(calc(var(--u) * -2))}29%{transform:translateY(calc(var(--u) * -3))}38.5%{transform:translateY(calc(var(--u) * -4))}61.5%{transform:translateY(calc(var(--u) * -3))}71%{transform:translateY(calc(var(--u) * -2))}79%{transform:translateY(calc(var(--u) * -1))}88.5%,100%{transform:translateY(0)}}
 @media (prefers-reduced-motion:reduce){#endOv.fin .fin-crown{animation:none}}
+
+/* ---------------------------------------------------------------- Cases (version 51): the power squares, « le cadre » (js_cases.js) */
+/* the gold button at the right of the build bar's tabs, while a square waits to be placed */
+.cs-btn{display:grid;place-items:center;margin-left:auto;padding:calc(var(--u)*2);border:0;background:var(--panel2);cursor:pointer;box-shadow:inset 0 0 0 var(--u) var(--gold);animation:csPulse 1.4s steps(1) infinite}
+.cs-btn svg{display:block;width:calc(var(--u)*16);height:calc(var(--u)*16)}
+.cs-btn[aria-expanded="true"]{background:var(--panel);box-shadow:inset 0 0 0 calc(var(--u)*2) var(--gold);animation:none}
+@keyframes csPulse{50%{box-shadow:inset 0 0 0 calc(var(--u)*2) var(--gold)}}
+.dock-top .cs-btn + .cam{margin-left:calc(var(--u)*2)}
+/* the sheet over the build bar: the four powers, then the cell */
+.cs-p{position:fixed;left:calc(var(--u)*4);right:calc(var(--u)*4);z-index:4;background:var(--panel);box-shadow:inset 0 0 0 var(--u) var(--line),inset 0 calc(var(--u)*2) 0 var(--gold);padding:calc(var(--u)*5);display:flex;flex-direction:column;gap:calc(var(--u)*4);box-sizing:border-box}
+.cs-hd{display:flex;align-items:center;gap:calc(var(--u)*3);min-height:calc(var(--u)*22)}
+.cs-k{flex:1;min-width:0;display:flex;align-items:center;gap:calc(var(--u)*3);color:var(--gold);font-weight:700}
+.cs-k svg{flex:none;width:calc(var(--u)*16);height:calc(var(--u)*16)}
+.cs-k span{color:var(--ink)}
+.cs-ch,.cs-x{border:0;background:var(--panel2);color:var(--ink);min-height:calc(var(--u)*22);cursor:pointer;flex:none}
+.cs-ch{padding:0 calc(var(--u)*5)}
+.cs-x{min-width:calc(var(--u)*22);display:grid;place-items:center}
+.cs-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:calc(var(--u)*2)}
+.cs-e{border:0;background:var(--panel2);color:var(--ink);padding:calc(var(--u)*4) calc(var(--u)*1) calc(var(--u)*4);display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*2);cursor:pointer;min-width:0}
+.cs-e svg{display:block;width:calc(var(--u)*24);height:calc(var(--u)*24)}
+.cs-e b{font-weight:700}
+.cs-e small{color:var(--muted);text-align:center;line-height:1.15;font-size:.86em}
+.cs-h{margin:0;color:var(--ink);padding:0 var(--u)}
+/* the tower's panel: the square's sign and its power */
+.pop .cs-pop{display:flex;align-items:center;gap:calc(var(--u)*3);padding:0 var(--u);color:var(--muted)}
+.pop .cs-pop svg{flex:none}
+.pop .cs-pop b{color:var(--ink)}
+@media (prefers-reduced-motion: reduce){.cs-btn{animation:none}}
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
 </head>
@@ -15420,6 +15448,304 @@ function cdBand(from, rw, amt) {
   clearTimeout(CD.gbT);
   CD.gbT = setTimeout(() => { el.classList.add('out'); CD.gbT = setTimeout(() => { el.hidden = true; el.classList.remove('in', 'out'); }, 280); }, 3600);
 }
+
+/* ================================================================ fourche « Cases » (version 51, Patrick 21/10, 16 h 20 : « pour les cases à pouvoir
+   tu peux coder le B : cadre, avec vague parfaite »). The power squares of the board Cases.dc.html, design B « le cadre ».
+   Earning, « la vague parfaite »: from wave V, a player who holds a whole wave without losing a single life earns one power square, once per
+   game. A wave's window runs from its start to the next wave's start (the waves come on a clock): a life lost in it spoils it, whether the
+   creature came with the wave or was sent by a rival; the window is judged when the next wave starts. Not in the guided game.
+   Earned: a short gold note « Vague parfaite ! Une case de pouvoir » (the jester says nothing) and a small gold button at the right of the
+   build bar's tabs. Decided here: nothing opens by itself and nothing stops: the button waits as long as the player likes. It opens a small
+   sheet over the build bar with four tiles (Force, Cadence, Portée, Butin: the board's colours and signs); then the player touches a cell of
+   his own grid, once to see the square there, once more to set it (a stray touch costs nothing). « Changer » goes back, ✕ puts it off.
+   The square: on a free cell it shines there and stays a free cell (it blocks nothing, the path rules do not see it); the tower built on it
+   later takes its power; on a tower (or a wall) it gives it at once; the power belongs to the square: a sold tower leaves it for the next one.
+   Force +30 % damage; Cadence fires 30 % faster (the time between two shots divided by 1.3); Portée +1 cell; Butin +1 gold for each creature
+   that tower kills. A bot places its own at once under its best tower (the highest level, then the most kills): Cadence for an archer or
+   a tesla, Portée for the frost, Force for the others.
+   Online, the host decides: the square rides at the end of the board's head as 'Q' + state (0 none, 1 earned, 2 placed) + cell (2 base-36
+   digits) + effect (an older page reads only its own fields); the choice ['Q', 'c', e] and the placement ['Q', 'p', c, r, e] are actions
+   (an older host's sanitizeAction drops them). Every lane shows its square, so the spectator sees them all.
+   Wraps: stat, jtChefBounty, leak, startWave, step, applyAction, sanitizeAction, encBoard, applySnap, jtGroundOver, jtTop, onTap, openPop,
+   updateUI; one line in « Comment jouer » (Le fou et ses surprises: what the waves bring). */
+const CS_FROM = 5, CS_N = 8;
+const CS_EFF = {     // pastel, as on the board: base, light, glow, dark
+  f: { n: 'Force', d: '+30 % de dégâts', c: ['#e8897a', '#f4b3a8', '#fde3dd', '#bf6a5d'] },
+  c: { n: 'Cadence', d: 'tire 30 % plus vite', c: ['#7fb0e0', '#a9cbee', '#e0eefb', '#5d8bbd'] },
+  p: { n: 'Portée', d: '+1 case de portée', c: ['#7fd09c', '#aae3bd', '#e2f7e8', '#559f72'] },
+  o: { n: 'Butin', d: '+1 or par créature', c: ['#ebc65c', '#f6dd8b', '#fdf3cf', '#bc984a'] },
+};
+const CS_KEYS = ['f', 'c', 'p', 'o'];
+const CS_GOLD = ['#e6c35a', '#f6dc84', '#fdf3cf', '#b39550'];
+const CS_SIGN = {    // 7 x 7, the board's signs
+  f: ['...#...', '...#...', '...#...', '...#...', '.#####.', '...#...', '..###..'],
+  c: ['.......', '#..#...', '.#..#..', '..#..#.', '.#..#..', '#..#...', '.......'],
+  p: ['..###..', '.#...#.', '#.....#', '#..#..#', '#.....#', '.#...#.', '..###..'],
+  o: ['..###..', '.#####.', '###.###', '###.###', '###.###', '.#####.', '..###..'],
+};
+const CSQ = { g: null, open: false, eff: '', cand: -1, key: '' };
+
+/* ---------------------------------------------------------------- the rule */
+function csOf(b) { return b.cs || (b.cs = { st: 0, cell: -1, eff: '', pick: '', at: 0 }); }
+function csEffAt(b, i) { const s = b && b.cs; return s && s.st === 2 && s.cell === i ? s.eff : ''; }
+function csBoardOf(t) { if (!G || !t) return null; const i = idx(t.c, t.r); for (const b of G.b) if (b.grid[i] === t) return b; return null; }
+function csEffT(t, b) { if (!t || t.type === 'wall' || !Number.isInteger(t.c)) return ''; b = b && b.grid[idx(t.c, t.r)] === t ? b : csBoardOf(t); return b ? csEffAt(b, idx(t.c, t.r)) : ''; }
+// a cell that can hold a square: in the grid, not the scenery, not an entrance or the exit (a tower could never stand there)
+function csCellOk(b, i) { return i >= 0 && i < COLS * ROWS && !OBST[i] && !(b.ob && b.ob[i] && b.ob[i] !== OB_RUIN) && !spawnsOf().includes(i) && i !== EXIT; }
+{ const base = stat; stat = function (t, b) {
+    const o = base.apply(this, arguments), e = csEffT(t, b);
+    if (e === 'f') o.dmg *= 1.3; else if (e === 'c') o.rate /= 1.3; else if (e === 'p') o.range += 1;
+    return o;
+}; }
+{ const base = jtChefBounty; jtChefBounty = function (cr, src, v) { const r = base.apply(this, arguments); return src && csEffT(src) === 'o' ? r + 1 : r; }; }
+// a life lost spoils the window (the wave's creatures and the ones a rival sent alike)
+{ const base = leak; leak = function (b, cr) {
+    const before = b ? b.lives : 0, r = base.apply(this, arguments);
+    if (b && b.lives < before && b.csW) b.csW.lost = true;
+    return r;
+}; }
+// startWave runs right after G.wave++: the window that just closed is the previous wave's
+{ const base = startWave; startWave = function () { csWaveTurn(); return base.apply(this, arguments); }; }
+function csWaveTurn() {
+  if (!G || !auth() || G.guide) return;
+  const prev = G.wave - 1;
+  for (const b of G.b) {
+    const w = b.csW;
+    if (w && w.w === prev && prev >= CS_FROM && !w.lost && b.alive && csOf(b).st === 0) csEarn(b);
+    b.csW = { w: G.wave, lost: false };
+  }
+}
+function csEarn(b) {
+  csOf(b).st = 1;
+  if (!G.quiet) csEarnFx(b);
+}
+function csEarnFx(b) {
+  b.rings.push({ x: COLS / 2, y: ROWS / 2, r0: 0.6, r1: 5, t: 0.6, ttl: 0.6, color: C.gold, fill: true });
+  if (b.k !== G.me || G.spec) return;
+  sfx('chest'); toast('Vague parfaite ! Une case de pouvoir', 'gold');
+}
+// the choice ['Q', 'c', e] and the placement ['Q', 'p', c, r, e]
+function csAct(k, a) {
+  const b = G && G.b[k]; if (!b || !b.alive || G.ended) return 'x';
+  const s = csOf(b); if (s.st !== 1) return 'x';
+  if (a[1] === 'c') { if (!CS_EFF[a[2]]) return 'x'; s.pick = a[2]; return ''; }
+  if (a[1] !== 'p') return 'x';
+  const c = a[2], r = a[3], e = CS_EFF[a[4]] ? a[4] : s.pick;
+  if (!CS_EFF[e] || !Number.isInteger(c) || !Number.isInteger(r) || c < 0 || c >= COLS || r < 0 || r >= ROWS) return 'x';
+  const i = idx(c, r); if (!csCellOk(b, i)) return 'Pas sur cette case';
+  Object.assign(s, { st: 2, cell: i, eff: e, pick: e, at: auth() ? 0 : G.t });
+  if (!G.quiet) csPlaceFx(b, c, r, e);
+  return '';
+}
+function csPlaceFx(b, c, r, e) {
+  b.rings.push({ x: c + 0.5, y: r + 0.5, r0: 0.2, r1: 1.1, t: 0.45, ttl: 0.45, color: CS_EFF[e].c[0], fill: true });
+  if (fxOn(b.k) && !G.spec && b.k === G.me) sfx('upgrade');
+  if (b.grid[idx(c, r)] && b.grid[idx(c, r)].type !== 'wall') G.floats.push({ k: b.k, x: c + 0.5, y: r - 0.2, txt: CS_EFF[e].n, color: CS_EFF[e].c[1], t: 1.2, ttl: 1.2 });
+}
+// a bot: at once, under its best tower
+function csBotPlace(b) {
+  const ts = b.grid.filter(t => t && t.type !== 'wall'); if (!ts.length) return;
+  ts.sort((a, c) => (c.lvl - a.lvl) || ((c.kills || 0) - (a.kills || 0)));
+  const t = ts[0], e = t.type === 'arrow' || t.type === 'tesla' ? 'c' : t.type === 'frost' ? 'p' : 'f';
+  csAct(b.k, ['Q', 'p', t.c, t.r, e]);
+}
+{ const base = step; step = function (dt) {
+    base.apply(this, arguments);
+    if (!G || G.ended || !G.running || !auth()) return;
+    for (const b of G.b) if (b.bot && b.alive && b.cs && b.cs.st === 1) csBotPlace(b);
+}; }
+{ const base = applyAction; applyAction = function (k, a) {
+    if (Array.isArray(a) && a[0] === 'Q') return csAct(k, a);
+    return base.apply(this, arguments);
+}; }
+{ const base = sanitizeAction; sanitizeAction = function (x) {
+    if (Array.isArray(x) && x[1] === 'Q') {
+      if (x.length === 4 && x[2] === 'c' && typeof x[3] === 'string' && CS_EFF[x[3]]) return ['Q', 'c', x[3]];
+      if (x.length === 6 && x[2] === 'p' && Number.isInteger(x[3]) && Number.isInteger(x[4]) && typeof x[5] === 'string' && (x[5] === '' || CS_EFF[x[5]])) return ['Q', 'p', x[3], x[4], x[5]];
+      return null;
+    }
+    return base.apply(this, arguments);
+}; }
+
+/* ---------------------------------------------------------------- the network: the square at the end of the board's head */
+const csHead = b => { const s = csOf(b); return 'Q' + s.st + (s.st === 2 ? b36(s.cell, 2) + s.eff : ''); };
+{ const base = encBoard; encBoard = function (b, maxC) { const s = base.apply(this, arguments), i = s.indexOf('|'); return i < 0 ? s : s.slice(0, i) + ',' + csHead(b) + s.slice(i); }; }
+{ const base = applySnap; applySnap = function (pr) {
+    const r = base.apply(this, arguments);
+    if (G && pr && typeof pr.g === 'string' && !auth()) G.b.forEach((b, k) => { const str = pr['b' + k]; if (typeof str === 'string') csFromHead(b, str); });
+    return r;
+}; }
+function csFromHead(b, str) {
+  const h = str.slice(0, Math.max(0, str.indexOf('|'))), f = h.split(',').find(x => x[0] === 'Q'); if (!f) return;
+  const st = Math.max(0, Math.min(2, +f[1] | 0)), s = csOf(b), was = s.st;
+  if (s.at && G.t - s.at < 4 && st < s.st) return;                 // my own placement is on its way to the host
+  s.at = 0;
+  if (st === 2) {
+    const cell = parseInt(f.substr(2, 2), 36), e = f[4];
+    if (!(cell >= 0 && cell < COLS * ROWS) || !CS_EFF[e]) return;
+    const moved = s.st !== 2 || s.cell !== cell || s.eff !== e;
+    Object.assign(s, { st: 2, cell, eff: e });
+    if (moved && G.running && was !== 2) csPlaceFx(b, cell % COLS, (cell / COLS) | 0, e);
+  } else { s.st = st; if (!st) { s.cell = -1; s.eff = ''; } }
+  if (was === 0 && s.st === 1 && G.running) csEarnFx(b);
+}
+
+/* ---------------------------------------------------------------- the lanes: design B, at the game's 24 pixels a cell */
+function csRingPath(x0, y0, x1, y1) {
+  const p = [];
+  for (let x = x0; x < x1; x++) p.push(x, y0);
+  for (let y = y0; y < y1; y++) p.push(x1, y);
+  for (let x = x1; x > x0; x--) p.push(x, y1);
+  for (let y = y1; y > y0; y--) p.push(x0, y);
+  return p;
+}
+const CS_PATH = csRingPath(2, 2, 21, 21), CS_EDGE = csRingPath(0, 0, 23, 23);
+// on a free cell: a frame two pixels thick, light on the top and the left, its light running round it
+function csFrameArt(cx, cy, e, i) {
+  const [base, light, glow, dark] = CS_EFF[e].c;
+  P.rect(cx + 2, cy + 2, 20, 2, base); P.rect(cx + 2, cy + 20, 20, 2, base); P.rect(cx + 2, cy + 2, 2, 20, base); P.rect(cx + 20, cy + 2, 2, 20, base);
+  P.hl(cx + 2, cy + 2, 20, light); P.vl(cx + 2, cy + 2, 20, light); P.hl(cx + 3, cy + 21, 19, dark); P.vl(cx + 21, cy + 3, 19, dark);
+  const L = CS_PATH.length / 2, head = Math.floor(i * L / CS_N);
+  for (let k = 0; k < 6; k++) {
+    const q = ((head - k) % L + L) % L, x = CS_PATH[q * 2], y = CS_PATH[q * 2 + 1];
+    P.px(cx + x, cy + y, k < 3 ? glow : light);
+    if (k < 3) P.px(cx + x + (x === 2 ? 1 : x === 21 ? -1 : 0), cy + y + (y === 2 ? 1 : y === 21 ? -1 : 0), light);
+  }
+}
+// under a tower or a wall: the cell's edge lit, two lights running round it
+function csEdgeArt(cx, cy, e, i) {
+  const [base, light, glow] = CS_EFF[e].c, L = CS_EDGE.length / 2, head = Math.floor(i * L / CS_N);
+  for (let q = 0; q < L; q++) P.px(cx + CS_EDGE[q * 2], cy + CS_EDGE[q * 2 + 1], base);
+  for (const h of [head, head + (L >> 1)]) for (let k = 0; k < 8; k++) { const q = ((h - k) % L + L) % L; P.px(cx + CS_EDGE[q * 2], cy + CS_EDGE[q * 2 + 1], k < 3 ? glow : light); }
+}
+// the sparkles that rise from it (above the tower when one stands on it)
+function csAirArt(cx, cy, e, i) {
+  const [, light, glow] = CS_EFF[e].c;
+  for (const [x, ph] of [[7, 1], [16, 5]]) {
+    const t = (i + ph) % CS_N; if (t >= 7) continue;
+    const X = cx + x + (t === 3 || t === 4 ? 1 : 0), Y = cy - 1 - Math.floor(t * 1.4), size = t < 3 ? 2 : t < 6 ? 1 : 0;
+    if (size >= 2) { P.px(X, Y - 1, light); P.px(X - 1, Y, light); P.px(X + 1, Y, light); P.px(X, Y + 1, light); P.px(X, Y, glow); }
+    else P.px(X, Y, size ? glow : light);
+  }
+}
+const csFrameI = () => (Math.floor(Math.max(0, G.t) * CS_N) % CS_N + CS_N) % CS_N;
+// the cell the local player is placing his square on (the one he touched, or the one under the mouse)
+function csGhostCell(b) {
+  if (!CSQ.open || !CSQ.eff || b.k !== G.me || G.spec) return -1;
+  if (CSQ.cand >= 0) return CSQ.cand;
+  return G.hover && csCellOk(b, idx(G.hover.c, G.hover.r)) ? idx(G.hover.c, G.hover.r) : -1;
+}
+{ const base = jtGroundOver; jtGroundOver = function (x, b, A) {
+    const r = base.apply(this, arguments);
+    const s = b.cs, i = csFrameI();
+    if (s && s.st === 2 && CS_EFF[s.eff]) { const [cx, cy] = acell(s.cell % COLS, (s.cell / COLS) | 0); if (b.grid[s.cell]) csEdgeArt(cx, cy, s.eff, i); else csFrameArt(cx, cy, s.eff, i); }
+    const g = csGhostCell(b);
+    if (g >= 0) { const [cx, cy] = acell(g % COLS, (g / COLS) | 0); x.globalAlpha = 0.8; if (b.grid[g]) csEdgeArt(cx, cy, CSQ.eff, i); else csFrameArt(cx, cy, CSQ.eff, i); x.globalAlpha = 1; }
+    return r;
+}; }
+{ const base = jtTop; jtTop = function (x, b, A) {
+    const r = base.apply(this, arguments);
+    const s = b.cs;
+    if (s && s.st === 2 && CS_EFF[s.eff] && b.alive) { const [cx, cy] = acell(s.cell % COLS, (s.cell / COLS) | 0); csAirArt(cx, cy - (b.grid[s.cell] ? 5 : 0), s.eff, csFrameI()); }
+    return r;
+}; }
+
+/* ---------------------------------------------------------------- the local player: the gold button, the sheet, the cell */
+function csSVG(e, px, sign) {
+  const c = e ? CS_EFF[e].c : CS_GOLD;
+  let r = `<svg viewBox="0 0 24 24" width="${px}" height="${px}" shape-rendering="crispEdges" aria-hidden="true">`;
+  const R = (x, y, w, h, col) => { r += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${col}"/>`; };
+  R(2, 2, 20, 2, c[0]); R(2, 20, 20, 2, c[0]); R(2, 2, 2, 20, c[0]); R(20, 2, 2, 20, c[0]);
+  R(2, 2, 20, 1, c[1]); R(2, 2, 1, 20, c[1]); R(3, 21, 19, 1, c[3]); R(21, 3, 1, 19, c[3]);
+  if (sign && e) CS_SIGN[e].forEach((row, j) => { for (let i = 0; i < 7; i++) if (row[i] === '#') R(8 + i, 8 + j, 1, 1, c[1]); });
+  else if (!e) { R(11, 8, 2, 8, c[1]); R(8, 11, 8, 2, c[1]); R(11, 11, 2, 2, c[2]); }
+  return r + '</svg>';
+}
+function csSignSVG(e, px) {
+  let r = `<svg viewBox="0 0 7 7" width="${px}" height="${px}" shape-rendering="crispEdges" aria-hidden="true">`;
+  CS_SIGN[e].forEach((row, j) => { for (let i = 0; i < 7; i++) if (row[i] === '#') r += `<rect x="${i}" y="${j}" width="1" height="1" fill="${CS_EFF[e].c[0]}"/>`; });
+  return r + '</svg>';
+}
+function csMe() { return G && !G.spec && G.b[G.me] ? G.b[G.me] : null; }
+function csPending() { const me = csMe(); return !!(me && me.alive && G.running && !G.ended && !G.guide && me.cs && me.cs.st === 1); }
+function csBtnEl() {
+  let el = $('csBtn'); if (el) return el;
+  el = document.createElement('button'); el.id = 'csBtn'; el.type = 'button'; el.className = 'cs-btn'; el.hidden = true;
+  el.setAttribute('aria-label', 'Ta case de pouvoir'); el.setAttribute('aria-expanded', 'false'); el.innerHTML = csSVG('', 22);
+  const top = document.querySelector('.dock-top'); top.insertBefore(el, $('camBtn'));
+  el.addEventListener('click', () => { if (!csPending()) return; sfx('click'); if (CSQ.open) csClose(); else csOpen(); });
+  return el;
+}
+function csPanelEl() {
+  let el = $('csPanel'); if (el) return el;
+  el = document.createElement('div'); el.id = 'csPanel'; el.className = 'cs-p'; el.hidden = true;
+  el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Ta case de pouvoir');
+  el.innerHTML = '<div class="cs-hd"><span class="cs-k" id="csK"></span><button class="cs-ch" id="csCh" type="button" hidden>Changer</button>' +
+    '<button class="cs-x" id="csX" type="button" aria-label="Plus tard"><svg viewBox="0 0 7 7" width="12" height="12" shape-rendering="crispEdges" aria-hidden="true"><path d="M0 0h1v1H0zM1 1h1v1H1zM2 2h1v1H2zM3 3h1v1H3zM4 4h1v1H4zM5 5h1v1H5zM6 6h1v1H6zM6 0h1v1H6zM5 1h1v1H5zM4 2h1v1H4zM2 4h1v1H2zM1 5h1v1H1zM0 6h1v1H0z" fill="currentColor"/></svg></button></div>' +
+    '<div class="cs-g" id="csG"></div><p class="cs-h" id="csH" aria-live="polite"></p>';
+  document.body.appendChild(el);
+  el.addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t || !csPending()) return;
+    if (t.id === 'csX') { sfx('click'); return csClose(); }
+    if (t.id === 'csCh') { sfx('click'); CSQ.eff = ''; CSQ.cand = -1; return csRender(); }
+    if (t.dataset.e && CS_EFF[t.dataset.e]) { sfx('click'); CSQ.eff = t.dataset.e; CSQ.cand = -1; act(['Q', 'c', CSQ.eff]); closePop(); csRender(); }
+  });
+  return el;
+}
+function csOpen() { Object.assign(CSQ, { g: G, open: true, eff: '', cand: -1, key: '' }); closePop(); csPanelEl().hidden = false; csBtnEl().setAttribute('aria-expanded', 'true'); csRender(); }
+function csClose() { CSQ.open = false; CSQ.eff = ''; CSQ.cand = -1; CSQ.key = ''; const p = $('csPanel'); if (p) p.hidden = true; const b = $('csBtn'); if (b) b.setAttribute('aria-expanded', 'false'); }
+function csRender() {
+  const el = csPanelEl(), dock = $('dock').getBoundingClientRect();
+  el.style.bottom = Math.max(0, Math.round(innerHeight - dock.top + 6)) + 'px';
+  const key = [CSQ.eff, CSQ.cand].join('|'); if (key === CSQ.key) return; CSQ.key = key;
+  const g = $('csG'), h = $('csH'), k = $('csK');
+  if (!CSQ.eff) {
+    k.textContent = 'Ta case de pouvoir';
+    g.hidden = false; h.hidden = true; $('csCh').hidden = true;
+    g.innerHTML = CS_KEYS.map(e => `<button type="button" class="cs-e" data-e="${e}">${csSVG(e, 36, true)}<b>${CS_EFF[e].n}</b><small>${CS_EFF[e].d}</small></button>`).join('');
+  } else {
+    k.innerHTML = csSVG(CSQ.eff, 20, true) + `<span>${CS_EFF[CSQ.eff].n}</span>`;
+    g.hidden = true; h.hidden = false; $('csCh').hidden = false;
+    h.textContent = CSQ.cand >= 0 ? 'Touche encore la case pour la poser' : 'Touche une case de ta grille';
+  }
+}
+// the cell: a first touch shows the square there, a second one sets it
+{ const base = onTap; onTap = function (sx, sy) {
+    if (CSQ.open && CSQ.eff && csPending()) {
+      const me = G.b[G.me], [wx, wy] = s2w(sx, sy), c = Math.floor(wx - me.ox), r = Math.floor(wy - me.oy);
+      if (c >= 0 && c < COLS && r >= 0 && r < ROWS) {
+        const i = idx(c, r);
+        if (!csCellOk(me, i)) { sfx('error'); toast('Pas sur cette case', 'bad'); return; }
+        if (CSQ.cand !== i) { CSQ.cand = i; sfx('click'); csRender(); return; }
+        const err = act(['Q', 'p', c, r, CSQ.eff]);
+        if (err) { sfx('error'); if (err !== 'x') toast(err, 'bad'); return; }
+        csClose(); return;
+      }
+    }
+    return base.apply(this, arguments);
+}; }
+// the tower's panel: the square's sign and its power
+{ const base = openPop; openPop = function (c, r) {
+    const res = base.apply(this, arguments), me = csMe();
+    if (!me || !G.sel) return res;
+    const e = csEffAt(me, idx(c, r)), p = $('pop'), ttl = p.querySelector('.ttl');
+    if (!e || !ttl || p.hidden) return res;
+    const d = document.createElement('div'); d.className = 'cs-pop'; d.innerHTML = csSignSVG(e, 14) + `<b>${CS_EFF[e].n}</b><span>${CS_EFF[e].d}</span>`;
+    ttl.after(d); placePop();
+    return res;
+}; }
+{ const base = updateUI; updateUI = function () {
+    const r = base.apply(this, arguments);
+    const on = csPending(), btn = csBtnEl();
+    if (CSQ.g !== G) { CSQ.g = G; if (CSQ.open) csClose(); }
+    if (btn.hidden === on) btn.hidden = !on;
+    if (!on && CSQ.open) csClose();
+    if (CSQ.open) csRender();
+    return r;
+}; }
+// « Comment jouer »: one line on the page of what the waves bring (« Le fou et ses surprises », the joust's pages; « Les vagues » before them)
+{ const pg = TUTO.find(q => q.k === 'surprises') || TUTO.find(q => q.k === 'vagues');
+  if (pg) { const base = pg.x; pg.x = () => (base ? base() : '') + '<p class="tut-hint">Une vague sans perdre de vie, dès la vague V : une case de pouvoir pour une tour, une fois par partie.</p>'; } }
 
 useTerrain(TERKEY);
 demo();
