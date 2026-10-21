@@ -1194,6 +1194,61 @@ body:has(#lrOv:not([hidden])) .toasts{z-index:14;left:12px;right:12px;max-width:
 #pfCol .sw[aria-pressed="true"]::before{outline:2px solid var(--gold);outline-offset:3px}
 #pfCol .sw:focus-visible::before{outline:2px solid var(--ink);outline-offset:3px}
 @media (max-height:700px){.pf-col{margin-top:12px}#pfCol .sw{height:40px}#pfCol .sw::before{top:7px}}
+/* version 50: the palet's bet, « Le pari » (board B, with Patrick's payouts): at the bottom of the palet's screen, then its result on the alley */
+.fou-pari{position:absolute;left:calc(var(--u)*8);right:calc(var(--u)*8);bottom:calc(env(safe-area-inset-bottom,0px) + var(--u)*8);z-index:4;display:flex;flex-direction:column;gap:6px;padding:14px 14px 16px;background:rgba(27,43,52,.96);box-shadow:inset 0 3px 0 rgba(255,255,255,.07),0 3px 0 rgba(8,14,18,.45)}
+.fou-pari[hidden]{display:none}
+.fou-pari .fp-k{font:700 11px/1 var(--f);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.fou-pari .fp-k b{font:400 14px/1 var(--fb);letter-spacing:.04em;color:var(--ink)}
+.fou-pari .fp-t{font:400 34px/1 var(--ft);color:#f3d36a}
+.fou-pari .fp-t.down{color:#e5806d}
+.fou-pari .fp-r{font:600 14px/1.4 var(--f);color:#b6c2c5}
+.fou-pari .fp-r b{font:400 17px/1 var(--fb);color:var(--ink)}
+.fou-pari .fp-n{font:600 12px/1.3 var(--f);color:#c9b98a}
+.fou-pari .fp-b{width:100%;min-height:44px;margin-top:4px}
+.fou-pari.res{bottom:auto;top:24%;align-items:center;text-align:center}
+/* ---- v50 · fourche « Cadeau » (Patrick, 21/10, 15 h 06 : « cadeau : validé »): the farewell gift. Its sheet comes over the dock, like it
+   (the House, then the gift, a gold bar for the 15 s); the receiver's band sits under the places. Flat plates, no outline, no rounded corner. ---- */
+.cd{position:fixed;left:0;right:0;bottom:0;z-index:6;padding:0 calc(var(--u)*4) calc(env(safe-area-inset-bottom,0px) + var(--u)*3)}
+@media (min-width:700px){.cd{left:50%;right:auto;width:560px;transform:translateX(-50%)}}
+.cd-in{display:flex;flex-direction:column;gap:calc(var(--u)*5);padding:calc(var(--u)*7) calc(var(--u)*7) calc(var(--u)*7);background:var(--panel);box-shadow:inset 0 0 0 var(--u) var(--line),0 calc(var(--u)*-2) 0 rgba(8,14,18,.35)}
+.cd:not([hidden]) .cd-in{animation:cdUp .2s steps(3)}
+@keyframes cdUp{from{transform:translateY(calc(var(--u)*16));opacity:0}to{transform:none;opacity:1}}
+.cd-hd{display:flex;align-items:center;gap:calc(var(--u)*4);min-height:calc(var(--u)*9)}
+.cd-k{font:700 calc(var(--u)*7.3)/1 var(--f);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.cd-back{display:flex;align-items:center;justify-content:center;flex:none;width:calc(var(--u)*18);height:calc(var(--u)*18);margin:calc(var(--u)*-5) 0 calc(var(--u)*-5) calc(var(--u)*-4);padding:0;border:0;border-radius:0;background:none;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cd-t{margin:0;font:400 var(--t2)/1 var(--ft);color:var(--gold);letter-spacing:.01em}
+.cd-s{margin:calc(var(--u)*-2) 0 0;font:500 calc(var(--u)*9)/1.3 var(--f);color:color-mix(in srgb,var(--ink) 82%,transparent)}
+.cd-g{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:calc(var(--u)*4)}
+.cd-g.gifts{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cd-g button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--u)*2.5);min-width:0;min-height:calc(var(--u)*52);padding:calc(var(--u)*5) calc(var(--u)*2);border:0;border-radius:0;background:var(--panel2);color:var(--ink);font:700 var(--t)/1.15 var(--f);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cd-g.gifts button{min-height:calc(var(--u)*46)}
+.cd-g button b{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.cd-g button small{font:500 calc(var(--u)*7.6)/1.2 var(--f);color:var(--muted);white-space:nowrap}
+.cd-g button[aria-pressed="true"]{background:var(--line);box-shadow:inset 0 0 0 calc(var(--u)*1.5) var(--gold)}
+.cd-g button:focus-visible,.cd-back:focus-visible{outline:2px solid var(--ink);outline-offset:-4px}
+.cd-bar{height:calc(var(--u)*3);background:rgba(224,229,230,.1)}
+.cd-bar i{display:block;height:100%;background:var(--gold);transform-origin:left center}
+.cd .go,.cd .sec{width:100%;font-size:var(--t)}
+.cd .go:disabled{opacity:.45;cursor:default}
+.cd .sec{margin-top:calc(var(--u)*-1)}
+body.cd-on .fou-say{visibility:hidden}
+.cd-gb{position:fixed;left:50%;z-index:4;display:flex;flex-direction:column;align-items:center;max-width:calc(100vw - 24px);transform:translateX(-50%);pointer-events:none}
+.cd-gb1{display:flex;align-items:center;gap:calc(var(--u)*5);padding:calc(var(--u)*4) calc(var(--u)*8) calc(var(--u)*4) calc(var(--u)*5);background:var(--panel);box-shadow:inset 0 0 0 var(--u) var(--line),0 calc(var(--u)*2) 0 rgba(8,14,18,.35);font:600 var(--t)/1.2 var(--f);color:var(--ink);white-space:nowrap}
+.cd-gb1 b{font-weight:700}
+.cd-gb1 em{font-style:normal;font-weight:700;color:var(--gold)}
+.cd-gb2{display:flex;align-items:center;gap:calc(var(--u)*3);padding:calc(var(--u)*3) calc(var(--u)*7);background:var(--panel2);font:600 calc(var(--u)*8)/1.2 var(--f);color:var(--gold);white-space:nowrap}
+.cd-gb.in{animation:cdIn .24s steps(3)}
+.cd-gb.out{animation:cdOut .28s steps(3) forwards}
+@keyframes cdIn{from{opacity:0;transform:translate(-50%,calc(var(--u)*-8))}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes cdOut{to{opacity:0;transform:translate(-50%,calc(var(--u)*-6))}}
+@media (prefers-reduced-motion:reduce){.cd:not([hidden]) .cd-in,.cd-gb.in,.cd-gb.out{animation:none}.cd-gb.out{opacity:0}}
+/* v50 · Fin (Patrick, 21/10, 15 h 06): the winner's crown, smaller, floats above the head and bobs (js: podCrown). It moves by whole crown pixels
+   (--u, set by the script), 1.6 s a cycle, slow at both ends of its travel; still when the phone asks for less motion */
+#endOv .fin-crown{display:none}
+#endOv.fin .fin-crown{display:block;position:absolute;z-index:1;pointer-events:none;image-rendering:pixelated;animation:finCrownBob 1.6s step-end infinite}
+#endOv.fin .fin-crown[hidden]{display:none}
+@keyframes finCrownBob{0%{transform:translateY(0)}11.5%{transform:translateY(calc(var(--u) * -1))}21%{transform:translateY(calc(var(--u) * -2))}29%{transform:translateY(calc(var(--u) * -3))}38.5%{transform:translateY(calc(var(--u) * -4))}61.5%{transform:translateY(calc(var(--u) * -3))}71%{transform:translateY(calc(var(--u) * -2))}79%{transform:translateY(calc(var(--u) * -1))}88.5%,100%{transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){#endOv.fin .fin-crown{animation:none}}
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
 </head>
@@ -8139,13 +8194,10 @@ function podDraw() {
     const gw = (ink.x1 - ink.x0 + 1) * S, gh = (ink.y1 - ink.y0 + 1) * S, gx = geo[r].cx - gw / 2, gy = feet - gh;
     x.fillStyle = 'rgba(28,24,22,.28)'; x.beginPath(); x.ellipse(D(geo[r].cx), D(feet - 1), D(gw * 0.3), D(2.5), 0, 0, Math.PI * 2); x.fill();
     x.drawImage(gen.cv, ink.x0, ink.y0, ink.x1 - ink.x0 + 1, ink.y1 - ink.y0 + 1, D(gx), D(gy), D(gw), D(gh));
-    if (r === 1) { const hd = POD_HEAD[gen.m] || [Math.round((ink.x1 - ink.x0) / 2), 2]; crown = { x: gx + hd[0] * S, y: gy + hd[1] * S, S }; }
+    if (r === 1) { const hd = POD_HEAD[gen.m] || [Math.round((ink.x1 - ink.x0) / 2), 2]; crown = { x: gx + hd[0] * S, y: gy + hd[1] * S, S, kk, gx, gy, ink, cv: gen.cv }; }
   }
-  // the crown on the winner's head: its band on top of the head, at the general's own pixel size
-  if (crown) {
-    const cc = PODX.art.crown || (PODX.art.crown = podSprite(POD_CROWN.big)), S = crown.S;
-    x.drawImage(cc, D(crown.x - cc.width * S / 2), D(crown.y - cc.height * S + S), D(cc.width * S), D(cc.height * S));
-  }
+  // the crown above the winner's head, in a canvas of its own (v50: podCrown)
+  podCrown(crown, dpr);
   // a few confetti (more when you won)
   const Rn = podRng(G ? (G.seed | 0) + 7 : 7), cols = ['#7192b6', '#b5655b', '#9a87bf', '#c78a4c', '#f3d36a', '#ece6d6', '#c4809f', '#8fb08a'], s = D(2);
   const nC = Math.round((R.won ? 40 : 12) * W / 402);
@@ -8695,6 +8747,47 @@ function lrWire() {
   };
 }
 
+
+/* ---------------------------------------------------------------- v50: the winner's crown, smaller, floating above the head and bobbing
+   crown (from podDraw): the head's point { x, y } in the overlay's CSS pixels, the general's pixel S, the scene's scale kk, where the
+   general's ink is drawn (gx, gy, ink, cv); null while the general loads */
+const POD_CROWN_K = 1.8, POD_CROWN_GAP = 2, POD_CROWN_AIR = 2, POD_CROWN_BOB = 4;   // crown pixel = K x kk CSS px; general's pixels under it at its lowest, and around it; crown pixels of travel
+function podMask(cv) {
+  if (cv.__mask) return cv.__mask;
+  const d = cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data, m = new Uint8Array(cv.width * cv.height);
+  for (let i = 0; i < m.length; i++) m[i] = d[i * 4 + 3] > 0 ? 1 : 0;
+  return (cv.__mask = m);
+}
+function podCrown(crown, dpr) {
+  let el = $('finCrown');
+  if (!el) { el = document.createElement('canvas'); el.id = 'finCrown'; el.className = 'fin-crown'; el.setAttribute('aria-hidden', 'true'); $('finCv').after(el); }
+  if (!crown) { el.hidden = true; return; }
+  const cc = PODX.art.crown || (PODX.art.crown = podSprite(POD_CROWN.big)), S = crown.S;
+  const s = Math.max(1, Math.round(S * dpr)), n = Math.max(1, Math.min(s - 1, Math.round(POD_CROWN_K * crown.kk * dpr)));   // device pixels per crown pixel
+  if (el.width !== cc.width * n || el.height !== cc.height * n) { el.width = cc.width * n; el.height = cc.height * n; }
+  const x = el.getContext('2d'); x.imageSmoothingEnabled = false; x.clearRect(0, 0, el.width, el.height); x.drawImage(cc, 0, 0, el.width, el.height);
+  const u = n / dpr, w = cc.width * u, h = cc.height * u, snap = v => Math.round(v * dpr) / dpr, left = snap(crown.x - w / 2);
+  // does any of its pixels, at any height of its travel, come within POD_CROWN_AIR general's pixels of the general's ink?
+  const gm = podMask(crown.cv), cm = podMask(cc), GW = crown.cv.width, ink = crown.ink, M = POD_CROWN_AIR * S;
+  const hits = top => {
+    for (let k = 0; k <= POD_CROWN_BOB; k++) for (let j = 0; j < cc.height; j++) for (let i = 0; i < cc.width; i++) {
+      if (!cm[j * cc.width + i]) continue;
+      const x0 = left + i * u - M, x1 = left + (i + 1) * u + M, y0 = top + (j - k) * u - M, y1 = y0 + u + 2 * M;
+      const a0 = Math.max(ink.x0, ink.x0 + Math.floor((x0 - crown.gx) / S)), a1 = Math.min(ink.x1, ink.x0 + Math.ceil((x1 - crown.gx) / S) - 1);
+      const b0 = Math.max(ink.y0, ink.y0 + Math.floor((y0 - crown.gy) / S)), b1 = Math.min(ink.y1, ink.y0 + Math.ceil((y1 - crown.gy) / S) - 1);
+      for (let b = b0; b <= b1; b++) for (let a = a0; a <= a1; a++) if (gm[b * GW + a]) return true;
+    }
+    return false;
+  };
+  // its lowest place: two of the general's pixels above the head's point, then up a crown pixel at a time while it would touch (not into the title)
+  const top0 = snap(crown.y - POD_CROWN_GAP * S - h), ceil = (PODX.geo ? PODX.geo.titleBot + 4 : 0) + POD_CROWN_BOB * u;
+  let top = top0;
+  while (top - u >= ceil && hits(top)) top = snap(top - u);
+  el.style.width = w + 'px'; el.style.height = h + 'px'; el.style.left = left + 'px'; el.style.top = top + 'px';
+  el.style.setProperty('--u', u + 'px');            // one crown pixel: the bob's step
+  el.dataset.n = n; el.dataset.s = s; el.dataset.hx = crown.x.toFixed(2); el.dataset.hy = crown.y.toFixed(2); el.dataset.lift = Math.round((top0 - top) / u);
+  el.hidden = false;
+}
 /* =============== multiplayer bootstrap =============== */
 if (WEB) {
   $('multiBtn').disabled = false; $('multiBtn').textContent = 'En ligne';
@@ -14237,8 +14330,7 @@ setInterval(() => { if (document.hidden && NET.mode === 'host') advance(performa
 const FOU_ROWS = {"idle_a":["............QR...","...ZZ......QQRR..","..YYZY.....RR.rR.",".Yy..YY...RR...rR",".y...ZYYBRRr....r","y....YYYBRRR....r","B....yMMMMmr....B","b....yMEMEmr....b","......PMMMP......",".....CcMMmcC.....","....CcCcCcCcC....","....RQRRYYYyY....","...R.QRRRYYy.Y...","...C.RRRYYYy.C...","..W..rrRRYyy.....",".W....Rr.Yy......","QR..L.Rr.Yy.L....","RB...LLL.LLL....."],"idle_b":["............QR...","...ZZ......QQRR..","..YYZY.....RR.rR.",".Yy..YY...RR...rR",".y...ZYYBRRr....r","y....YYYBRRR....r",".....yMMMMmr.....","B....yMmMmmr....B","b.....PMMMP.....b",".....CcMMmcC.....","....CcCcCcCcC....","....RQRRYYYyY....","...R.QRRRYYy.Y...","...C.RRRYYYy.C...","..W..rrRRYyy.....",".W....Rr.Yy......","QR..L.Rr.Yy.L....","RB...LLL.LLL....."],"ann_a":["............QR...","...ZZ......QQRR..","..YYZY.....RR.rR.",".Yy..YY...RR...rR",".y...ZYYBRRr....r","y....YYYBRRR....r","B....yMMMMmr....B","b....yMEMEmr....b","......PMMMP...C..",".....CcMEmcC..C..","....CcCcCcCcCY...","....RQRRYYYyY....","...R.QRRRYYy.....","...C.RRRYYYy.....","..W..rrRRYyy.....",".W....Rr.Yy......","QR..L.Rr.Yy.L....","RB...LLL.LLL....."],"ann_b":["............QR...","...ZZ......QQRR..","..YYZY.....RR.rR.",".Yy..YY...RR...rR",".y...ZYYBRRr....r","y....YYYBRRR....r",".....yMMMMmr.....","B....yMEMEmr..C.B","b.....PMMMP...C.b",".....CcMMmcC..Y..","....CcCcCcCcCY...","....RQRRYYYyY....","...R.QRRRYYy.....","...C.RRRYYYy.....","..W..rrRRYyy.....",".W....Rr.Yy......","QR..L.Rr.Yy.L....","RB...LLL.LLL....."],"front":["............QR...","...ZZ......QQRR..","..YYZY.....RR.rR.",".Yy..YY...RR...rR",".y...ZYYBRRr....r","y....YYYBRRR....r","B....yMMMMmr....B","b....yMEMEmr....b","......PMMMP......",".....CcMMmcC.....","....CcCcCcCcC....","....RQRRYYYyY....","...R.QRRRYYy.Y...","...C.RRRYYYy.C...","..W..rrRRYyy.....",".W....Rr.Yy......","QR..L.Rr.Yy.L....","RB...LLL.LLL....."],"throw":["............QR...","...ZZ......QQRR..","..YYZY.....RR.rR.",".Yy..YY...RR...rR",".y...ZYYBRRr....r","y....YYYBRRR....r","B....yMMMMmr....B","b....yMEMEmr....b",".JJ...PMMMP......",".jj..CcMMmcC.....","...CCcCcCcCcC....","....RQRRYYYyY....",".....QRRRYYy.Y...",".....RRRYYYy.C...",".....rrRRYyy..W..","......Rr.Yy....W.","....L.Rr.Yy.L..QR",".....LLL.LLL...RB"],"ann":["............QR...","...ZZ......QQRR..","..YYZY.....RR.rR.",".Yy..YY...RR...rR",".y...ZYYBRRr....r","y....YYYBRRR....r","B....yMMMMmr....B","b....yMEMEmr....b","......PMMMP...C..",".....CcMEmcC..C..","....CcCcCcCcCY...","....RQRRYYYyY....","...R.QRRRYYy.....","...C.RRRYYYy.....","..W..rrRRYyy.....",".W....Rr.Yy......","QR..L.Rr.Yy.L....","RB...LLL.LLL....."]};
 // variant A, « Carnaval »: red #cf5a48 and yellow #ecc35a (their light and dark tones), the white mask, the cream ruff, gold bells, a wine dark for the eyes (never black)
 const FOU_PAL = {"Z":"#f7dd8f","Y":"#ecc35a","y":"#c8963c","Q":"#e47a62","R":"#cf5a48","r":"#a63f37","M":"#f1e9d8","m":"#d9cdb5","E":"#6c2b39","P":"#eeb0a6","C":"#fbf5e8","c":"#d2c4a9","B":"#f2d063","b":"#c99a3a","W":"#9a7650","w":"#6e5238","L":"#7f2e2d","J":"#efe7d4","j":"#c9bea8"};
-// his head, 40 x 40: the mouth closed, open, a wink
-const FOU_FACE = [["........................aaaaa...........",".........bbbbbb........aacaaccaaa.......",".......bbbbbbddd.......acacccccccc......",".....bbbbbdddddddb....aaacccccccccce....","....bbddddddddddddf..aaacccccccccccc....","....bdddddddddddddd..acccccccccccccce...","...bbddddddddddddddf.accccccccccccccc...","..bbdddfffffdddddddfgaccceeeeeeeccccce..","..bddggf.....fbbbbbbhacaaaa....iicccce..","..bdggf......bbdddddjacccccc.....iiccc..",".bbggf......bbddddddjacccccci.....iccce.",".bdgf.......bddggggggiiicccci......ccce.",".bdgf.......bdggkkkkkkkklccci......icce.",".bdgf.......bdgmknkkkkknllcci......icce.",".bdg........bdgknnnkkknnnlaci......icce.",".hhh........gdgnoonnknoonniii.......hhh.","hhjjp........mgnnnnnknnnnniq.......hhjjp","hjjjp........mkknnnkkknnnllq.......hjjjp","hjjpp........mkkknkkkkknlllq.......hjjpp",".ppp.........mkkkkkkkkkkllqq........ppp.","..............krrkkkkkkkrrq.............","..............mkkkkkkkkklqq.............","...............kknkkkkknlq..............","...............mkknnnnnkqq..............","................kkkkkkkqq...............","...........ss..sskkkkkqqs..ss...........","..........ssttssttkkkkqsttsstt..........",".........sstttttttqqqqqtttttttu.........",".........stttttttttttttttttttuu.........","..........ttuvttuvttuvttuvttuu..........","...........uuv.uuv.uuv.uuv.uu...........","..........aaaaaaaaaibbbbbbbbbb..........",".........aaccccccccibdddddddddg.........",".........acccccccccffdddddddddd.........","........aacccccccccffddddddddddd........",".......aaccccccccccibdddddddddddd.......","......aacccccccccccibddddddddddddg......","......acccccccccccceeddddddddddddd......",".....aacccccccccccceedddddddddddddd.....","....iiiiiiiiiiiiiiiigggggggggggggggg...."],["........................aaaaa...........",".........bbbbbb........aacaaccaaa.......",".......bbbbbbddd.......acacccccccc......",".....bbbbbdddddddb....aaacccccccccce....","....bbddddddddddddf..aaacccccccccccc....","....bdddddddddddddd..acccccccccccccce...","...bbddddddddddddddf.accccccccccccccc...","..bbdddfffffdddddddfgaccceeeeeeeccccce..","..bddggf.....fbbbbbbhacaaaa....iicccce..","..bdggf......bbdddddjacccccc.....iiccc..",".bbggf......bbddddddjacccccci.....iccce.",".bdgf.......bddggggggiiicccci......ccce.",".bdgf.......bdggkkkkkkkklccci......icce.",".bdgf.......bdgmknkkkkknllcci......icce.",".bdg........bdgknnnkkknnnlaci......icce.",".hhh........gdgnoonnknoonniii.......hhh.","hhjjp........mgnnnnnknnnnniq.......hhjjp","hjjjp........mkknnnkkknnnllq.......hjjjp","hjjpp........mkkknkkkkknlllq.......hjjpp",".ppp.........mkkkkkkkkkkllqq........ppp.","..............krrkkkkkkkrrq.............","..............mkkkkkkkkklqq.............","...............kkknnnnnklq..............","...............mkknnnnnkqq..............","................kkkwwwkqq...............","...........ss..sskkkkkqqs..ss...........","..........ssttssttkkkkqsttsstt..........",".........sstttttttqqqqqtttttttu.........",".........stttttttttttttttttttuu.........","..........ttuvttuvttuvttuvttuu..........","...........uuv.uuv.uuv.uuv.uu...........","..........aaaaaaaaaibbbbbbbbbb..........",".........aaccccccccibdddddddddg.........",".........acccccccccffdddddddddd.........","........aacccccccccffddddddddddd........",".......aaccccccccccibdddddddddddd.......","......aacccccccccccibddddddddddddg......","......acccccccccccceeddddddddddddd......",".....aacccccccccccceedddddddddddddd.....","....iiiiiiiiiiiiiiiigggggggggggggggg...."],["........................aaaaa...........",".........bbbbbb........aacaaccaaa.......",".......bbbbbbddd.......acacccccccc......",".....bbbbbdddddddb....aaacccccccccce....","....bbddddddddddddf..aaacccccccccccc....","....bdddddddddddddd..acccccccccccccce...","...bbddddddddddddddf.accccccccccccccc...","..bbdddfffffdddddddfgaccceeeeeeeccccce..","..bddggf.....fbbbbbbhacaaaa....iicccce..","..bdggf......bbdddddjacccccc.....iiccc..",".bbggf......bbddddddjacccccci.....iccce.",".bdgf.......bddggggggiiicccci......ccce.",".bdgf.......bdggkkkkkkkklccci......icce.",".bdgf.......bdgmknkkkkknllcci......icce.",".bdg........bdgknnnkkknnnlaci......icce.",".hhh........gdgnoonnknnnnniii.......hhh.","hhjjp........mgnnnnnknlllniq.......hhjjp","hjjjp........mkknnnkkknnnllq.......hjjjp","hjjpp........mkkknkkkkknlllq.......hjjpp",".ppp.........mkkkkkkkkkkllqq........ppp.","..............krrkkkkkkkrrq.............","..............mkkkkkkkkklqq.............","...............kknkkkkknlq..............","...............mkknnnnnkqq..............","................kkkkkkkqq...............","...........ss..sskkkkkqqs..ss...........","..........ssttssttkkkkqsttsstt..........",".........sstttttttqqqqqtttttttu.........",".........stttttttttttttttttttuu.........","..........ttuvttuvttuvttuvttuu..........","...........uuv.uuv.uuv.uuv.uu...........","..........aaaaaaaaaibbbbbbbbbb..........",".........aaccccccccibdddddddddg.........",".........acccccccccffdddddddddd.........","........aacccccccccffddddddddddd........",".......aaccccccccccibdddddddddddd.......","......aacccccccccccibddddddddddddg......","......acccccccccccceeddddddddddddd......",".....aacccccccccccceedddddddddddddd.....","....iiiiiiiiiiiiiiiigggggggggggggggg...."]], FOU_FACE_PAL = {"a":"#e47a62","b":"#f7dd8f","c":"#cf5a48","d":"#ecc35a","e":"#7f2e2d","f":"#9c6e2c","g":"#c8963c","h":"#fff1b8","i":"#a63f37","j":"#f2d063","k":"#f1e9d8","l":"#d9cdb5","m":"#fdf9f0","n":"#6c2b39","o":"#fdf6ea","p":"#c99a3a","q":"#bbad93","r":"#eeb0a6","s":"#fbf5e8","t":"#ece2cf","u":"#d2c4a9","v":"#b3a488","w":"#e2828a"};
+// version 50 (Patrick, 21/10, 15 h 06: « le fou -> A »): his talking head is the little jester himself, his own pixels twice as big
 // « Entracte » in Jersey 10, on its own pixel grid (57 x 10): the word of the Interlude's standard
 const FOU_WORD = ["aaaaaa...........a............................a..........","aaaaaa..........aa...........................aa..........","aa.....aa.aaa...aa...aa.aa...aaaaa...aaaaa...aa....aaaaa.","aa.....aaaaaaa.aaaaa.aaaaaa.aaaaaaa.aaaaaaa.aaaaa.aaaaaaa","aaaaa..aa...aa.aaaaa.aaa.a.......aa.aa...aa.aaaaa.aa...aa","aaaaa..aa...aa..aa...aa......aaaaaa.aa.......aa...aaaaaaa","aa.....aa...aa..aa...aa.....aaaaaaa.aa.......aa...aaaaaaa","aa.....aa...aa..aa...aa.....aa...aa.aa...aa..aa...aa.....","aaaaaa.aa...aa..aaaa.aa.....aaaaaaa.aaaaaaa..aaaa.aaaaaaa","aaaaaa.aa...aa...aaa.aa......aaa.aa..aaaaa....aaa..aaaaa."];
 
@@ -14282,7 +14374,12 @@ jestDraw = function (x, ox, oy) {
    the masterpieces keep the panel at the top. The mouth moves while he speaks; a wink for good news.
    fouFeat(head, text) is ready for the feats ("hauts faits") with the general's head: they come with the titles. */
 const FOU = { q: [], cur: null, g: null, el: null, tm: [], strip: '', tr: null, qbar: null };
-function fouStrip() { return FOU.strip || (FOU.strip = pxURL(120, 40, p => FOU_FACE.forEach((rows, i) => p.spr(rows, FOU_FACE_PAL, i * 40, 0)))); }
+// three frames of 40 x 40 (mouth closed, open, a wink): his hat, face, ruff and shoulders (rows 0 to 13), each pixel 2 x 2, at the bottom of the frame
+function fouStrip() {
+  if (FOU.strip) return FOU.strip;
+  const frames = [0, 1, 2].map(f => { const r = FOU_ROWS.idle_a.slice(0, 14).map(x => x.split('')); if (f === 1) r[9][8] = 'E'; if (f === 2) r[7][9] = 'm'; return r; });
+  return (FOU.strip = pxURL(120, 40, p => frames.forEach((rows, i) => rows.forEach((row, y) => row.forEach((ch, x) => { const c = FOU_PAL[ch]; if (c) p.rect(i * 40 + 3 + 2 * x, 12 + 2 * y, 2, 2, c); })))));
+}
 function fouHead(cls = '') { const d = document.createElement('div'); d.className = 'fou-hd' + (cls ? ' ' + cls : ''); d.setAttribute('role', 'img'); d.setAttribute('aria-label', 'Le fou'); d.style.backgroundImage = `url(${fouStrip()})`; return d; }
 function fouEl() {
   if (FOU.el) return FOU.el;
@@ -14384,7 +14481,7 @@ function fouClock() {
 }
 
 /* ---------------------------------------------------------------- the palet: "Le fou", and his head on the right end of the panel while he speaks */
-{ const base = palText; palText = function () { base(); fouPalHead(); }; }
+{ const base = palText; palText = function () { base(); fouPalHead(); fouPariUI(); }; }
 function fouPalHead() {
   const E = G.entr, msg = $('jtPalMsg'); if (!msg) return;
   const on = !!(E && (E.phase === 'intro' || E.phase === 'count'));
@@ -14507,7 +14604,7 @@ const fouTrBusy = () => !!(FOU.tr && performance.now() < FOU.tr.until);
 // the palet's screen opens: the trumpets first (the host's introduction waits for them); the old fanfare is not played over them
 { const base = palOpen; palOpen = function () { base(); const el = $('jtEntr'); el.classList.add('fou-pal'); try { fouTrStart(); } catch (e) { fouTrEnd(); } }; }
 { const base = fanfare; fanfare = function () { if (FOU.tr && performance.now() - FOU.tr.t0 < 400) return; base(); }; }
-{ const base = jtEntrStep; jtEntrStep = function (dt) { const E = G.entr; if (E && E.phase === 'intro' && fouTrBusy()) { palDraw(); palText(); return; } base(dt); }; }
+{ const base = jtEntrStep; jtEntrStep = function (dt) { const E = G.entr; if (E && E.phase === 'intro' && (fouTrBusy() || pariWaiting(E, dt))) { palDraw(); palText(); return; } base(dt); }; }
 // sound 2, « beat rétro » (the board's code): a kick, a snare and hats at 140 a minute, a call per trumpet (pulse waves), the final on the bar
 function fouBeat(n) {
   if (!SFX.on || !SFX.ctx) return;
@@ -14568,6 +14665,103 @@ function fouBeatSched(a, out, n, t0) {
   [[72, 0.14, 0.25], [76, 0.09, 0.125], [67, 0.08, 0.5], [64, 0.06, 0.5]].forEach(([m, v, duty]) => tone({ m, t: end, d: 0.42, v, duty, fall: 0.14, sus: 0.85 }));
   bass(36, end, 0.42, 0.34); kick(end, 0.6); snare(end, 0.18); crash(end, 0.14);
 }
+
+/* ---------------------------------------------------------------- the palet's bet, « Le pari » (version 50, Patrick, 21/10, 15 h 06: « palet : B », with his payouts)
+   Before the first throw, each House still in the joust may bet a quarter of its gold (rounded down) on itself, or pass.
+   1st: three times the stake back · 2nd: the stake back and a quarter more · 3rd: half of it back · 4th and after: nothing back.
+   With two Houses, the 2nd gets nothing back; a House with no palet left in the alley gets nothing back. Gold of the game only.
+   The host decides: a choice is the action ['J', 'pari', 1 | 0]; the stakes ride at the end of the palet's string (an older page ignores them).
+   The bots bet about half the time (more often in hard), their bets are not shown. */
+const PARI_WAIT = 10, PARI_P = { easy: 0.4, normal: 0.5, hard: 0.7 };
+const pariStake = b => Math.floor(Math.max(0, b.gold) / 4);
+// what comes back of the stake N for a place among n Houses
+function pariBack(n, rank, N, out) {
+  if (out) return 0;
+  if (rank === 1) return 3 * N;
+  if (rank === 2) return n === 2 ? 0 : N + Math.round(N / 4);
+  if (rank === 3) return N - Math.round(N / 2);
+  return 0;
+}
+// a House's gain or loss, once the palet is counted (null: no bet)
+function pariNet(E, k) {
+  const N = E && E.pari ? E.pari[k] : 0; if (!(N > 0) || !E.res) return null;
+  const i = E.res.findIndex(r => r.k === k); if (i < 0) return -N;
+  return pariBack(E.res.length, i + 1, N, E.res[i].d === Infinity) - N;
+}
+// the host opens the bets with the palet; the bots choose at once
+{ const base = jtEntrStart; jtEntrStart = function () {
+  base(); const E = G.entr; if (!E) return;
+  E.pari = {}; E.pariW = 0;
+  for (const k of new Set(E.order)) {
+    const b = G.b[k], N = b ? pariStake(b) : 0; if (!b || !b.alive || N < 1) continue;
+    if (b.bot) { if (Math.random() < (PARI_P[diffKey] ?? 0.5)) { b.gold -= N; E.pari[k] = N; } else E.pari[k] = 0; }
+    else E.pari[k] = 'p';
+  }
+}; }
+// a choice, before the first throw only (the stake leaves the purse at once)
+function jtPari(k, yes) {
+  const E = G.entr, b = G.b[k]; if (!E || !E.pari || E.phase !== 'intro' || E.pari[k] !== 'p' || !b || !b.alive) return 'x';
+  const N = pariStake(b);
+  if (yes && N >= 1) { b.gold -= N; E.pari[k] = N; } else E.pari[k] = 0;
+  return '';
+}
+{ const base = jtAction; jtAction = function (k, a) { return a && a[1] === 'pari' ? jtPari(k, a[2] === 1 || a[2] === '1') : base(k, a); }; }
+// the palet waits for the choices, ten seconds at most (then « Passer »)
+function pariWaiting(E, dt) {
+  if (!E.pari || E.client) return false;
+  const wait = Object.keys(E.pari).filter(k => E.pari[k] === 'p'); if (!wait.length) return false;
+  E.pariW = (E.pariW || 0) + dt;
+  if (E.pariW < PARI_WAIT) return true;
+  for (const k of wait) E.pari[k] = 0;
+  return false;
+}
+// the payout, when the palet is counted
+{ const base = palFinish; palFinish = function () {
+  const E = G.entr, was = !!(E && E.phase === 'end'); base();
+  if (!E || was || !E.pari || E.pariDone) return; E.pariDone = true;
+  for (const k of Object.keys(E.pari)) { const N = E.pari[k], net = pariNet(E, +k); if (N > 0 && net !== null && G.b[k]) G.b[k].gold += N + net; }
+}; }
+// the network: the stakes after the palet's string (p: still choosing, -: no bet), read back by the guests
+const pariEnc = E => G.b.map(b => { const v = E.pari[b.k]; return v === 'p' ? 'p' : v > 0 ? b36(Math.min(46655, v), 3) : '-'; }).join('.');
+{ const base = jtSnap; jtSnap = function () { const s = base(), E = G.entr; return E && E.pari && !E.client ? s + ':' + pariEnc(E) : s; }; }
+{ const base = jtApplySnap; jtApplySnap = function (s) {
+  base(s);
+  const E = G.entr; if (!E || !E.client || typeof s !== 'string') return;
+  const parts = (s.split('|')[5] || '').split(':'); if (parts.length < 6) return;
+  const mine = E.pari ? E.pari[G.me] : undefined, P2 = {};
+  parts[5].split('.').forEach((x, k) => { if (x === 'p') P2[k] = 'p'; else if (x && x !== '-') P2[k] = parseInt(x, 36); });
+  if (mine !== undefined && mine !== 'p' && P2[G.me] === 'p') P2[G.me] = mine;     // my own choice shows at once, before the host has it
+  E.pari = P2;
+}; }
+// the panel: the offer at the bottom of the palet's screen, then the result on the alley
+function pariOfferHTML(me, n) {
+  const N = pariStake(me), rows = [['1er', '×3']].concat(n === 2 ? [['2e', 'tout perdu']] : [['2e', '+¼'], ['3e', '−½']].concat(n > 3 ? [['4e', 'tout perdu']] : []));
+  return `<div class="fp-k">Avant le palet · ton or : <b>${Math.max(0, me.gold)}</b></div><div class="fp-t">Le pari</div>`
+    + `<div class="fp-r">${rows.map(([a, v]) => `${a} <b>${v}</b>`).join(' · ')}</div>`
+    + `<div class="fp-n">Or de la partie, jamais d’argent réel.</div>`
+    + `<button class="go fp-b" type="button" data-pari="1">Parier ${N} or</button><button class="sec fp-b" type="button" data-pari="0">Passer</button>`;
+}
+function pariResHTML(E) {
+  const net = pariNet(E, G.me), i = E.res.findIndex(r => r.k === G.me), out = i < 0 || E.res[i].d === Infinity;
+  return `<div class="fp-k">Le palet · ton pari</div><div class="fp-t${net < 0 ? ' down' : ''}">${out ? 'Hors de l’allée' : i === 0 ? '1er' : (i + 1) + 'e'} · ${net < 0 ? '−' : '+'}${Math.abs(net)} or</div>`;
+}
+function fouPariUI() {
+  const E = G.entr, me = G.b[G.me]; let el = $('fouPari');
+  const st = E && E.pari ? E.pari[G.me] : undefined;
+  const offer = !!(E && E.phase === 'intro' && st === 'p' && !G.spec && me && me.alive && !fouTrBusy() && pariStake(me) >= 1);
+  const res = !offer && !!(E && E.phase === 'end' && E.res && st > 0 && pariNet(E, G.me) !== null);
+  const n = E ? new Set(E.order).size : 0;
+  const key = offer ? `o|${pariStake(me)}|${Math.max(0, me.gold)}|${n}` : res ? `r|${pariNet(E, G.me)}` : '';
+  if (!key) { if (el && !el.hidden) el.hidden = true; return; }
+  if (!el) {
+    el = document.createElement('div'); el.id = 'fouPari'; el.className = 'fou-pari'; el.setAttribute('aria-live', 'polite');
+    $('jtEntr').querySelector('.jt-entr-in').appendChild(el);
+    el.addEventListener('click', e => { const t = e.target.closest('[data-pari]'); if (!t) return; sfx('click'); act(['J', 'pari', t.dataset.pari === '1' ? 1 : 0]); fouPariUI(); });
+  }
+  if (el.dataset.k !== key) { el.dataset.k = key; el.innerHTML = offer ? pariOfferHTML(me, n) : pariResHTML(E); el.classList.toggle('res', !offer); }
+  if (el.hidden) el.hidden = false;
+}
+
 
 /* =============== v46 · the profile (fork « Profil », Patrick 20/10, 23 h 33) ===============
    The player's profile, kept on the device (web app): localStorage 'ddl-meta'. The mastery of each general, the titles, the outfits and
@@ -15004,6 +15198,228 @@ function profRecord(won, left) {
   quitToMenu = function () { if (G && G.running && !G.ended) profRecord(false, true); return quit0.apply(this, arguments); };
 }
 profHomeSync();
+
+/* ================================================================ fourche « Cadeau » (version 50, Patrick 21/10, 15 h 06 : « cadeau : validé »)
+   The farewell gift (« le dernier debout aide », board Cadeau.dc.html): once per game, right after a House falls while the game goes on
+   (three players or more), its player has 15 s to choose a House still standing and send it one of the four surprises of the chests:
+   Sac d'or (the chest's own bag: 15 + 2 gold a wave), Rage (+50 % damage for 10 s, as in the chest), Tour offerte (the next tower is free), +2 vies.
+   1 the House: the Houses still standing with their lives, a gold bar for the time left; 2 the gift: four tiles, « Envoyer la Rage à Léa »;
+   3 the receiver: a band at the top, « Bot 1 t'envoie la Rage », the bonus and its duration. Everybody else reads a small note at the top.
+   Decided here, Patrick did not say: the gift comes on top of the ghost's powers (they do not change); any House still standing can be helped;
+   when the 15 s run out nothing is sent; the values are the chests' own. A bot that falls sends one too, 2 to 4 s later: a random surprise
+   to a random House still standing. The jester says nothing (he speaks rarely now).
+   Online, the host decides: a guest's choice is the action ['G', target, gift] (an older host's sanitizeAction drops it); the host applies it
+   and tells everybody through the event 'G' + gift + sender + amount on the target's board (an older client's processEvents skips it).
+   A guest who leaves during his 15 s sends nothing: his seat turns into a bot after his fall, and only a bot at the time of its fall gives.
+   Wraps: eliminate, step, applyAction, sanitizeAction, processEvents, showSpectate, showOv. */
+const CD_SECS = 15, CD_GRACE = 3;
+const CD_GIFT = {
+  o: { n: 'Sac d’or', art: 'un Sac d’or', ic: 'coin12' },
+  r: { n: 'Rage', art: 'la Rage', ic: 'rage' },
+  w: { n: 'Tour offerte', art: 'une Tour offerte', ic: 'gift' },
+  v: { n: '+2 vies', art: '+2 vies', ic: 'heart12' },
+};
+const CD_KEYS = Object.keys(CD_GIFT);
+const cdGold = () => 15 + 2 * G.wave;                          // the chest's own bag of gold (openChest)
+const cdSub = rw => rw === 'o' ? `+${cdGold()} or` : rw === 'r' ? 'dégâts +50 % · 10 s' : rw === 'w' ? 'la prochaine' : 'tout de suite';
+const cdLine = (rw, amt) => rw === 'o' ? `Sac d’or · +${amt || cdGold()} or` : rw === 'r' ? 'Rage · dégâts +50 % · 10 s' : rw === 'w' ? 'Tour offerte · la prochaine est gratuite' : '+2 vies · tout de suite';
+const CD = { g: null, open: false, step: 1, target: -1, rw: '', until: 0, done: false, pendEnd: false, key: '', raf: 0, gbT: 0, endT: 0 };
+
+/* ---------------------------------------------------------------- the rule: who may give, what it does (the host and a solo game decide) */
+function cdApply(tb, rw) {
+  if (rw === 'o') { const g = cdGold(); tb.gold += g; return g; }
+  if (rw === 'r') tb.rage = Math.max(tb.rage || 0, 10);
+  else if (rw === 'w') tb.free = (tb.free || 0) + 1;
+  else if (rw === 'v') tb.lives += 2;
+  return 0;
+}
+function cdCast(k, target, rw) {
+  const b = G && G.b[k], tb = Number.isInteger(target) ? G.b[target] : null;
+  if (!b || b.alive || !tb || !tb.alive || target === k || !CD_GIFT[rw] || b.cdUsed || G.ended) return 'x';
+  if (auth()) {
+    if (!(b.cdUntil > 0 && G.t <= b.cdUntil)) return 'x';        // only in the 15 s after the fall (and a little more for the network)
+    b.cdUsed = 1;
+    const amt = cdApply(tb, rw);
+    pushEv(tb, 'G' + rw + k + b36(amt, 2));
+    if (!G.quiet) cdFx(tb, rw, k, amt);
+  } else {                                                       // a guest: the host decides; the guest only remembers it has given
+    b.cdUsed = 1;
+    if (!G.quiet) cdFx(tb, rw, k, 0);
+  }
+  return '';
+}
+// what every screen sees: a gold ring on the receiver's field; the receiver gets the band, the giver a note, the others a note
+function cdFx(tb, rw, from, amt) {
+  if (!G || !tb) return;
+  tb.rings.push({ x: COLS / 2, y: 0.5, r0: 0.3, r1: 3.5, t: 0.7, ttl: 0.7, color: C.gold, fill: true });
+  const fb = G.b[from], g = CD_GIFT[rw];
+  if (tb.k === G.me && !G.spec) {
+    sfx('chest');
+    if (rw === 'o' && amt) { bumpEl('goldPill'); gain('+' + amt); }
+    if (rw === 'v') bumpEl('meChip');
+    G.floats.push({ k: tb.k, x: COLS / 2, y: 1.2, txt: g.n, color: C.gold, t: 1.4, ttl: 1.4, big: true });
+    cdBand(from, rw, amt);
+  } else if (from === G.me && !G.spec) { sfx('cast'); toast(`Tu envoies ${g.art} à ${tb.name}`, 'gold'); }
+  else toast(`${fb ? fb.name : '?'} envoie ${g.art} à ${tb.name}`, 'gold');
+}
+
+/* ---------------------------------------------------------------- the host's side: the window opens at the fall; a fallen bot gives */
+{ const base = eliminate; eliminate = function (b) {
+    if (b && b.alive && G && auth()) { b.cdUntil = G.t + CD_SECS + CD_GRACE; b.cdBotAt = b.bot ? G.t + 2 + Math.random() * 2 : 0; }
+    return base.apply(this, arguments);
+}; }
+{ const base = step; step = function (dt) {
+    base(dt);
+    if (!G || G.ended || !G.running) return;
+    for (const b of G.b) {
+      if (!b.cdBotAt || b.alive || G.t < b.cdBotAt) continue;
+      b.cdBotAt = 0;
+      if (!b.bot || b.cdUsed) continue;
+      const alive = G.b.filter(x => x.alive && x.k !== b.k); if (!alive.length) continue;
+      cdCast(b.k, alive[(Math.random() * alive.length) | 0].k, CD_KEYS[(Math.random() * CD_KEYS.length) | 0]);
+    }
+}; }
+{ const base = applyAction; applyAction = function (k, a) {
+    if (Array.isArray(a) && a[0] === 'G') return cdCast(k, a[1], a[2]);
+    return base.apply(this, arguments);
+}; }
+{ const base = sanitizeAction; sanitizeAction = function (x) {
+    if (Array.isArray(x) && x[1] === 'G') return x.length === 4 && Number.isInteger(x[2]) && typeof x[3] === 'string' && CD_GIFT[x[3]] ? ['G', x[2], x[3]] : null;
+    return base.apply(this, arguments);
+}; }
+// a guest learns the gifts from the host's events (read before the game's own reader marks them as seen)
+{ const base = processEvents; processEvents = function (b, str) {
+    const fresh = [];
+    if (b && b.evInit && G && G.running && typeof str === 'string' && str) for (const part of str.split(';')) {
+      if (part.length < 7 || part[2] !== 'G') continue;
+      const id = parseInt(part.substr(0, 2), 36);
+      if (!(b.evSeen && b.evSeen.has(id))) fresh.push(part.slice(2));
+    }
+    const r = base.apply(this, arguments);
+    for (const s of fresh) cdEvent(b, s);
+    return r;
+}; }
+function cdEvent(tb, s) {
+  const rw = s[1], from = parseInt(s[2], 10), amt = parseInt(s.substr(3, 2), 36) || 0;
+  if (!CD_GIFT[rw] || !(from >= 0 && from < G.N)) return;
+  if (from === G.me && !G.spec) { tb.rings.push({ x: COLS / 2, y: 0.5, r0: 0.3, r1: 3.5, t: 0.7, ttl: 0.7, color: C.gold, fill: true }); return; }  // the giver had his note
+  cdFx(tb, rw, from, amt);
+}
+
+/* ---------------------------------------------------------------- the local player's screens: they come with the fall, before the « Éliminé » card */
+{ const base = showSpectate; showSpectate = function () { const r = base.apply(this, arguments); cdMaybeOpen(); return r; }; }
+{ const base = showOv; showOv = function (id, on) {
+    if (id === 'endOv' && on && CD.open && G && !G.ended) { CD.pendEnd = true; return; }    // the « Éliminé » card waits for the gift
+    if (id === 'endOv' && on && CD.open) cdClose('end');
+    return base.apply(this, arguments);
+}; }
+function cdMaybeOpen() {
+  if (!G || !G.running || G.ended || G.spec || G.guide) return;
+  if (CD.g !== G) { CD.g = G; CD.done = false; CD.open = false; }
+  const me = G.b[G.me];
+  if (!me || me.alive || me.cdUsed || CD.done || CD.open) return;
+  if (!G.b.some(b => b.alive && b.k !== G.me)) return;
+  cdOpen();
+}
+function cdEl() {
+  let el = $('cdSheet'); if (el) return el;
+  el = document.createElement('div'); el.className = 'cd'; el.id = 'cdSheet'; el.hidden = true;
+  el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Le cadeau d’adieu');
+  el.innerHTML = '<div class="cd-in">' +
+    '<div class="cd-hd"><button class="cd-back" id="cdBack" type="button" aria-label="Changer de Maison" hidden><svg width="10" height="16" viewBox="0 0 10 16" aria-hidden="true"><path d="M8 2L2 8l6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/></svg></button>' +
+    '<span class="cd-k">Tu es éliminé · un cadeau d’adieu</span></div>' +
+    '<h2 class="cd-t" id="cdT" aria-live="polite"></h2><p class="cd-s" id="cdS"></p>' +
+    '<div class="cd-g" id="cdG"></div>' +
+    '<div class="cd-bar" aria-hidden="true"><i id="cdBar"></i></div>' +
+    '<button class="go cd-go" id="cdGo" type="button"></button>' +
+    '<button class="sec cd-no" id="cdNo" type="button">Ne rien envoyer</button>' +
+    '</div>';
+  document.body.appendChild(el);
+  el.addEventListener('click', cdClick);
+  return el;
+}
+function cdOpen() {
+  Object.assign(CD, { g: G, open: true, step: 1, target: -1, rw: '', until: G.t + CD_SECS, done: false, pendEnd: false, key: '' });
+  clearTimeout(CD.endT);
+  const el = cdEl(); el.hidden = false; document.body.classList.add('cd-on');
+  cdRender(); cancelAnimationFrame(CD.raf); cdLoop();
+}
+// why: 'sent', 'skip', 'time' (the 15 s ran out: nothing is sent), 'end' (the game is over)
+function cdClose(why) {
+  if (!CD.open) return;
+  CD.open = false; CD.done = true; cancelAnimationFrame(CD.raf); CD.raf = 0;
+  const el = $('cdSheet'); if (el) el.hidden = true;
+  document.body.classList.remove('cd-on');
+  if (why === 'time') toast('Pas de cadeau envoyé', '');
+  if (CD.pendEnd) {
+    CD.pendEnd = false;
+    CD.endT = setTimeout(() => { if (G && G.watching && !G.ended && !CD.open) showOv('endOv', true); }, why === 'sent' ? 1200 : 300);
+  }
+}
+function cdLoop() { cdTick(); if (CD.open) CD.raf = requestAnimationFrame(cdLoop); }
+function cdTick() {
+  if (!CD.open) return;
+  if (!G || CD.g !== G || G.ended || !G.running) return cdClose('end');
+  const left = CD.until - G.t;
+  if (left <= 0) return cdClose('time');
+  if (!G.b.some(b => b.alive && b.k !== G.me)) return cdClose('end');
+  if (CD.target >= 0 && !(G.b[CD.target] && G.b[CD.target].alive)) { CD.target = -1; CD.rw = ''; CD.step = 1; }   // the chosen House fell meanwhile
+  const bar = $('cdBar'); if (bar) bar.style.transform = `scaleX(${Math.max(0, Math.min(1, left / CD_SECS)).toFixed(3)})`;
+  cdRender();
+}
+function cdRender() {
+  const me = G.me, alive = G.b.filter(b => b.alive && b.k !== me), tb = CD.target >= 0 ? G.b[CD.target] : null;
+  const key = [CD.step, CD.target, CD.rw, G.wave, alive.map(b => b.k + ':' + b.lives).join(',')].join('|');
+  if (key === CD.key) return; CD.key = key;
+  const grid = $('cdG'), go = $('cdGo');
+  if (CD.step === 1) {
+    $('cdT').textContent = 'Quelle Maison aider ?';
+    $('cdS').textContent = 'Une seule fois. Elle saura que c’est toi.';
+    grid.className = 'cd-g'; grid.style.setProperty('--n', Math.min(4, alive.length));
+    grid.innerHTML = alive.map(b => {
+      const m = b.jt && BLAZON[b.jt.maison] ? b.jt.maison : '', col = b.col >= 0 ? b.col : b.k;
+      return `<button type="button" class="cd-h" data-k="${b.k}" aria-pressed="${b.k === CD.target}">${m ? blazonImg(m, col, 1) : ''}<b>${esc(b.name)}</b><small>${b.lives} ${b.lives > 1 ? 'vies' : 'vie'}</small></button>`;
+    }).join('');
+    go.textContent = 'Choisir le cadeau'; go.disabled = !tb;
+    $('cdNo').hidden = false; $('cdBack').hidden = true;
+  } else {
+    $('cdT').textContent = `Pour ${tb ? tb.name : ''}`;
+    $('cdS').textContent = 'Un petit coup de main, pas une victoire offerte.';
+    grid.className = 'cd-g gifts'; grid.style.removeProperty('--n');
+    grid.innerHTML = CD_KEYS.map(rw => `<button type="button" class="cd-r" data-rw="${rw}" aria-pressed="${rw === CD.rw}">${icon12(CD_GIFT[rw].ic, 1)}<b>${CD_GIFT[rw].n}</b><small>${cdSub(rw)}</small></button>`).join('');
+    go.textContent = CD.rw && tb ? `Envoyer ${CD_GIFT[CD.rw].art} à ${tb.name}` : 'Choisis un cadeau'; go.disabled = !(CD.rw && tb);
+    $('cdNo').hidden = true; $('cdBack').hidden = false;
+  }
+}
+function cdClick(e) {
+  if (!CD.open || !G) return;
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.classList.contains('cd-h')) { CD.target = +t.dataset.k; sfx('click'); return cdRender(); }
+  if (t.classList.contains('cd-r')) { CD.rw = t.dataset.rw; sfx('click'); return cdRender(); }
+  if (t.id === 'cdBack') { CD.step = 1; CD.rw = ''; sfx('click'); return cdRender(); }
+  if (t.id === 'cdNo') { sfx('click'); return cdClose('skip'); }
+  if (t.id !== 'cdGo' || t.disabled) return;
+  if (CD.step === 1) { if (CD.target >= 0) { CD.step = 2; sfx('click'); cdRender(); } return; }
+  const err = act(['G', CD.target, CD.rw]);
+  if (!err) return cdClose('sent');
+  sfx('error');
+  if (!(G.b[CD.target] && G.b[CD.target].alive)) { CD.target = -1; CD.rw = ''; CD.step = 1; cdRender(); }
+  else cdClose('end');
+}
+
+/* ---------------------------------------------------------------- the receiver: a band near the top of the field, under the places and the notes */
+function cdBand(from, rw, amt) {
+  let el = $('cdGb');
+  if (!el) { el = document.createElement('div'); el.className = 'cd-gb'; el.id = 'cdGb'; el.hidden = true; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); document.body.appendChild(el); }
+  const fb = G.b[from], g = CD_GIFT[rw];
+  const m = fb && fb.jt && BLAZON[fb.jt.maison] ? fb.jt.maison : '', col = fb && fb.col >= 0 ? fb.col : from;
+  el.innerHTML = `<div class="cd-gb1">${m ? blazonImg(m, col, 1) : ''}<span><b>${esc(fb ? fb.name : '?')}</b> t’envoie <em>${g.art}</em></span></div>` +
+    `<div class="cd-gb2">${icon12(g.ic, 1)}<span>${cdLine(rw, amt)}</span></div>`;
+  el.style.top = Math.round($('hud').getBoundingClientRect().bottom + 96) + 'px';     // under the notes at the top left (two of them, or the buffs and one)
+  el.hidden = false; el.classList.remove('in', 'out'); void el.offsetWidth; el.classList.add('in');
+  clearTimeout(CD.gbT);
+  CD.gbT = setTimeout(() => { el.classList.add('out'); CD.gbT = setTimeout(() => { el.hidden = true; el.classList.remove('in', 'out'); }, 280); }, 3600);
+}
 
 useTerrain(TERKEY);
 demo();
