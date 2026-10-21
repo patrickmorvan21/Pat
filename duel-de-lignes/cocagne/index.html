@@ -1277,6 +1277,11 @@ body.cd-on .fou-say{visibility:hidden}
 .pop .cs-pop svg{flex:none}
 .pop .cs-pop b{color:var(--ink)}
 @media (prefers-reduced-motion: reduce){.cs-btn{animation:none}}
+
+/* ---------------------------------------------------------------- Étendards (version 52): the banners of version 5 are 27 x 46 (js_banner5.js) */
+/* the profile's motif chips keep the banner's proportions, 2 CSS px a pixel: 54 x 92 (46 x 92 was version 2's 23 x 46) */
+.pf-list[data-tab=motif] .pf-c .pic{width:54px;height:92px}
+.pf-list[data-tab=motif] .pf-c canvas{width:54px;height:92px}
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
 </head>
@@ -7618,184 +7623,205 @@ function specElim(b, left) {
   specSay('elim' + b.k, `${b.name} tombe. ${left === 2 ? 'Duel final !' : `Plus que ${left} Maisons.`}`, 0);
 }
 
-/* ---------------------------------------------------------------- the banners with motifs (fourche Bandeau, 4e vague)
-   A port of banner2.py (B3, after Patrick's eight banners of 20/10): the same pixels, to the byte (tested against Python).
-   bannerCanvas(maison, col, motif, { frame, scale, stars, tassels }) -> a new canvas, 23 x 46 art pixels times scale
-     maison   'cerf' | 'ours' | 'griffon' (the Corbeau) | 'renard'
+/* ---------------------------------------------------------------- the banners, version 5 (fourche Étendards, version 52)
+   The set Patrick chose (21/10, 22 h 16): the Cerf redrawn (his reference's eyes), the Ours of version 3, the Corbeau B of version 4
+   (wings raised), the Renard of version 4; the cloths, the eight motifs and the seven colours of versions 3 and 4.
+   It takes the place of js_banner.js (version 2, 23 x 46) with the same API, so nothing else changes but the width, now BANNER.W:
+   bannerCanvas(maison, col, motif, { frame, scale, stars, tassels }) -> a new canvas, 27 x 46 art pixels times scale
+     maison   'cerf' | 'ours' | 'griffon' (the Corbeau) | 'renard' ('cerf' when unknown)
      col      a player colour (0..6, PCOL / PDARK) or a pair of hex colours [base, dark]
      motif    one of BANNER.ORDER ('chevrons' when unknown)
      frame    0 still; 1 and 2: the cloth waves, 1 px below a fold (play 0, 1, 0, 2)
      scale    a whole number, nearest neighbour (never smoothed)
      stars    0..3 gold stars stitched under the emblem
-     tassels  0..3 tassels at the rod's ends (proposal B, not used yet)
-   BANNER.rgba(maison, col, motif, o) gives the bare pixels at scale 1 (RGBA, row by row, 23 x 46);
-   BANNER.MOTIFS[motif].label the French name, BANNER.ORDER the eight motifs in order.
-   Only `var` and function declarations at the top: two copies of this file may sit in one page for a while without harm. */
-var BANNER = BANNER || (function () {
+     tassels  0..3 tassels at the rod's ends (kept from version 2, not used yet)
+   BANNER.rgba(maison, col, motif, o) gives the bare pixels at scale 1 (RGBA, row by row, 27 x 46); BANNER.pixels the same, cached;
+   BANNER.W / BANNER.H the size in art pixels; BANNER.MOTIFS[motif].label the French name; BANNER.ORDER the eight motifs;
+   BANNER.PAID the motifs sold later (flamme, entrelacs); BANNER.HOUSES the four Houses.
+   A port of banner5.py (banner5/, its Python twin): the same pixels, to the byte (banner5/test_banner5.py).
+   Only `var` and function declarations at the top. It replaces BANNER even when an older copy came first. */
+var BANNER = (function () {
   const PC = ['#7192b6', '#b5655b', '#9a87bf', '#5d5862', '#b9bec4', '#c4809f', '#c78a4c'];
   const PD = ['#56728f', '#8a4a43', '#75659a', '#3f3b44', '#8b9199', '#955f78', '#97643a'];
-  const W = 23, H = 46, CX0 = 3, CX1 = 19, Y0 = 2, MID = 11;
+  const W = 27, H = 46, CX0 = 3, CX1 = 23, MID = 13, Y0 = 2;
   // Python's round(): a half goes to the even neighbour
   const pyRound = v => { const f = Math.floor(v), d = v - f; return d > 0.5 ? f + 1 : d < 0.5 ? f : (f % 2 === 0 ? f : f + 1); };
-  // Python's float %: the result takes the divisor's sign
-  const pyMod = (a, b) => { let m = a % b; if (m) { if ((b < 0) !== (m < 0)) m += b; } else m = 0; return m; };
-  const rgb = h => { h = String(h).replace(/^#+/, ''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; };
+  const RGB = new Map();
+  const rgb = h => { let q = RGB.get(h); if (!q) { const s = String(h).replace(/^#+/, ''); q = [parseInt(s.slice(0, 2), 16), parseInt(s.slice(2, 4), 16), parseInt(s.slice(4, 6), 16)]; RGB.set(h, q); } return q; };
   const h2 = v => { v = Math.max(0, Math.min(255, pyRound(v))); return (v < 16 ? '0' : '') + v.toString(16); };
   const hexc = t => '#' + h2(t[0]) + h2(t[1]) + h2(t[2]);
   const mix = (a, b, t) => { const A = rgb(a), B = rgb(b); return hexc([A[0] + (B[0] - A[0]) * t, A[1] + (B[1] - A[1]) * t, A[2] + (B[2] - A[2]) * t]); };
+  const P = h => { const q = rgb(h); return 0x1000000 | (q[0] << 16) | (q[1] << 8) | q[2]; };
   const lum = h => { const c = rgb(h), r = c[0] / 255, g = c[1] / 255, b = c[2] / 255; return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 
-  // the emblems (a main, b shade, c light, e eye or nose)
+  // the emblems (a cream, c light cream, b cream shade, d the cloth's dark, e the darkest: eyes, nose, mouth)
   const EMB = {
-    cerf: ['a.a.......a.a', 'a.a.a...a.a.a', '.aa.a...a.aa.', '..aaa...aaa..', '...aa...aa...', '....aa.aa....', 'aaa.aaaaa.aaa', '.aabaaaaaabaa',
-      '..aaaaaaaaab.', '...aeaaaeab..', '...aaaaaaab..', '....aaaaab...', '....acccab...', '.....ccb.....', '......e......'],
-    ours: ['.aa.......aa.', 'acca.....acca', 'aaaaaaaaaaaab', '.aaaaaaaaaab.', 'aaaaaaaaaaaab', 'aaaeaaaaaeaab', 'aaaaacccaaaab', '.aaacceccaab.',
-      '.aaaacccaabb.', '..aaaaaaabb..', '....abbbb....'],
-    griffon: ['...aaa.........', '.aaaaaa........', 'aaaaeaaa.......', '..aaaaaaa......', '....aaaaa......', '....aaaaaa.....', '....aaaaaaa....',
-      '....aaaaaaab...', '.....aaabbbbb..', '.....aaaabbbbb.', '......aaaa.bbbb', '.......aa....bb', '......a.a.....b', '.....aa.aa.....'],
-    renard: ['aa.........aa', 'aca.......aca', 'acca.....acca', 'accaa...aacca', 'aaaaaaaaaaaab', '.aaaaaaaaaab.', '..aeaaaaaeab.', 'aaaaaaaaaaaab',
-      '.aaaccacccab.', '..aaccccccb..', '...accccab...', '....acccb....', '.....acb.....', '......e......'],
+    "cerf": [".a.a.........a.a.", ".a.a..a...a..a.a.", ".aaa..a...a..aaa.", "..a...a...a...a..", "..aa..a...a..aa..", "...aaaa...aaaa...", ".....aa...aa.....", "..aaa.aaaaa.aaa..", ".a..aaaaaaaaa..a.", "..aaaaaaaaaaaaa..", "....aaaaaaaaa....", "....aaaaaaaaa....", ".....a.aaa.a.....", ".....aaeaeaa.....", "......aaaaa......", "......aaaaa......", "......aaaaa......", "......aaaaa......", "......aaaaa......", ".......eee......."],
+    "ours": [".aa.........aa.", "a..aaaaaaaaa..a", "a.aaaaaaaaaaa.a", ".aaaaaaaaaaaaa.", ".aaaaaaaaaaaaa.", "aaaaaaaaaaaaaaa", "aaaa.aaaaa.aaaa", "aaa..aaaaa..aaa", "aaaab.aaa.baaaa", "aaaabaaaaabaaaa", "aaaabaaaaabaaaa", ".aaaba...abaaa.", "..aaaaa.aaaaa..", "...aa.....aa...", "......aaa......"],
+    "griffon": ["a..............a", "aa.....aaa....aa", "aaa..aaaeaa..aaa", "aaaa.aaaaa..aaaa", ".aaaaaaaaaaaaaa.", ".aabaaaaaaaabaa.", "..abaaaaaaaaba..", "...aaaaaaaaaa...", ".....aaaaaa.....", "......aaaa......", ".....aaaaaa.....", "....a.a..a.a...."],
+    "renard": ["aa.........aa", "aaa.......aaa", "aaaa.....aaaa", "aaaaa...aaaaa", "aadaaaaaaadaa", "aadaaaaaaadaa", "..aaaaaaaaa..", ".aaaaaaaaaaa.", "aaaaaaaaaaaaa", "aaeeaaaaaeeaa", ".aaeecaceeaa.", "..aaaaaaaaa..", "...aaaaaaa...", "....aaaaa....", "....aaaaa....", ".....aea....."]
   };
-  // the shapes of the bottom: the last row of cloth of each column
-  const LAMB = [3, 1, 4, 0, 2, 5, 1, 3, 0, 4, 2, 1, 5, 0, 3, 1, 2];
+  const LAMB = [4, 1, 6, 2, 0, 5, 3, 1, 6, 2, 4, 0, 5, 2, 6, 1, 3, 0, 5, 2, 4];                   // the rags' lengths, columns 3..23
+  const HOLES = new Set([830, 870, 935, 983]);         // the rags' holes, y * W + x
   function bottom(shape, x) {
-    if (shape === 'pointe') return 45 - Math.abs(x - MID);
-    if (shape === 'queue') return 37 + Math.abs(x - MID);
-    if (shape === 'biais') return 45 - pyRound((x - CX0) * 7 / 16);
-    if (shape === 'dents') return 45 - 2 * Math.min(Math.abs(x - 5), Math.abs(x - 11), Math.abs(x - 17));
-    if (shape === 'lambeaux') return 40 + LAMB[x - CX0];
-    return 45;          // 'flamme', 'droit'
+    const d = Math.abs(x - MID);
+    if (shape === 'pointe') return 43 - d;
+    if (shape === 'dents') return 41 - Math.min(Math.abs(x - 3), d, Math.abs(x - 23));
+    if (shape === 'lambeaux') return 35 + LAMB[x - CX0];
+    if (shape === 'biais') return 40 - Math.floor((x - CX0) * 9 / 20);
+    if (shape === 'queue') return 34 + Math.floor(d * 7 / 10);
+    if (shape === 'flamme') return 44;
+    return 37;          // 'droit'
+  }
+  // is (x, y) on the cloth? (one mask per shape, made once)
+  const INS = {};
+  function mask(shape) {
+    let m = INS[shape];
+    if (!m) { m = INS[shape] = new Uint8Array(W * H); for (let yy = 0; yy < H; yy++) for (let xx = 0; xx < W; xx++) m[yy * W + xx] = inside0(shape, xx, yy) ? 1 : 0; }
+    return m;
   }
   function inside(shape, x, y) {
+    if (x < 0 || x >= W || y < 0 || y >= H) return false;
+    return mask(shape)[y * W + x] === 1;
+  }
+  function inside0(shape, x, y) {
     if (x < CX0 || x > CX1 || y < Y0) return false;
-    if (shape === 'flamme' && y > 27) { const hw = 8 * (45 - y) / 18; return Math.abs(x - MID) <= hw + 0.25; }
+    if (shape === 'flamme' && y > 29) return 3 * Math.abs(x - MID) <= 2 * (44 - y);
+    if (shape === 'lambeaux' && HOLES.has(y * W + x)) return false;
     return y <= bottom(shape, x);
   }
-  // the 8 motifs, after Patrick's 8 banners: [shape, emblem tone, emblem centre row, French label]
+  // [shape, emblem centre row, lowest row for the stars' centre, French label]
   const MOTIFS = {
-    chevrons: ['pointe', 'dark', 19, 'Chevrons'], brocart: ['dents', 'gold', 21, 'Brocart'], lambeaux: ['lambeaux', 'light', 20, 'Lambeaux'],
-    entrelacs: ['biais', 'deep', 20, 'Entrelacs'], flamme: ['flamme', 'dark', 17, 'Flamme'], galons: ['pointe', 'dark', 21, 'Galons'],
-    rayures: ['droit', 'deep', 21, 'Rayures'], dentelle: ['queue', 'cream', 19, 'Dentelle'],
+    chevrons: ["pointe", 18, 31, "Chevrons"],
+    brocart: ["dents", 18, 29, "Brocart"],
+    lambeaux: ["lambeaux", 18, 31, "Lambeaux"],
+    entrelacs: ["biais", 18, 29, "Entrelacs"],
+    flamme: ["flamme", 17, 30, "Flamme"],
+    galons: ["pointe", 20, 32, "Galons"],
+    rayures: ["droit", 17, 28, "Rayures"],
+    dentelle: ["queue", 17, 28, "Dentelle"]
   };
-  const ORDER = ['chevrons', 'brocart', 'lambeaux', 'entrelacs', 'flamme', 'galons', 'rayures', 'dentelle'];
-  const GOLD = '#e6c35a', GOLD_D = '#b39550', GOLD_L = '#f6dc84';
-  // the lowest row for the stars' centre, so they stay on plain cloth
-  const STAR_MAX = { chevrons: 29, brocart: 28, lambeaux: 31, entrelacs: 30, flamme: 28, galons: 30, rayures: 33, dentelle: 28 };
-  const CREAM = '#ece6d6', CREAM_D = '#b2ab9c', WOOD = '#6b5038', WOOD_L = '#8a6a48';
+  const ORDER = ["chevrons", "brocart", "lambeaux", "entrelacs", "flamme", "galons", "rayures", "dentelle"], PAID = ["flamme", "entrelacs"];
+  const GOLD = P('#e6c35a'), GOLD_D = P('#b39550'), GOLD_L = P('#f6dc84');
+  const CREAM = P('#efe5cf'), CREAM_L = P('#faf4e6'), CREAM_D = P('#cdbfa4'), WOOD = P('#7a5536'), WOOD_L = P('#a8794f');
 
+  const TONES = new Map();
   function tones(col) {
+    const key = Array.isArray(col) ? col.join('/') : String(col);
+    let T = TONES.get(key); if (!T) { T = tones0(col); TONES.set(key, T); }
+    return T;
+  }
+  function tones0(col) {
     let c0, c1;
     if (Array.isArray(col)) { c0 = col[0]; c1 = col[1]; }
     else { const i = Number.isInteger(col) ? ((col % 7) + 7) % 7 : 0; c0 = PC[i]; c1 = PD[i]; }
-    const T = { c0, c1, L1: mix(c0, '#ffffff', .28), L2: mix(c0, '#ffffff', .55), L3: mix(c0, '#ffffff', .78), D2: mix(c1, '#1b2b34', .38), D1: mix(c0, c1, .55) };
-    T.lum = lum(c0);
-    if (T.lum > 0.62) {
-      // a pale cloth (Argent): the motif's accents go darker instead of lighter, so they still read
-      const a = mix(c0, c1, .45), c = mix(c1, T.D2, .45); T.L1 = a; T.L2 = c1; T.L3 = c;
-    }
-    return T;
-  }
-  function emblemPal(tone, T) {
-    const light = T.lum > 0.62, dark = T.lum < 0.40;
-    if (tone === 'dark' && dark) tone = 'light';
-    if (tone === 'deep' && dark) tone = 'cream';
-    if (tone === 'light' && light) tone = 'deep';
-    if (tone === 'gold') return { a: GOLD, b: GOLD_D, c: GOLD_L, e: T.D2 };
-    if (tone === 'cream') return { a: CREAM, b: CREAM_D, c: '#faf6ec', e: T.D2 };
-    if (tone === 'light') return { a: T.L2, b: T.L1, c: T.L3, e: T.D2 };
-    if (tone === 'deep') return { a: T.D2, b: mix(T.D2, '#10181c', .3), c: T.c1, e: T.L2 };
-    return { a: T.c1, b: T.D2, c: T.D1, e: T.L2 };          // dark
-  }
-  // colorsys.rgb_to_hls: a golden cloth gets a cream emblem instead of a gold one
-  function golden(h) {
-    const q = rgb(h), r = q[0] / 255, g = q[1] / 255, b = q[2] / 255;
-    const maxc = Math.max(r, g, b), minc = Math.min(r, g, b), sumc = maxc + minc, rangec = maxc - minc, l = sumc / 2.0;
-    if (minc === maxc) return false;
-    const s = l <= 0.5 ? rangec / sumc : rangec / (2.0 - maxc - minc);
-    const rc = (maxc - r) / rangec, gc = (maxc - g) / rangec, bc = (maxc - b) / rangec;
-    let hh = r === maxc ? bc - gc : g === maxc ? 2.0 + rc - bc : 4.0 + gc - rc;
-    hh = pyMod(hh / 6.0, 1.0);
-    return 0.05 <= hh && hh <= 0.17 && s > 0.3;
+    const X = { c0, c1, L1: mix(c0, '#ffffff', .42), L2: mix(c0, '#ffffff', .64), D1: mix(c0, c1, .6), D2: mix(c1, '#1b2b34', .45) };
+    const pale = lum(c0) > 0.62;
+    // a pale cloth (Argent): the motif in two tones, a grey and a near white, so it reads on the light cloth
+    if (pale) { X.L1 = mix(c0, c1, .55); X.L2 = mix(c0, '#ffffff', .75); }
+    // packed colours for the drawing; the shade under the emblem on a pale cloth
+    return { c0: P(X.c0), c1: P(X.c1), L1: P(X.L1), L2: P(X.L2), D1: P(X.D1), D2: P(X.D2), pale, sh: pale ? P(c1) : 0 };
   }
 
   // ---------------------------------------------------------------- the motifs
   function mChevrons(put, T) {
     for (let x = CX0; x <= CX1; x++) {
-      put(x, 4, T.L1); put(x, 5, T.L2);
+      put(x, 3, T.L2); put(x, 5, T.L1);
       const b = bottom('pointe', x);
-      put(x, b - 1, T.L2); put(x, b - 2, T.L1); put(x, b - 5, T.L2); put(x, b - 6, T.L1);
+      put(x, b, T.L2); put(x, b - 3, T.L2); put(x, b - 6, T.L1);
     }
-  }
-  function mBrocart(put, T) {
-    // a field of small flowers (semé) above and below the emblem, framed by two light bands
-    for (let y = 3; y < 46; y++) {
-      if (y >= 12 && y <= 30) continue;
-      for (let x = CX0; x <= CX1; x++) {
-        let gx = (x - CX0) % 4; const gy = (y - 3) % 4;
-        if (Math.floor((y - 3) / 4) % 2) gx = (x - CX0 + 2) % 4;
-        if ((gx === 1 && gy === 0) || (gx === 1 && gy === 2)) put(x, y, T.L1);
-        else if ((gx === 0 && gy === 1) || (gx === 2 && gy === 1)) put(x, y, T.L1);
-        else if (gx === 1 && gy === 1) put(x, y, T.L3);
-      }
-    }
-    for (let x = CX0; x <= CX1; x++) {
-      put(x, 12, T.L2); put(x, 30, T.L2);
-      if (x % 2) { put(x, 11, T.L1); put(x, 31, T.L1); }
-    }
-  }
-  function mLambeaux(put, T) {
-    for (let x = CX0; x <= CX1; x++) {
-      const b = bottom('lambeaux', x);
-      for (let y = 36; y <= b; y++) if ((x * 7 + y * 3) % 5 === 0) put(x, y, T.D1);
-      put(x, b, (x % 3) ? T.D2 : T.c1);
-    }
-    for (const [x, y] of [[5, 9], [16, 13], [7, 31], [14, 28], [10, 34]]) put(x, y, T.D1);
-  }
-  function mEntrelacs(put, T) {
-    // linked rings down both edges and across the top: the lightest tone, a darker stitch where two rings cross
-    const ring = ['.##.', '#..#', '#..#', '.##.'];
-    const r = (x0, y0) => {
-      for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) if (ring[j][i] === '#') put(x0 + i, y0 + j, j < 2 || i < 2 ? T.L3 : T.L2);
-    };
-    for (let x = CX0; x < CX1 - 2; x += 3) r(x, 3);
-    for (let x = CX0 + 3; x < CX1 - 2; x += 3) { put(x, 3, T.L1); put(x, 6, T.L1); }
-    for (let y = 6; y < 46; y += 3) {
-      r(CX0, y); r(CX1 - 3, y);
-      put(CX0 + 1, y, T.L1); put(CX1 - 2, y, T.L1);
-    }
-    for (let x = CX0; x <= CX1; x++) put(x, bottom('biais', x) - 1, T.L2);
-  }
-  function mFlamme(put, T) {
-    for (let y = 3; y < 46; y++) for (let x = CX0; x <= CX1; x++) {
-      if (!inside('flamme', x, y)) continue;
-      if (!inside('flamme', x - 1, y) || !inside('flamme', x + 1, y) || !inside('flamme', x, y + 1)) put(x, y, T.L2);
-    }
-    for (let x = CX0; x <= CX1; x++) put(x, 3, T.L2);
-    for (let x = CX0 + 2; x < CX1 - 1; x += 2) put(x, 5, T.L1);
   }
   function mGalons(put, T) {
     for (let x = CX0; x <= CX1; x++) {
-      const d = Math.abs(x - MID), y = 3 + (8 - d);
-      put(x, y, T.L3); put(x, y + 1, T.L2); put(x, y - 1, T.L1);
+      const d = Math.abs(x - MID), y = 3 + Math.floor((10 - d) / 2);
+      put(x, y, T.L2); put(x, y + 2, T.L1);
       const b = bottom('pointe', x);
-      put(x, b - 1, T.L3); put(x, b - 2, T.L2); put(x, b - 4, T.L1);
+      put(x, b - 1, T.L2); put(x, b - 4, T.L1);
     }
+    for (const x of [CX0 + 1, CX1 - 1]) {
+      const y0 = Math.max(4, 3 + Math.floor((10 - Math.abs(x - MID)) / 2) + 2), y1 = Math.min(45, bottom('pointe', x) - 1);
+      for (let y = y0; y <= y1; y++) put(x, y, T.L1);
+    }
+  }
+  function mFlamme(put, T) {
+    // a border one pixel in, all the way down the long point; a small chevron under the rod; a diamond near the tip
+    const ins = (x, y) => inside('flamme', x, y);
+    for (let y = 3; y < 46; y++) for (let x = CX0; x <= CX1; x++) {
+      if (!ins(x, y)) continue;
+      if (!ins(x - 1, y) || !ins(x + 1, y) || !ins(x, y + 1)) continue;
+      if (!ins(x - 2, y) || !ins(x + 2, y) || !ins(x, y + 2) || !ins(x - 1, y + 1) || !ins(x + 1, y + 1)) { if (y >= 4) put(x, y, T.L1); }
+    }
+    for (let x = CX0; x <= CX1; x++) { const d = Math.abs(x - MID); if (d <= 9) put(x, 3 + Math.floor((9 - d) / 3), T.L2); }
+    for (const [dx, dy, c] of [[0, -1, 'L2'], [-1, 0, 'L2'], [1, 0, 'L2'], [0, 1, 'L2'], [0, 0, 'L1']]) put(MID + dx, 37 + dy, T[c]);
   }
   function mRayures(put, T) {
-    // the cloth itself goes pale, the stripes take the player's colour
-    for (let y = 3; y < 46; y++) for (let x = CX0 + 1; x < CX1; x++) put(x, y, T.L2);
-    for (const y of [4, 5, 7, 37, 38, 40, 42, 43]) for (let x = CX0; x <= CX1; x++) put(x, y, y !== 7 && y !== 40 ? T.c0 : T.L1);
-    for (let y = 10; y < 35; y++) if (y % 3) { put(CX0 + 2, y, T.L1); put(CX1 - 2, y, T.L1); }
+    for (const [y, c] of [[3, 'L2'], [5, 'L1'], [31, 'L1'], [33, 'L2'], [35, 'L2']]) for (let x = CX0; x <= CX1; x++) put(x, y, T[c]);
+    for (let y = 8; y < 30; y++) if (y % 3) { put(CX0 + 1, y, T.L1); put(CX1 - 1, y, T.L1); }
   }
   function mDentelle(put, T) {
-    for (const y of [3, 4, 5]) for (let x = CX0; x <= CX1; x++) if ((x + y) % 2 === 0) put(x, y, y === 4 ? T.L2 : T.L1);
-    for (let y = 31; y < 35; y++) for (let x = CX0; x <= CX1; x++) {
-      if ((x + y) % 2 === 0) put(x, y, T.L2);
-      else if (y === 31 || y === 34) put(x, y, T.L1);
-    }
+    for (const y of [3, 4]) for (let x = CX0; x <= CX1; x++) if ((x + y) % 2 === 0) put(x, y, T.L2);
+    for (const y of [31, 32, 33]) for (let x = CX0; x <= CX1; x++) if ((x + y) % 2 === 0) put(x, y, T.L2);
+    for (let x = CX0; x <= CX1; x++) put(x, 30, T.L1);
+    for (let y = 5; y < 30; y++) { put(CX0, y, T.L1); put(CX1, y, T.L1); }
+    for (let x = CX0; x <= CX1; x++) { const b = bottom('queue', x); if (b > 33) put(x, b, T.L2); }
   }
+  function mBrocart(put, T) {
+    // two bands of small flowers framed by light lines, the hem following the three points
+    const flower = (cx, cy) => { for (const [dx, dy, c] of [[0, -1, 'L1'], [-1, 0, 'L1'], [1, 0, 'L1'], [0, 1, 'L1'], [0, 0, 'L2']]) put(cx + dx, cy + dy, T[c]); };
+    for (let x = CX0; x <= CX1; x++) put(x, 3, T.L2);
+    for (let cx = CX0 + 2; cx <= CX1; cx += 4) flower(cx, 5);
+    for (let cx = CX0; cx <= CX1; cx += 4) put(cx, 5, T.L1);
+    for (let x = CX0; x <= CX1; x++) put(x, 31, T.L2);
+    for (let cx = CX0 + 2; cx <= CX1; cx += 4) flower(cx, 33);
+    for (let cx = CX0; cx <= CX1; cx += 4) put(cx, 33, T.L1);
+    for (let x = CX0; x <= CX1; x++) { const b = bottom('dents', x); put(x, b, T.L2); if (b - 2 > 35) put(x, b - 2, T.L1); }
+  }
+  function mEntrelacs(put, T) {
+    // a chain of linked squares along the top and down both sides, a last chain along the slanted hem
+    const sq = (x0, y0) => { for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (i !== 1 || j !== 1) put(x0 + i, y0 + j, i === 0 || j === 0 ? T.L2 : T.L1); };
+    for (let x0 = CX0; x0 < CX1 - 1; x0 += 2) sq(x0, 3);
+    for (let y0 = 5; y0 < 42; y0 += 2) { sq(CX0, y0); sq(CX1 - 2, y0); }
+    for (let x = CX0; x <= CX1; x++) { const b = bottom('biais', x); put(x, b, T.L2); put(x, b - 2, T.L1); }
+  }
+  function mLambeaux(put, T) {
+    // torn cloth: two slits under the rod, rags at the bottom with darker ends, a few holes
+    for (let y = 3; y < 7; y++) put(5, y, T.D2);
+    for (let y = 3; y < 6; y++) put(21, y, T.D2);
+    for (let x = CX0; x <= CX1; x++) {
+      const b = bottom('lambeaux', x); put(x, b, T.D1);
+      if (LAMB[x - CX0] >= 4) put(x, b - 1, T.D1);
+    }
+    for (const q of HOLE_LIST) { const x = q % W, y = Math.floor(q / W); for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1]]) put(x + dx, y + dy, T.D1); }
+  }
+  const HOLE_LIST = [935, 983, 830, 870];          // the holes in Python's set order (the order the darker rims are painted)
   const DRAW = { chevrons: mChevrons, brocart: mBrocart, lambeaux: mLambeaux, entrelacs: mEntrelacs, flamme: mFlamme, galons: mGalons, rayures: mRayures, dentelle: mDentelle };
-  const TASSEL = { 1: ['#d9a77a', '#b07a50', '#8a5c3a'], 2: ['#eef1f4', '#c3c9d0', '#8f979f'], 3: [GOLD_L, GOLD, GOLD_D] };
+  const TASSEL = { 1: ['#d9a77a', '#b07a50', '#8a5c3a'].map(P), 2: ['#eef1f4', '#c3c9d0', '#8f979f'].map(P), 3: [GOLD_L, GOLD, GOLD_D] };
+
+  // each motif's strokes, recorded once (they do not depend on the colour): [index, tone] in painting order
+  const OPS = {};
+  function motifOps(motif) {
+    let ops = OPS[motif];
+    if (!ops) {
+      ops = OPS[motif] = []; const msk = mask(MOTIFS[motif][0]);
+      DRAW[motif]((x, y, c) => { if (x >= 0 && x < W && y >= 0 && y < H && msk[y * W + x] === 1) ops.push(y * W + x, c); }, { L1: 'L1', L2: 'L2', D1: 'D1', D2: 'D2', c0: 'c0' });
+    }
+    return ops;
+  }
+  // each emblem's pixels [i, j, letter], and the shade around it on a pale cloth [i, j], recorded once
+  const EMBP = {}, EMBS = {};
+  function emblemPx(k) {
+    if (EMBP[k]) return EMBP[k];
+    const rows = EMB[k], ew = rows[0].length, eh = rows.length, px = [], sh = [];
+    for (let j = 0; j < eh; j++) for (let i = 0; i < ew; i++) {
+      if (rows[j][i] === '.') continue;
+      for (const [dx, dy] of [[1, 0], [0, 1], [1, 1]]) {
+        const ii = i + dx, jj = j + dy, inner = jj >= 0 && jj < eh && ii >= 0 && ii < ew && rows[jj][ii] !== '.';
+        if (!inner) sh.push(ii, jj);
+      }
+    }
+    for (let j = 0; j < eh; j++) for (let i = 0; i < ew; i++) { const ch = rows[j][i]; if (ch !== '.') px.push(i, j, ch); }
+    EMBS[k] = sh; return (EMBP[k] = px);
+  }
 
   // ---------------------------------------------------------------- one banner, at scale 1
   function rgba(k, col, motif, o) {
@@ -7803,48 +7829,47 @@ var BANNER = BANNER || (function () {
     if (!MOTIFS[motif]) motif = 'chevrons';
     if (!EMB[k]) k = 'cerf';
     const frame = o.frame | 0, stars = o.stars | 0, tassels = o.tassels | 0;
-    const shape = MOTIFS[motif][0], ecy = MOTIFS[motif][2]; let etone = MOTIFS[motif][1];
+    const shape = MOTIFS[motif][0], ecy = MOTIFS[motif][1], smax = MOTIFS[motif][2];
     const T = tones(col);
-    const cloth = new Array(W * H).fill(null);          // the cloth layer (it waves)
-    const put = (x, y, c) => { if (inside(shape, x, y)) cloth[y * W + x] = c; };
-    // the cloth: base, light top-left, dark right edge and hem
-    for (let y = Y0; y < H; y++) for (let x = CX0; x <= CX1; x++) {
-      if (!inside(shape, x, y)) continue;
-      let c = T.c0;
-      if (x === CX0) c = mix(T.c0, '#ffffff', .12);
-      if (x === CX1 || !inside(shape, x + 1, y)) c = T.c1;
-      if (!inside(shape, x, y + 1)) c = T.c1;
-      cloth[y * W + x] = c;
+    const cloth = new Int32Array(W * H);          // the cloth layer (it waves): 0 nothing, else 0x1RRGGBB
+    const msk = mask(shape);
+    const put = (x, y, c) => { if (x >= 0 && x < W && y >= 0 && y < H && msk[y * W + x] === 1) cloth[y * W + x] = c; };
+    for (let i = 0; i < W * H; i++) if (msk[i] === 1) cloth[i] = T.c0;
+    const ops = motifOps(motif);
+    for (let q = 0; q < ops.length; q += 2) cloth[ops[q]] = T[ops[q + 1]];
+    // the emblem, centred on the free part of the cloth
+    const rows = EMB[k], ew = rows[0].length, eh = rows.length, ox = MID - Math.floor(ew / 2), oy = ecy - Math.floor(eh / 2);
+    const pal = { a: CREAM, b: CREAM_D, c: CREAM_L, d: T.c1, e: T.D2 };
+    const ep = emblemPx(k);
+    if (T.pale) {
+      // a pale cloth (Argent): a one-pixel shade to the right and below the cream, so it still reads (no outline)
+      const es = EMBS[k];
+      for (let q = 0; q < es.length; q += 2) put(ox + es[q], oy + es[q + 1], T.sh);
     }
-    for (let x = CX0; x <= CX1; x++) put(x, Y0, T.c1);
-    DRAW[motif](put, T);
-    // the emblem
-    const rows = EMB[k], ew = Math.max(...rows.map(r => r.length)), eh = rows.length;
-    const ox = MID - Math.floor(ew / 2), oy = ecy - Math.floor(eh / 2);
-    if (etone === 'gold' && golden(T.c0)) etone = 'cream';
-    const pal = emblemPal(etone, T);
-    rows.forEach((r, j) => { for (let i = 0; i < r.length; i++) if (r[i] !== '.') put(ox + i, oy + j, pal[r[i]]); });
+    for (let q = 0; q < ep.length; q += 3) put(ox + ep[q], oy + ep[q + 1], pal[ep[q + 2]]);
     // the challenges won: up to 3 gold stars under the emblem, each on a small clearing of plain cloth
     if (stars) {
-      const n = Math.max(0, Math.min(3, stars)), sy = Math.min(oy + eh + 1, STAR_MAX[motif] != null ? STAR_MAX[motif] : 30);
+      const n = Math.max(0, Math.min(3, stars)), sy = Math.min(oy + eh + 2, smax);
       for (let i = 0; i < n; i++) {
-        const cx = pyRound(MID + (i - (n - 1) / 2) * 4);
-        for (const dx of [-1, 0, 1]) for (const dy of [-1, 0, 1]) if (cloth[(sy + dy) * W + cx + dx] != null) put(cx + dx, sy + dy, T.c0);
+        const cx = MID + (2 * i - (n - 1)) * 2;
+        for (const dx of [-1, 0, 1]) for (const dy of [-1, 0, 1]) if (cloth[(sy + dy) * W + cx + dx] !== 0) put(cx + dx, sy + dy, T.c0);
         for (const [dx, dy, c] of [[0, -1, GOLD_L], [-1, 0, GOLD], [0, 0, GOLD_L], [1, 0, GOLD], [0, 1, GOLD_D]]) put(cx + dx, sy + dy, c);
       }
     }
     // the wave: below a fold the cloth slides 1 px (a different fold for each frame)
     const out = new Uint8ClampedArray(W * H * 4);
-    const set = (x, y, c) => { const q = rgb(c), i = (y * W + x) * 4; out[i] = q[0]; out[i + 1] = q[1]; out[i + 2] = q[2]; out[i + 3] = 255; };
-    const sh = y => frame === 1 ? (y >= 28 ? 1 : 0) : frame === 2 ? (y >= 34 ? -1 : 0) : 0;
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-      const c = cloth[y * W + x]; if (c == null) continue;
-      const xx = x + sh(y); if (xx >= 0 && xx < W) set(xx, y, c);
+    const set = (x, y, c) => { const i = (y * W + x) * 4; out[i] = (c >> 16) & 255; out[i + 1] = (c >> 8) & 255; out[i + 2] = c & 255; out[i + 3] = 255; };
+    for (let y = 0; y < H; y++) {
+      const d = frame === 1 ? (y >= 28 ? 1 : 0) : frame === 2 ? (y >= 34 ? -1 : 0) : 0, row = y * W;
+      for (let x = 0; x < W; x++) {
+        const c = cloth[row + x]; if (c === 0) continue;
+        const xx = x + d; if (xx < 0 || xx >= W) continue;
+        const i = (row + xx) * 4; out[i] = (c >> 16) & 255; out[i + 1] = (c >> 8) & 255; out[i + 2] = c & 255; out[i + 3] = 255;
+      }
     }
-    // the rod: wood with a light top, gold knobs at the ends
-    for (let x = 1; x < W - 1; x++) { set(x, 0, WOOD_L); set(x, 1, WOOD); }
-    for (const x of [0, W - 1]) { set(x, 0, GOLD_L); set(x, 1, GOLD_D); }
-    // proposal B: a tassel under each knob, its metal tells the rank (1 bronze, 2 silver, 3 gold)
+    // the rod: wood with a light top, gold caps two pixels wide at both ends
+    for (let x = 2; x < W - 2; x++) { set(x, 0, WOOD_L); set(x, 1, WOOD); }
+    for (const x0 of [0, W - 2]) { set(x0, 0, GOLD_L); set(x0 + 1, 0, GOLD); set(x0, 1, GOLD); set(x0 + 1, 1, GOLD_D); }
     if (tassels) {
       const m = TASSEL[Math.max(1, Math.min(3, tassels))];
       for (const x0 of [0, W - 2]) {
@@ -7881,8 +7906,8 @@ var BANNER = BANNER || (function () {
     return cv;
   }
   const M = {};
-  for (const m of ORDER) M[m] = { shape: MOTIFS[m][0], label: MOTIFS[m][3] };
-  return { W, H, ORDER, MOTIFS: M, rgba, pixels, canvas };
+  for (const m of ORDER) M[m] = { shape: MOTIFS[m][0], label: MOTIFS[m][3], paid: PAID.indexOf(m) >= 0 };
+  return { W, H, ORDER, PAID, MOTIFS: M, HOUSES: ['cerf', 'ours', 'griffon', 'renard'], rgba, pixels, canvas };
 })();
 function bannerCanvas(maison, col, motif, o) { return BANNER.canvas(maison, col, motif, o); }
 
@@ -8336,9 +8361,9 @@ function bdShow(k) {
   gcv.style.cssText = `left:${gl}px;top:${gt}px;width:${C.W * g}px;height:${C.H * g}px`;
   const hi = bdExtent(m, 0, (Hb - gt) / g)[1], gr = gl + (hi + 1) * g;
   // the banner: behind his right side, a third of it under him, hanging from the top
-  const bn = Math.max(1, Math.round(10 / 3 * s * dpr)), bs = bn / dpr, bw = 23 * bs, bh = 46 * bs;
+  const bn = Math.max(1, Math.round(10 / 3 * s * dpr)), bs = bn / dpr, bw = BANNER.W * bs, bh = BANNER.H * bs;
   BDS.ban = [0, 1, 2].map(f => bannerCanvas(m, col, cos.motif, { frame: f, scale: bn, stars: cos.stars }));
-  const bcv = el.querySelector('.bd-bn'); bcv.width = 23 * bn; bcv.height = 46 * bn;
+  const bcv = el.querySelector('.bd-bn'); bcv.width = BANNER.W * bn; bcv.height = BANNER.H * bn;
   // the words at the right: the title (only when there is one), the name
   const tx = el.querySelector('.bd-tx'), ti = el.querySelector('.bd-ti'), nm = el.querySelector('.bd-nm');
   ti.textContent = cos.title; ti.hidden = !cos.title; nm.textContent = b.name;
@@ -8490,7 +8515,7 @@ function lrBand(k, g, box, fxBox, prev) {
   const P = lrPlace(m, left, L.gs * kk, faceOff, g.hb, zone, W, kk, g.dpr), fy = ytop(P.fx) + faceOff;
   const ax = left ? BD_FACE[m][0] : C.W - BD_FACE[m][0], ay = BD_FACE[m][1];
   // the banner on the free side, right after the general's zone, hanging from the band's top
-  const bn = Math.max(1, Math.round(L.bs * kk * g.dpr)), bsz = bn / g.dpr, bw = 23 * bsz, bh = 46 * bsz;
+  const bn = Math.max(1, Math.round(L.bs * kk * g.dpr)), bsz = bn / g.dpr, bw = BANNER.W * bsz, bh = BANNER.H * bsz;
   const bx = left ? zone + 6 * kk : W - zone - 6 * kk - bw, by = ytop(bx + bw / 2) - bsz;
   // the words at the far end
   const nm = Math.max(15, L.nm * kk), tt = Math.max(9, L.tt * kk), tx = left ? W - 10 * kk : 10 * kk, title = cos.title;
@@ -8504,7 +8529,7 @@ function lrBand(k, g, box, fxBox, prev) {
   const el = document.createElement('div');
   el.className = 'lr-band'; el.style.setProperty('--from', (left ? -1 : 1) * (W + 40) + 'px');
   el.innerHTML = `<div class="lr-clip" style="clip-path:${poly};-webkit-clip-path:${poly}"><div class="abs" style="inset:0;background:${bdMix(PDARK[col], '#0f181e', .45)}"></div>` +
-    `<canvas class="lr-bn" width="${23 * bn}" height="${46 * bn}" style="left:${bx}px;top:${by}px;width:${bw}px;height:${bh}px"></canvas>` +
+    `<canvas class="lr-bn" width="${BANNER.W * bn}" height="${BANNER.H * bn}" style="left:${bx}px;top:${by}px;width:${bw}px;height:${bh}px"></canvas>` +
     `<canvas class="lr-gn" width="${C.W}" height="${C.H}" style="left:${P.fx - ax * P.g}px;top:${fy - ay * P.g}px;width:${C.W * P.g}px;height:${C.H * P.g}px${left ? '' : ';transform:scaleX(-1)'}"></canvas>` +
     shade + tag + `<div class="lr-dots"></div><div class="lr-ck"><img src="${SP.check}" alt=""></div><div class="lr-st">${streaks}</div><div class="lr-fl"></div></div>` +
     (mine ? [y0, y1].map(yy => `<div class="lr-seam" style="clip-path:polygon(0 ${yy + g.dy / 2 - 2}px,${W}px ${yy - g.dy / 2 - 2}px,${W}px ${yy - g.dy / 2 + 2}px,0 ${yy + g.dy / 2 + 2}px)"></div>`).join('') : '');
