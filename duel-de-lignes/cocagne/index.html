@@ -1292,6 +1292,30 @@ body.cd-on .fou-say{visibility:hidden}
 .rowwrap .more.l{left:0}
 .rowwrap.mr .more.r,.rowwrap.ml .more.l{display:flex}
 .rowwrap .more svg{display:block;width:calc(var(--u)*4);height:calc(var(--u)*7)}
+
+/* ---------------------------------------------------------------- Lot 2 (version 55): the heart of the stolen lives, the spell's card */
+.vh{position:fixed;left:0;top:0;z-index:12;pointer-events:none;display:flex;align-items:center;gap:2px;will-change:transform}
+.vh svg{display:block;width:calc(var(--u)*11);height:calc(var(--u)*9.4)}
+.vh b{font:400 calc(var(--u)*11)/1 var(--ft);color:#f3d36a;text-shadow:0 2px 0 rgba(8,14,18,.55)}
+.vh-plus{position:fixed;z-index:12;pointer-events:none;font:400 calc(var(--u)*12)/1 var(--ft);color:#f3d36a;text-shadow:0 2px 0 rgba(8,14,18,.55);animation:vhp .9s steps(9) forwards}
+@keyframes vhp{from{transform:translateY(0);opacity:1}to{transform:translateY(-14px);opacity:0}}
+.vh-crown{position:fixed;z-index:12;pointer-events:none;background:rgba(27,43,52,.96);box-shadow:0 3px 0 rgba(8,14,18,.45);color:var(--ink);font:700 calc(var(--u)*6.5)/1.15 var(--f);padding:calc(var(--u)*2) calc(var(--u)*4);white-space:nowrap}
+.vh-crown b{color:#f3d36a}
+#meChip.vgain{box-shadow:0 0 0 calc(var(--u)*2) #f3d36a}
+@media (prefers-reduced-motion: reduce){.vh-plus{animation:none;opacity:0}}
+.spc{position:fixed;left:calc(var(--u)*4);right:calc(var(--u)*4);z-index:5;display:flex;flex-direction:column;gap:calc(var(--u)*4);padding:calc(var(--u)*6);background:var(--panel);box-shadow:inset 0 0 0 var(--u) var(--line),inset 0 calc(var(--u)*2) 0 var(--gold),0 3px 0 rgba(8,14,18,.45);box-sizing:border-box}
+.spc[hidden]{display:none}
+.spc .sp-t{font:400 calc(var(--u)*15)/1 var(--ft);color:var(--gold)}
+.spc .sp-d{font:600 var(--t)/1.3 var(--f);color:var(--ink)}
+.spc .sp-r{display:flex;gap:calc(var(--u)*4)}
+.spc .sp-b{flex:1;display:flex;align-items:center;gap:calc(var(--u)*4);min-width:0;min-height:calc(var(--u)*24);padding:calc(var(--u)*3) calc(var(--u)*5);border:0;border-radius:0;background:var(--panel2);color:var(--ink);font:700 var(--t)/1.15 var(--f);text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.spc .sp-b i{width:calc(var(--u)*6);height:calc(var(--u)*6);flex:none}
+.spc .sp-b small{display:block;margin-top:var(--u);font:600 calc(var(--t)*.78)/1.2 var(--f);color:var(--muted)}
+.spc .sp-b:first-child{box-shadow:inset 0 0 0 calc(var(--u)*1) var(--gold)}
+.spc .sp-cr{display:inline-block;width:calc(var(--u)*5);height:calc(var(--u)*3);margin-left:calc(var(--u)*2);vertical-align:middle}
+.spc .sp-cr svg{display:block;width:100%;height:100%}
+.spc .sp-go{width:100%;min-height:calc(var(--u)*22)}
+.fou-say .fs-bub.danger{box-shadow:inset 3px 0 0 #e5806d,0 3px 0 rgba(8,14,18,.45)}
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
 </head>
@@ -5436,7 +5460,7 @@ function drawLaneArt(b) {
   }
   if (mine && G.aim && G.aim.key === 'm' && G.hover) { const [hx, hy] = acell(G.hover.c, G.hover.r); P.dots(hx + 12, hy + 12, 1.4 * CS, K.fire1, 3, 4, 1); }
   if (mine && G.guide) guideDraw(x);
-  if (mine && G.bad) { const [bx, by] = acell(G.bad.c, G.bad.r); x.globalAlpha = 0.5 * G.bad.t / 0.4; P.rect(bx + 1, by + 1, 22, 22, K.hpR); x.globalAlpha = 1; }
+  if (mine && G.bad) { const [bx, by] = acell(G.bad.c, G.bad.r); dangerCell(x, bx, by, Math.min(1, G.bad.t / 0.4)); }
   if (sel) {
     const [sx, sy] = acell(sel.c, sel.r);
     for (const [a, c, dx, dy] of [[sx, sy, 1, 1], [sx + 23, sy, -1, 1], [sx, sy + 23, 1, -1], [sx + 23, sy + 23, -1, -1]]) { P.hl(dx > 0 ? a : a - 3, c, 4, K.gh); P.vl(a, dy > 0 ? c : c - 3, 4, K.gh); }
@@ -10061,7 +10085,7 @@ function jtGroundOver(x, b, A) {
   const z = b.jt.zone;
   if (z && b.alive) {
     const ph = fmod(G.t * 10, 6);
-    for (const i of z.cells) { const [cx, cy] = acell(i % COLS, i / COLS | 0); x.globalAlpha = 0.14; P.rect(cx + 1, cy + 1, 22, 22, K.ua); x.globalAlpha = 1; dashRect(cx + 1, cy + 1, 22, 22, K.ua, ph); }
+    for (const i of z.cells) { const [cx, cy] = acell(i % COLS, i / COLS | 0); if (z.k === 'ruines') { x.globalAlpha = 0.14; P.rect(cx + 1, cy + 1, 22, 22, K.ua); x.globalAlpha = 1; dashRect(cx + 1, cy + 1, 22, 22, K.ua, ph); } else dangerCell(x, cx, cy, 1); }
   }
   // the emblem's aura shows on the ground
   const em = b.jt.em;
@@ -15759,7 +15783,7 @@ function lot1Tick() {
   const me = G.b[G.me], live = !!(G.running && !G.ended && !G.spec && me && me.alive);
   const low = live && me.lives > 0 && me.lives <= 5, chip = $('meChip');
   if (chip && chip.classList.contains('low') !== low) chip.classList.toggle('low', low);
-  if (low && !LOT1.low) { toast(me.lives > 1 ? `Plus que ${me.lives} vies !` : 'Plus qu’une vie !', 'bad'); buzz('low'); }
+  if (low && !LOT1.low) { if (!l2LowCry(me.lives)) toast(me.lives > 1 ? `Plus que ${me.lives} vies !` : 'Plus qu’une vie !', 'bad'); buzz('low'); }   // v55: the Fou says it first
   LOT1.low = low;
   if (G.quick && live && !LOT1.lastMin && QUICK_SECS - G.t <= 60) {
     LOT1.lastMin = true;
@@ -15838,6 +15862,259 @@ function lot1Rows() {
   if (w.classList.contains('ml') !== l) w.classList.toggle('ml', l);
 }
 { const base = renderItems; renderItems = function () { const r = base.apply(this, arguments); lot1Rows(); return r; }; }
+
+/* =============== v55 · lot 2 of the blind test, as Patrick chose it on the board (23/10, 12 h 49) ===============
+   « Les vies volées » A: a heart flies from the robbed House's place to yours, which lights up with « +N » (and « +6 or · la couronne »
+   when the robbed House wears the crown). « Le fou crie » B, in his bubble at the bottom right: a big send that comes at you (more than
+   10 creatures from one rival within 12 s and twice his usual pace, never 2 or 3) or a boss; the next map event on your lane; « plus que 5 vies »; the
+   Entracte a wave ahead; his bubble's edge is gold for what is coming, pastel red for a danger. « Une couleur, un sens »: the cells of
+   the next map event and a refused pose in hatched pastel red (gold stays for « pose ici », and for the ruins, a gift).
+   « Le sort dit quoi, et sur qui » A: a spell's card above the dock, its name and what it does, then its targets
+   (ta cible, or the leader for +10 or), without the word « Sort ». « Le serpentin, au guide »: step 8 lays a line of walls with a gap at
+   its end, then turns one into an Archer; the masterpiece's explanation becomes a tip the day a tower reaches level 4.
+   « Qui t'envoie quoi » (the door's legend) was dropped: the Fou's cry answers it. */
+var LOT2 = { stolen: -1, pend: 0, pendSrc: -1, pendCrown: 0, launchT: 0, zoneKey: '', waveSeen: -1, card: null };
+
+/* ---------------------------------------------------------------- the danger, in hatched pastel red (build_home.py points the map
+   event's cells and the refused pose here; a = strength, 0..1) */
+function dangerCell(x, cx, cy, a = 1) {
+  if (a <= 0) return;
+  x.globalAlpha = 0.22 * a; P.rect(cx + 1, cy + 1, 22, 22, '#e5806d');
+  x.globalAlpha = 0.9 * a; const ph = Math.floor(G.t * 4) % 6;
+  for (let v = 0; v < 22; v++) for (let u = 0; u < 22; u++) if ((u + v + ph) % 6 === 0) P.px(cx + 1 + u, cy + 1 + v, '#e5806d');
+  x.globalAlpha = 1;
+}
+
+/* ---------------------------------------------------------------- the lives you steal: a heart, from their place to yours */
+const L2_HEART = (() => {
+  const rows = ['.##.##.', '#h#####', '#######', '.#####.', '..###..', '...#...'], col = { '#': '#e5806d', h: '#f6c9bd' }; let r = '';
+  rows.forEach((row, y) => [...row].forEach((ch, x) => { if (col[ch]) r += `<rect x="${x}" y="${y}" width="1" height="1" fill="${col[ch]}"/>`; }));
+  return `<svg viewBox="0 0 7 6" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`;
+})();
+const l2Reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+function l2ChipOf(k) { return document.querySelector(`#rivals .who[data-k="${k}"]`); }
+// every frame: the count of lives I stole goes up (the host's leak, or the snapshot of a guest): the hearts start, a few at a time
+function l2StolenTick() {
+  if (!G || !G.running || G.spec) { LOT2.stolen = -1; return; }
+  const me = G.b[G.me]; if (!me) return;
+  const s = me.st.stolen | 0;
+  if (LOT2.stolen < 0 || s < LOT2.stolen) { LOT2.stolen = s; return; }
+  if (s > LOT2.stolen) {
+    const n = s - LOT2.stolen; LOT2.stolen = s;
+    const src = nextAlive(G.me) >= 0 ? nextAlive(G.me) : -1;
+    if (LOT2.pend && LOT2.pendSrc !== src) l2HeartGo();
+    LOT2.pend += n; LOT2.pendSrc = src; if (src === G.crown) LOT2.pendCrown += n;
+  }
+  if (LOT2.pend && performance.now() - LOT2.launchT > 450) l2HeartGo();
+}
+function l2HeartGo() {
+  const n = LOT2.pend, src = LOT2.pendSrc, crown = LOT2.pendCrown; LOT2.pend = 0; LOT2.pendCrown = 0; LOT2.launchT = performance.now();
+  if (!n) return;
+  const meChip = $('meChip'), from = l2ChipOf(src); if (!meChip) return;
+  const r2 = meChip.getBoundingClientRect(), ex = r2.left + Math.min(18, r2.width / 3), ey = r2.top + r2.height / 2;
+  const land = () => {
+    meChip.classList.remove('vgain'); void meChip.offsetWidth; meChip.classList.add('vgain');
+    clearTimeout(LOT2.glowT); LOT2.glowT = setTimeout(() => meChip.classList.remove('vgain'), 700);
+    const p = document.createElement('div'); p.className = 'vh-plus'; p.textContent = '+' + n;
+    p.style.left = Math.round(r2.right + 4) + 'px'; p.style.top = Math.round(r2.top + r2.height / 2 - 10) + 'px';
+    document.body.appendChild(p); setTimeout(() => p.remove(), 950);
+  };
+  if (crown && from) {
+    const r0 = from.getBoundingClientRect(), c = document.createElement('div'); c.className = 'vh-crown';
+    c.innerHTML = `<b>+${6 * crown} or</b> · la couronne`;
+    c.style.left = Math.round(Math.min(innerWidth - 150, r0.left + 6)) + 'px'; c.style.top = Math.round(r0.bottom + 4) + 'px';
+    document.body.appendChild(c); setTimeout(() => c.remove(), 1500);
+  }
+  if (!from || l2Reduced()) { land(); return; }
+  const r0 = from.getBoundingClientRect(), sx = r0.left + r0.width / 2, sy = r0.top + r0.height / 2;
+  const hud = $('hud').getBoundingClientRect(), mx = (sx + ex) / 2, my = Math.min(sy, ey) - Math.max(10, (Math.abs(sx - ex)) * 0.12);
+  const el = document.createElement('div'); el.className = 'vh'; el.innerHTML = `${L2_HEART}<b>+${n}</b>`; document.body.appendChild(el);
+  const t0 = performance.now(), dur = 850;
+  const stepF = now => {
+    const f = Math.min(1, (now - t0) / dur), e = f < 0.5 ? 2 * f * f : 1 - Math.pow(-2 * f + 2, 2) / 2, q = Math.round(e * 14) / 14;
+    const x = (1 - q) * (1 - q) * sx + 2 * (1 - q) * q * mx + q * q * ex, y = (1 - q) * (1 - q) * sy + 2 * (1 - q) * q * Math.max(hud.top + 4, my) + q * q * ey;
+    el.style.transform = `translate(${Math.round(x - 10)}px,${Math.round(y - 9)}px)`;
+    if (f < 1) requestAnimationFrame(stepF); else { el.remove(); land(); }
+  };
+  requestAnimationFrame(stepF);
+}
+
+/* ---------------------------------------------------------------- the Fou cries, in his bubble */
+function l2Cry(html, o = {}) {
+  if (!G || G.spec || G.quiet || !G.b[G.me] || !G.b[G.me].alive) return false;
+  return fouRare(html, Object.assign({ force: true }, o));
+}
+// one colour, one meaning, in his bubble too: its edge is gold for what is coming, pastel red for a danger (a map event, a few lives left)
+{ const base = fouSay; fouSay = function (html, o = {}) {
+    const r = base.apply(this, arguments);
+    if (r && o.danger) { const it = FOU.cur && FOU.cur.html === html ? FOU.cur : FOU.q.find(q => q.html === html); if (it) { it.danger = true; if (it === FOU.cur && $('fouSayB')) $('fouSayB').classList.add('danger'); } }
+    return r;
+}; }
+{ const base = fouNext; fouNext = function () { const r = base.apply(this, arguments), b = $('fouSayB'); if (b) b.classList.toggle('danger', !!(FOU.cur && FOU.cur.danger)); return r; }; }
+// a big send: the host counts what a rival sent to a House in the last 12 s (the gate's queue empties every 0.4 s, so it cannot be counted
+// there). It is big when it is more than 10 creatures AND twice that rival's usual pace over the two minutes before: late in a long game a
+// bot sends 15 to 20 every 12 s as a matter of course, and the Fou would shout every 20 s (a simulated 12-minute game: 21 cries; this way, 4).
+// Then 45 s of quiet for that rival. The guest it is aimed at hears it through an event (an older page ignores it).
+const L2_BIG = 10, L2_WIN = 12, L2_BASE = 120, L2_SURGE = 2, L2_QUIET = 45;
+{ const base = send; send = function (k, kind) {
+    const tk = nextAlive(k), ok = base.apply(this, arguments);
+    if (ok && auth() && tk >= 0 && S[kind]) {
+      const tb = G.b[tk]; tb.bigLog = tb.bigLog || {}; tb.bigAt = tb.bigAt || {};
+      const log = tb.bigLog[k] = (tb.bigLog[k] || []).filter(e => G.t - e[0] < L2_WIN + L2_BASE);
+      log.push([G.t, S[kind].count || 1]);
+      let n = 0, before = 0; for (const [t, c] of log) { if (G.t - t < L2_WIN) n += c; else before += c; }
+      const usual = before * L2_WIN / L2_BASE;
+      if (n > L2_BIG && n >= L2_SURGE * usual && G.t - (tb.bigAt[k] ?? -999) > L2_QUIET) {
+        tb.bigAt[k] = G.t;
+        if (tk === G.me) l2BigSend(k, n);
+        else pushEv(tb, 'B0' + k + b36(Math.min(1295, n), 2));
+      }
+    }
+    return ok;
+}; }
+function l2BigSend(k, n) { const b = G.b[k]; if (b) l2Cry(`Oyez ! <b>${esc(b.name)}</b> t’envoie ${n} créatures !`); }
+{ const base = processEvents; processEvents = function (b, str) {
+    // the big sends aimed at this guest, before the board's own events are read (and marked as seen) by the game
+    if (b && b.k === G.me && str && b.evInit && G.running) {
+      const seen = b.evSeen || new Set();
+      for (const part of str.split(';')) {
+        if (part.length < 3) continue;
+        const id = parseInt(part.substr(0, 2), 36), s = part.slice(2);
+        if (s[0] === 'B' && !seen.has(id)) l2BigSend(parseInt(s[2], 10), parseInt(s.substr(3, 2), 36));
+      }
+    }
+    return base.apply(this, arguments);
+}; }
+// a boss on your lane: the Fou says it (the note at the top when he cannot)
+{ const base = bossArrive; bossArrive = function (b, kind) {
+    if (b && G && b.k === G.me && BOSS_INFO[kind] && l2Cry(`Oyez ! <b>${esc(BOSS_INFO[kind].n)}</b> arrive chez toi !`)) return;
+    return base.apply(this, arguments);
+}; }
+// 5 lives or fewer (js_lot1.js asks here first)
+function l2LowCry(n) { return l2Cry(n > 1 ? `Plus que <b>${n} vies</b> ! Tiens bon.` : `Plus qu’<b>une vie</b> ! Tiens bon.`, { danger: true }); }
+// the next map event on your lane, a wave ahead; the Entracte, a wave ahead
+function l2EventTick() {
+  if (!G || !G.running || G.ended || G.spec || !G.jt) return;
+  const me = G.b[G.me]; if (!me || !me.alive || !me.jt) return;
+  const z = me.jt.zone, key = z ? z.k + ':' + z.w : '';
+  if (key && key !== LOT2.zoneKey) {
+    LOT2.zoneKey = key;
+    const ev = EV[z.k];
+    if (ev && z.cells && z.cells.length) l2Cry(z.k === 'ruines' ? `<b>${esc(ev.n)}</b> à la prochaine vague : une tour sur la case dorée tirera plus loin !` : `<b>${esc(ev.n)}</b> à la prochaine vague : gare aux cases rouges !`, { danger: z.k !== 'ruines' });
+  } else if (!key) LOT2.zoneKey = '';
+  if (G.wave !== LOT2.waveSeen) {
+    LOT2.waveSeen = G.wave;
+    try { const e = progAt(G.wave + 1); if (e && e.k === 'entracte' && !G.jt.entrDone) l2Cry('À la prochaine vague, <b>l’Entracte</b> : le palet !', { wink: true }); } catch (err) {}
+  }
+}
+{ const base = updateUI; updateUI = function () { const r = base.apply(this, arguments); l2StolenTick(); l2EventTick(); return r; }; }
+{ const base = newGame; newGame = function () { LOT2.stolen = -1; LOT2.pend = 0; LOT2.pendCrown = 0; LOT2.zoneKey = ''; LOT2.waveSeen = -1; l2CardClose(); return base.apply(this, arguments); }; }
+
+/* ---------------------------------------------------------------- the spell's card: what it does, then on whom */
+const L2_SPELL = { j: 'Ses tours tirent 2 fois moins vite pendant 8 s.', t: 'Tu lui voles 20 % de son or, de 5 à 50.', g: 'Fige les créatures de ton couloir pendant 3 s.',
+                   m: 'Frappe ton couloir, là où tu vises.', f: 'Cache le couloir de ta victime pendant 15 s.' };
+const L2_CROWN = '<svg viewBox="0 0 5 3" shape-rendering="crispEdges" aria-hidden="true"><path d="M0 0h1v1h-1zM2 0h1v1h-1zM4 0h1v1h-1zM0 1h5v2h-5z" fill="#e8c45a"/></svg>';
+function l2CardEl() {
+  let el = $('spellCard'); if (el) return el;
+  el = document.createElement('div'); el.className = 'spc'; el.id = 'spellCard'; el.hidden = true; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Sort');
+  document.body.appendChild(el);
+  el.addEventListener('click', e => {
+    const c = LOT2.card; if (!c || !G) return;
+    const t = e.target.closest('[data-tg]'), go = e.target.closest('[data-go]');
+    if (t) { const k = +t.dataset.tg; l2CardClose(); castOn(c.slot, k); return; }
+    if (go) {
+      const slot = c.slot, key = G.b[G.me].cards[slot]; l2CardClose();
+      if (key === 'm') { setAim({ slot, key }); toast('Touche ton couloir pour viser le météore'); }
+      else castOn(slot, G.me);
+    }
+  });
+  return el;
+}
+function l2CardOpen(slot) {
+  const me = G.b[G.me], key = me.cards[slot], C = CARDS[key]; if (!C) return;
+  const el = l2CardEl(); LOT2.card = { slot, key };
+  let act = '';
+  if (C.self) act = `<button class="go sp-go" type="button" data-go="1">${key === 'm' ? 'Viser mon couloir' : 'Lancer'}</button>`;
+  else {
+    const nx = nextAlive(G.me), cr = G.crown, bt = [];
+    const tg = (k, cap) => `<button class="sp-b" type="button" data-tg="${k}"><i style="background:${pc(k)}"></i><span>${esc(G.b[k].name)}${k === cr ? `<span class="sp-cr" title="la couronne">${L2_CROWN}</span>` : ''}<small>${cap}</small></span></button>`;
+    if (nx >= 0) bt.push(tg(nx, nx === cr ? 'ta cible · le leader, +10 or' : 'ta cible'));
+    if (cr >= 0 && cr !== G.me && cr !== nx && G.b[cr] && G.b[cr].alive) bt.push(tg(cr, 'le leader · +10 or'));
+    act = `<div class="sp-r">${bt.join('')}</div>`;
+  }
+  el.innerHTML = `<span class="sp-t">${esc(C.n)}</span><span class="sp-d">${esc(L2_SPELL[key] || C.d)}</span>${act}`;
+  el.hidden = false; l2CardPlace();
+  document.querySelectorAll('#items [data-card]').forEach(x => x.setAttribute('aria-pressed', +x.dataset.card === slot ? 'true' : 'false'));
+}
+function l2CardClose() {
+  LOT2.card = null; const el = $('spellCard'); if (el && !el.hidden) el.hidden = true;
+  document.querySelectorAll('#items [data-card][aria-pressed="true"]').forEach(x => x.setAttribute('aria-pressed', 'false'));
+}
+function l2CardPlace() {
+  const el = $('spellCard'), d = $('dock'); if (!el || el.hidden || !d) return;
+  el.style.bottom = Math.round(innerHeight - d.getBoundingClientRect().top + 8) + 'px';
+}
+{ const base = useCard; useCard = function (slot) {
+    if (!G) return;
+    const me = G.b[G.me], key = me.cards[slot];
+    if (!key || (G.aim && G.aim.slot === slot)) return base.apply(this, arguments);
+    if (LOT2.card && LOT2.card.slot === slot) { l2CardClose(); sfx('click'); return; }
+    if (G.aim) setAim(null);
+    sfx('click'); l2CardOpen(slot);
+}; }
+// the card goes when the hand changes under it, when another tab opens, when the game stops
+{ const base = renderItems; renderItems = function () {
+    const r = base.apply(this, arguments), c = LOT2.card;
+    if (c && (!G || G.mode !== 'cards' || G.b[G.me].cards[c.slot] !== c.key)) l2CardClose();
+    else if (c) document.querySelectorAll('#items [data-card]').forEach(x => x.setAttribute('aria-pressed', +x.dataset.card === c.slot ? 'true' : 'false'));
+    return r;
+}; }
+{ const base = setMode; setMode = function () { l2CardClose(); return base.apply(this, arguments); }; }
+{ const base = onTap; onTap = function () { if (LOT2.card) { l2CardClose(); return; } return base.apply(this, arguments); }; }
+{ const base = layout; layout = function () { const r = base.apply(this, arguments); l2CardPlace(); return r; }; }
+{ const base = showOv; showOv = function (id, on) { if (on && id !== 'startOv') l2CardClose(); return base.apply(this, arguments); }; }
+
+/* ---------------------------------------------------------------- the serpentine in the guide (step 8), the masterpiece as a tip */
+// the line: a row far from the statue, free from the gate to the eighth column; the gap is the ninth
+function l2LineRow() {
+  const GD = G.guide; if (GD.lineR !== undefined) return GD.lineR;
+  const me = G.b[G.me], em = me.jt && me.jt.em;
+  const free = (c, r) => { const i = idx(c, r); return !OBST[i] && !(me.ob && me.ob[i] && me.ob[i] !== OB_RUIN) && !spawnsOf().includes(i) && i !== EXIT && (!me.grid[i] || me.grid[i].type === 'wall'); };
+  let best = -1;
+  for (const r of [8, 9, 5, 10, 4, 7, 6]) {
+    if (em && Math.abs(em.r - r) < 2) continue;
+    let ok = true; for (let c = 0; c < 8; c++) if (!free(c, r)) { ok = false; break; }
+    if (ok && free(8, r) && !me.grid[idx(8, r)]) { best = r; break; }
+  }
+  GD.lineR = best;
+  return best;
+}
+const l2LineCells = () => { const r = l2LineRow(); return r < 0 ? [] : [0, 1, 2, 3, 4, 5, 6, 7].map(c => [c, r]); };
+const l2LineDone = me => { const L = l2LineCells(); return L.length > 0 && L.every(([c, r]) => !!me.grid[idx(c, r)]); };
+const l2LineTower = me => l2LineCells().some(([c, r]) => { const t = me.grid[idx(c, r)]; return t && t.type !== 'wall'; });
+{ const base = guideCells; guideCells = function (kind) {
+    if (kind === 'line') { const me = G.b[G.me]; return l2LineCells().filter(([c, r]) => !me.grid[idx(c, r)]); }
+    if (kind === 'linewall') { const me = G.b[G.me]; return l2LineCells().filter(([c, r]) => { const t = me.grid[idx(c, r)]; return t && t.type === 'wall'; }).slice(0, 8); }
+    return base.apply(this, arguments);
+}; }
+{
+  const i = GUIDE_STEPS.findIndex(st => /chef-d’œuvre/.test(st.say));
+  const line = { say: 'Plus leur chemin est long, plus tes tours tirent : pose une ligne de murs sur les cases dorées, avec un trou au bout.', tool: 'wall', gold: 40, cells: 'line',
+    hl: () => (G.tool === 'wall' ? '' : '#items [data-tool="wall"]'), done: me => l2LineDone(me) || l2LineRow() < 0 };
+  const tower = { say: 'Le chemin passe par le trou : il est plus long. Touche un mur de ta ligne, puis Archer : il devient une tour, pour 8 or.', gold: 8, cells: 'linewall',
+    hl: () => (document.querySelector('#pop:not([hidden]) [data-act="v"][data-type="arrow"]') ? '#pop [data-act="v"][data-type="arrow"]' : ''), done: me => l2LineTower(me) || l2LineRow() < 0 };
+  if (i >= 0) GUIDE_STEPS.splice(i, 1, line, tower);
+}
+// the masterpiece, once a tower of yours reaches level 4 (once on this device)
+{ const base = upgrade; upgrade = function (k, t) {
+    const was = t && t.lvl, r = base.apply(this, arguments);
+    if (!r && G && !G.quiet && k === G.me && t && t.lvl === 4 && was === 3 && !isChef(t.type)) {
+      let seen = false; try { seen = localStorage.getItem('ddl-tip-chef') === '1'; localStorage.setItem('ddl-tip-chef', '1'); } catch (e) {}
+      if (!seen) { const html = 'Niveau 4 ! Quand deux familles (l’Arc, les Arcanes, la Poudre) ont chacune une tour au sommet, <b>un chef-d’œuvre</b> s’ouvre dans Construire.';
+        if (!fouRare(html, { force: true, dur: 6000 })) toast('Niveau 4 : deux familles au sommet ouvrent un chef-d’œuvre dans Construire', 'gold'); }
+    }
+    return r;
+}; }
 
 useTerrain(TERKEY);
 demo();
