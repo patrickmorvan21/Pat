@@ -1282,6 +1282,27 @@ body.cd-on .fou-say{visibility:hidden}
 /* the profile's motif chips keep the banner's proportions, 2 CSS px a pixel: 54 x 92 (46 x 92 was version 2's 23 x 46) */
 .pf-list[data-tab=motif] .pf-c .pic{width:54px;height:92px}
 .pf-list[data-tab=motif] .pf-c canvas{width:54px;height:92px}
+
+/* ---------------------------------------------------------------- Lot 1 (version 53): what the blind test could not find (js_lot1.js) */
+/* the launch screen: the quick game's rule, between the bands and the pips over « Prêt » */
+.lr .lr-rule{position:absolute;left:20px;right:20px;bottom:calc(114px + env(safe-area-inset-bottom,0px));text-align:center;font:700 12px var(--f);letter-spacing:.1em;white-space:nowrap;text-transform:uppercase;color:#f3e2a6;text-shadow:0 2px 0 rgba(8,14,18,.55);z-index:2;pointer-events:none}
+.lr.flash .lr-rule{visibility:hidden}
+/* 5 lives or fewer: the player's chip blinks as long as it lasts */
+#meChip.low{outline:calc(var(--u)*2) solid var(--danger);outline-offset:calc(var(--u)*2);animation:lot1Low 1s steps(1) infinite}
+@keyframes lot1Low{50%{outline-color:transparent}}
+@media (prefers-reduced-motion:reduce){#meChip.low{animation:none}}
+/* the end: its buttons wake up one second after the card shows */
+#endOv #endMain,#endOv #endAlt,#endOv #endRe{transition:opacity .24s steps(3)}
+#endOv.lock #endMain,#endOv.lock #endAlt,#endOv.lock #endRe{pointer-events:none;opacity:.4}
+/* « Quitter » in two touches */
+#quitBtn.arm{background:var(--danger);color:#fff8ef}
+/* a row of cards that goes on: a small tab with a chevron at its edge */
+.rowwrap{position:relative}
+.rowwrap .more{position:absolute;top:0;bottom:0;width:calc(var(--u)*9);display:none;align-items:center;justify-content:center;pointer-events:none;background:var(--panel)}
+.rowwrap .more.r{right:0}
+.rowwrap .more.l{left:0}
+.rowwrap.mr .more.r,.rowwrap.ml .more.l{display:flex}
+.rowwrap .more svg{display:block;width:calc(var(--u)*4);height:calc(var(--u)*7)}
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
 </head>
@@ -1918,7 +1939,7 @@ function newGame(seats, me, diff, opts = {}) {
         wave: 0, nextWave: FIRST_WAVE, incT: 0, mode: 'build', tool: 'arrow', sel: null, pending: 0, kills: 0,
         floats: [], flyers: [], coins: [], shake: 0, flash: 0, flashGold: 0, bad: null, hover: null, D: DIFF[diff] || DIFF.normal, userCam: false, quiet: false };
   seats.forEach((s, k) => G.b.push(newBoard(k, s)));
-  if (opts.quick) { G.quick = true; G.nextWave = 5; for (const b of G.b) b.gold = 70; }
+  if (opts.quick) { G.quick = true; G.nextWave = 15; for (const b of G.b) b.gold = 70; }
   if (opts.guide) G.guide = { step: -1, ok: false, t0: 0, hold: true, botOff: true, cells: null, cellsKind: '' };
   { const used = new Set(); for (const b of G.b) { if (b.col >= 0 && !used.has(b.col)) used.add(b.col); else b.col = -1; } for (const b of G.b) if (b.col < 0) { let c = used.has(b.k) ? 0 : b.k; while (used.has(c)) c++; b.col = c; used.add(c); } }
   jtNewGame(seats, opts);
@@ -3145,7 +3166,7 @@ function onTap(sx, sy) {
   const t = me.grid[idx(c, r)];
   if (t) { if (G.sel && G.sel.c === c && G.sel.r === r) closePop(); else openPop(c, r); sfx('click'); return; }
   if (G.sel) { closePop(); return; }
-  if (G.mode !== 'build') { setMode('build'); toast('Choisis une tour, puis touche une case'); return; }
+  if (G.mode !== 'build') { lot1BoardHint(); return; }
   const why = act(['b', G.tool, c, r]);
   if (why && why !== 'x') { sfx('error'); G.bad = { c, r, t: 0.4 }; toast(why, 'bad'); }
 }
@@ -3167,8 +3188,8 @@ function renderItems() {
   }
   const free = me ? me.free : 0;
   if (G.mode === 'build') {
-    items.innerHTML = jtChefButtons(me) + Object.entries(T).filter(([k]) => !T[k].tech).map(([k, t]) => canUse(me, k) ? `<button class="item" type="button" data-tool="${k}" aria-pressed="${G.tool === k}">${ICON[k]}<span class="nm">${t.n}</span><span class="ct">${free > 0 && k !== 'wall' ? '<span class="free">Offert</span>' : jtCost(me, k)}</span></button>`
-      : `<button class="item locked" type="button" data-lock="${k}">${ICON[k]}<span class="nm">${t.n}</span><span class="lk">${ICON.lock}Atelier</span></button>`).join('');
+    items.innerHTML = Object.entries(T).filter(([k]) => !T[k].tech).map(([k, t]) => canUse(me, k) ? `<button class="item" type="button" data-tool="${k}" aria-pressed="${G.tool === k}">${ICON[k]}<span class="nm">${t.n}</span><span class="ct">${free > 0 && k !== 'wall' ? '<span class="free">Offert</span>' : jtCost(me, k)}</span></button>`
+      : `<button class="item locked" type="button" data-lock="${k}">${ICON[k]}<span class="nm">${t.n}</span><span class="lk">${ICON.lock}Atelier</span></button>`).join('') + jtChefButtons(me);
   } else if (G.mode === 'tech') {
     items.innerHTML = '';
   } else if (G.mode === 'send') {
@@ -6818,7 +6839,7 @@ function openTuto(i = 0) {
 }
 function closeTuto() { showOv('tutoOv', false); }
 function tutoGo(d) { const n = tutoI + d; if (n < 0) return; if (n >= TUTO.length) { sfx('click'); closeTuto(); return; } tutoI = n; sfx('click'); renderTuto(); }
-$('tutoBtn').addEventListener('click', () => { audioInit(); sfx('click'); startGuide(); });
+$('tutoBtn').addEventListener('click', () => { audioInit(); sfx('click'); lot1Help(); });
 $('tutoBtn2').addEventListener('click', () => { sfx('click'); openTuto(0); });
 $('tutoNext').addEventListener('click', () => tutoGo(1));
 $('tutoPrev').addEventListener('click', () => tutoGo(-1));
@@ -7095,7 +7116,7 @@ soundSync();
 // a hidden tab is silent, and wakes up with the page (iPhone Safari keeps the sound going otherwise)
 document.addEventListener('visibilitychange', () => { const a = SFX.ctx; if (!a) return; try { if (document.hidden) a.suspend(); else if (SFX.on) { a.resume(); musCheck(); } } catch (e) {} });
 
-$('quitBtn').addEventListener('click', () => { sfx('back'); quitToMenu(); });
+$('quitBtn').addEventListener('click', () => { if (lot1QuitArm()) return; sfx('back'); quitToMenu(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && G && G.running && !G.ended && NET.mode === 'solo' && !G.paused) openMenu(); });
 document.addEventListener('keydown', e => {
   if (!G || !G.running || e.target.tagName === 'INPUT') return;
@@ -7599,8 +7620,10 @@ function guideDraw(x) {
   const a = 0.5 + 0.35 * Math.sin(G.t * 5.5);
   for (const [c, r] of cells) {
     const [gx, gy] = acell(c, r);
-    x.globalAlpha = 0.18 * a; P.rect(gx + 1, gy + 1, 22, 22, K.ua); x.globalAlpha = a;
-    for (const [px, py, dx, dy] of [[gx + 1, gy + 1, 1, 1], [gx + 22, gy + 1, -1, 1], [gx + 1, gy + 22, 1, -1], [gx + 22, gy + 22, -1, -1]]) { P.hl(dx > 0 ? px : px - 4, py, 5, K.ua); P.vl(px, dy > 0 ? py : py - 4, 5, K.ua); }
+    x.globalAlpha = 0.3 + 0.18 * a; P.rect(gx + 1, gy + 1, 22, 22, K.ua);
+    x.globalAlpha = Math.min(1, 0.6 + 0.4 * a); P.hl(gx + 1, gy + 1, 22, K.ua); P.hl(gx + 1, gy + 22, 22, K.ua); P.vl(gx + 1, gy + 1, 22, K.ua); P.vl(gx + 22, gy + 1, 22, K.ua);
+    x.globalAlpha = 1;
+    for (const [px, py, dx, dy] of [[gx + 1, gy + 1, 1, 1], [gx + 22, gy + 1, -1, 1], [gx + 1, gy + 22, 1, -1], [gx + 22, gy + 22, -1, -1]]) { const hx = dx > 0 ? px : px - 5, vy = dy > 0 ? py : py - 5; P.hl(hx, py, 6, K.ua); P.hl(hx, py + dy, 6, K.ua); P.vl(px, vy, 6, K.ua); P.vl(px + dx, vy, 6, K.ua); }
     x.globalAlpha = 1;
   }
 }
@@ -15771,6 +15794,154 @@ function csRender() {
 // « Comment jouer »: one line on the page of what the waves bring (« Le fou et ses surprises », the joust's pages; « Les vagues » before them)
 { const pg = TUTO.find(q => q.k === 'surprises') || TUTO.find(q => q.k === 'vagues');
   if (pg) { const base = pg.x; pg.x = () => (base ? base() : '') + '<p class="tut-hint">Une vague sans perdre de vie, dès la vague V : une case de pouvoir pour une tour, une fois par partie.</p>'; } }
+
+/* =============== v53 · lot 1 of the blind test (Patrick, 23/10, 11 h 10 : « tu peux commencer à faire les retours ») ===============
+   What the ten testers could not find, now shown: « Comment jouer » behind the home's « ? » (the guided game from its last page); Facile after
+   the guide, until a first win; the quick game by default in solo (its rule on the launch screen, 15 s before the first wave: build_home.py,
+   the last minute announced with who leads); an alert that lasts at 5 lives or fewer; the end's buttons asleep for one second; « Quitter » in
+   two touches; the base towers first in Construire (build_home.py) and a small tab on a row of cards that goes on; a touch on the board from
+   Envoyer or Sorts no longer switches to Construire; a touch that closes the statue's card or the wave's panel builds nothing.
+   An automated browser keeps the old defaults (normal, not quick), as the guided first game already does, unless 'ddl-defaults-test' is set. */
+var LOT1 = { tutoHome: false, low: false, lastMin: false, quitT: 0, quitTimer: 0, hint: false, lockT: 0, wrap: null };
+const lot1Defaults = (() => { try { return !navigator.webdriver || localStorage.getItem('ddl-defaults-test') === '1'; } catch (e) { return false; } })();
+try {
+  if (lot1Defaults) {
+    if (localStorage.getItem('ddl-quick') === null) TBX.quick = true;
+    const d = localStorage.getItem('ddl-diff');
+    if (d === 'easy' || d === 'normal' || d === 'hard') diffKey = d;
+    else if (!localStorage.getItem('ddl-won1')) diffKey = 'easy';
+  }
+} catch (e) {}
+VIB_P.low = [80, 60, 80];
+
+// ---- the difficulty: a choice made at the table is kept; the first solo win outside the guide moves an unchosen Facile to Normal
+$('diffChoice').addEventListener('click', e => {
+  const b = e.target.closest('[data-d]'); if (!b || NET.mode === 'host') return;
+  try { localStorage.setItem('ddl-diff', b.dataset.d); } catch (err) {}
+});
+{ const base = finish; finish = function (winner) {
+    const was = !!(G && G.ended), r = base.apply(this, arguments);
+    if (G && G.ended && !was && NET.mode === 'solo' && !G.spec && winner === G.me && !G.guide && !G.guided) {
+      try {
+        if (!localStorage.getItem('ddl-won1')) {
+          localStorage.setItem('ddl-won1', '1');
+          if (!localStorage.getItem('ddl-diff') && diffKey === 'easy') diffKey = 'normal';
+        }
+      } catch (e) {}
+    }
+    return r;
+}; }
+
+// ---- the home's « ? »: the illustrated pages; on their last page, « Précédent » becomes « Partie guidée » (the dots and a swipe still go back)
+function lot1Help() { LOT1.tutoHome = true; openTuto(0); }
+{ const base = closeTuto; closeTuto = function () { LOT1.tutoHome = false; return base.apply(this, arguments); }; }
+{ const base = renderTuto; renderTuto = function () {
+    const r = base.apply(this, arguments), b = $('tutoPrev'), g = LOT1.tutoHome && tutoI === TUTO.length - 1;
+    if (g) { b.textContent = 'Partie guidée'; b.disabled = false; b.dataset.guide = '1'; }
+    else if (b.dataset.guide) { b.textContent = 'Précédent'; delete b.dataset.guide; }
+    return r;
+}; }
+// the touch on « Partie guidée » is taken before « Précédent » hears it
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('#tutoPrev');
+  if (!b || b.dataset.guide !== '1') return;
+  e.stopImmediatePropagation(); e.preventDefault();
+  sfx('click'); closeTuto(); startGuide();
+}, true);
+
+// ---- a new game: the alerts start again
+{ const base = newGame; newGame = function () {
+    LOT1.low = false; LOT1.lastMin = false; LOT1.hint = false; lot1QuitReset();
+    const c = $('meChip'); if (c) c.classList.remove('low');
+    return base.apply(this, arguments);
+}; }
+
+// ---- every frame: 5 lives or fewer, and the quick game's last minute
+{ const base = updateUI; updateUI = function () { const r = base.apply(this, arguments); lot1Tick(); return r; }; }
+function lot1Tick() {
+  if (!G) return;
+  const me = G.b[G.me], live = !!(G.running && !G.ended && !G.spec && me && me.alive);
+  const low = live && me.lives > 0 && me.lives <= 5, chip = $('meChip');
+  if (chip && chip.classList.contains('low') !== low) chip.classList.toggle('low', low);
+  if (low && !LOT1.low) { toast(me.lives > 1 ? `Plus que ${me.lives} vies !` : 'Plus qu’une vie !', 'bad'); buzz('low'); }
+  LOT1.low = low;
+  if (G.quick && live && !LOT1.lastMin && QUICK_SECS - G.t <= 60) {
+    LOT1.lastMin = true;
+    const alive = G.b.filter(b => b.alive).sort((a, c) => c.lives - a.lives), lead = alive[0], next = alive[1];
+    let txt = 'Dernière minute';
+    if (lead && lead.k === G.me) txt += next && next.lives === me.lives ? ` · égalité à ${me.lives} vies` : ` · tu mènes ${me.lives} à ${next ? next.lives : 0}`;
+    else if (lead) txt += lead.lives === me.lives ? ` · égalité à ${me.lives} vies` : ` · ${lead.name} mène ${lead.lives} à ${me.lives}`;
+    toast(txt, 'gold');
+  }
+}
+
+// ---- the launch screen: the quick game's rule
+{ const base = lrOpen; lrOpen = function (o) {
+    const r = base.apply(this, arguments);
+    let el = $('lrRule');
+    if (!el && LRM.el) { el = document.createElement('div'); el.className = 'lr-rule'; el.id = 'lrRule'; LRM.el.appendChild(el); }
+    if (el) { const q = !!(o && o.mode === 'solo' && TBX.quick); el.textContent = q ? '5:00 · le plus de vies gagne' : ''; el.hidden = !q; }
+    return r;
+}; }
+
+// ---- the end: its buttons wake up one second after the card shows; « Quitter » asks a second touch
+{ const base = showOv; showOv = function (id, on) {
+    const was = !!($(id) && !$(id).hidden), r = base.apply(this, arguments);
+    if (id === 'endOv') {
+      const ov = $('endOv'); clearTimeout(LOT1.lockT);
+      if (on && !was) { ov.classList.add('lock'); LOT1.lockT = setTimeout(() => ov.classList.remove('lock'), 1000); }
+      else if (!on) ov.classList.remove('lock');
+    }
+    if (id === 'menuOv' && !on) lot1QuitReset();
+    return r;
+}; }
+function lot1QuitArm() {
+  const b = $('quitBtn');
+  if (LOT1.quitT && performance.now() - LOT1.quitT < 3000) { lot1QuitReset(); return false; }
+  LOT1.quitT = performance.now(); b.dataset.txt = b.textContent; b.textContent = 'Quitter vraiment ?'; b.classList.add('arm'); sfx('click');
+  clearTimeout(LOT1.quitTimer); LOT1.quitTimer = setTimeout(lot1QuitReset, 3000);
+  return true;
+}
+function lot1QuitReset() {
+  const b = $('quitBtn'); LOT1.quitT = 0; clearTimeout(LOT1.quitTimer);
+  if (b && b.classList.contains('arm')) { b.classList.remove('arm'); if (b.dataset.txt) b.textContent = b.dataset.txt; }
+}
+
+// ---- the board: from Envoyer or Sorts, a touch no longer switches to Construire (the guided game still does); a touch that closes
+// the statue's card or the wave's panel does only that
+function lot1BoardHint() {
+  if (G.guide) { setMode('build'); toast('Choisis une tour, puis touche une case'); return; }
+  if (LOT1.hint) return;
+  LOT1.hint = true; toast('Pour bâtir ici, ouvre Construire');
+}
+{ const base = onTap; onTap = function (sx, sy) {
+    if (G && G.running && !G.ended) {
+      if (G.jtCard) { closeEmCard(); return; }
+      if (AN.open) { AN.open = false; return; }
+    }
+    return base.apply(this, arguments);
+}; }
+
+// ---- a row of cards that goes on: a small tab with a chevron at the edge it goes on from
+{
+  const items = $('items'), wrap = document.createElement('div');
+  wrap.className = 'rowwrap'; items.parentNode.insertBefore(wrap, items); wrap.appendChild(items);
+  const px = rows => rows.map((row, y) => [...row].map((ch, x) => (ch === '#' ? `M${x} ${y}h1v1h-1z` : '')).join('')).join('');
+  const R = ['#...', '##..', '.##.', '..##', '.##.', '##..', '#...'], L = R.map(row => [...row].reverse().join(''));
+  const chev = rows => `<svg viewBox="0 0 4 7" shape-rendering="crispEdges" aria-hidden="true"><path d="${px(rows)}" fill="#f3e2a6"/></svg>`;
+  wrap.insertAdjacentHTML('beforeend', `<i class="more r" aria-hidden="true">${chev(R)}</i><i class="more l" aria-hidden="true">${chev(L)}</i>`);
+  LOT1.wrap = wrap;
+  items.addEventListener('scroll', lot1Rows, { passive: true });
+  window.addEventListener('resize', lot1Rows);
+}
+function lot1Rows() {
+  const w = LOT1.wrap, it = $('items'); if (!w || !it) return;
+  const sc = it.classList.contains('scroll'), max = it.scrollWidth - it.clientWidth;
+  const r = sc && it.scrollLeft < max - 4, l = sc && it.scrollLeft > 4;
+  if (w.classList.contains('mr') !== r) w.classList.toggle('mr', r);
+  if (w.classList.contains('ml') !== l) w.classList.toggle('ml', l);
+}
+{ const base = renderItems; renderItems = function () { const r = base.apply(this, arguments); lot1Rows(); return r; }; }
 
 useTerrain(TERKEY);
 demo();
