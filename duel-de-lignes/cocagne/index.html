@@ -1195,17 +1195,6 @@ body:has(#lrOv:not([hidden])) .toasts{z-index:14;left:12px;right:12px;max-width:
 #pfCol .sw:focus-visible::before{outline:2px solid var(--ink);outline-offset:3px}
 @media (max-height:700px){.pf-col{margin-top:12px}#pfCol .sw{height:40px}#pfCol .sw::before{top:7px}}
 /* version 50: the palet's bet, « Le pari » (board B, with Patrick's payouts): at the bottom of the palet's screen, then its result on the alley */
-.fou-pari{position:absolute;left:calc(var(--u)*8);right:calc(var(--u)*8);bottom:calc(env(safe-area-inset-bottom,0px) + var(--u)*8);z-index:4;display:flex;flex-direction:column;gap:6px;padding:14px 14px 16px;background:rgba(27,43,52,.96);box-shadow:inset 0 3px 0 rgba(255,255,255,.07),0 3px 0 rgba(8,14,18,.45)}
-.fou-pari[hidden]{display:none}
-.fou-pari .fp-k{font:700 11px/1 var(--f);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
-.fou-pari .fp-k b{font:400 14px/1 var(--fb);letter-spacing:.04em;color:var(--ink)}
-.fou-pari .fp-t{font:400 34px/1 var(--ft);color:#f3d36a}
-.fou-pari .fp-t.down{color:#e5806d}
-.fou-pari .fp-r{font:600 14px/1.4 var(--f);color:#b6c2c5}
-.fou-pari .fp-r b{font:400 17px/1 var(--fb);color:var(--ink)}
-.fou-pari .fp-n{font:600 12px/1.3 var(--f);color:#c9b98a}
-.fou-pari .fp-b{width:100%;min-height:44px;margin-top:4px}
-.fou-pari.res{bottom:auto;top:24%;align-items:center;text-align:center}
 /* ---- v50 · fourche « Cadeau » (Patrick, 21/10, 15 h 06 : « cadeau : validé »): the farewell gift. Its sheet comes over the dock, like it
    (the House, then the gift, a gold bar for the 15 s); the receiver's band sits under the places. Flat plates, no outline, no rounded corner. ---- */
 .cd{position:fixed;left:0;right:0;bottom:0;z-index:6;padding:0 calc(var(--u)*4) calc(env(safe-area-inset-bottom,0px) + var(--u)*3)}
@@ -14557,7 +14546,7 @@ function fouClock() {
 }
 
 /* ---------------------------------------------------------------- the palet: "Le fou", and his head on the right end of the panel while he speaks */
-{ const base = palText; palText = function () { base(); fouPalHead(); fouPariUI(); }; }
+{ const base = palText; palText = function () { base(); fouPalHead(); }; }
 function fouPalHead() {
   const E = G.entr, msg = $('jtPalMsg'); if (!msg) return;
   const on = !!(E && (E.phase === 'intro' || E.phase === 'count'));
@@ -14680,7 +14669,7 @@ const fouTrBusy = () => !!(FOU.tr && performance.now() < FOU.tr.until);
 // the palet's screen opens: the trumpets first (the host's introduction waits for them); the old fanfare is not played over them
 { const base = palOpen; palOpen = function () { base(); const el = $('jtEntr'); el.classList.add('fou-pal'); try { fouTrStart(); } catch (e) { fouTrEnd(); } }; }
 { const base = fanfare; fanfare = function () { if (FOU.tr && performance.now() - FOU.tr.t0 < 400) return; base(); }; }
-{ const base = jtEntrStep; jtEntrStep = function (dt) { const E = G.entr; if (E && E.phase === 'intro' && (fouTrBusy() || pariWaiting(E, dt))) { palDraw(); palText(); return; } base(dt); }; }
+{ const base = jtEntrStep; jtEntrStep = function (dt) { const E = G.entr; if (E && E.phase === 'intro' && fouTrBusy()) { palDraw(); palText(); return; } base(dt); }; }
 // sound 2, « beat rétro » (the board's code): a kick, a snare and hats at 140 a minute, a call per trumpet (pulse waves), the final on the bar
 function fouBeat(n) {
   if (!SFX.on || !SFX.ctx) return;
@@ -14742,102 +14731,9 @@ function fouBeatSched(a, out, n, t0) {
   bass(36, end, 0.42, 0.34); kick(end, 0.6); snare(end, 0.18); crash(end, 0.14);
 }
 
-/* ---------------------------------------------------------------- the palet's bet, « Le pari » (version 50, Patrick, 21/10, 15 h 06: « palet : B », with his payouts)
-   Before the first throw, each House still in the joust may bet a quarter of its gold (rounded down) on itself, or pass.
-   1st: three times the stake back · 2nd: the stake back and a quarter more · 3rd: half of it back · 4th and after: nothing back.
-   With two Houses, the 2nd gets nothing back; a House with no palet left in the alley gets nothing back. Gold of the game only.
-   The host decides: a choice is the action ['J', 'pari', 1 | 0]; the stakes ride at the end of the palet's string (an older page ignores them).
-   The bots bet about half the time (more often in hard), their bets are not shown. */
-const PARI_WAIT = 10, PARI_P = { easy: 0.4, normal: 0.5, hard: 0.7 };
-const pariStake = b => Math.floor(Math.max(0, b.gold) / 4);
-// what comes back of the stake N for a place among n Houses
-function pariBack(n, rank, N, out) {
-  if (out) return 0;
-  if (rank === 1) return 3 * N;
-  if (rank === 2) return n === 2 ? 0 : N + Math.round(N / 4);
-  if (rank === 3) return N - Math.round(N / 2);
-  return 0;
-}
-// a House's gain or loss, once the palet is counted (null: no bet)
-function pariNet(E, k) {
-  const N = E && E.pari ? E.pari[k] : 0; if (!(N > 0) || !E.res) return null;
-  const i = E.res.findIndex(r => r.k === k); if (i < 0) return -N;
-  return pariBack(E.res.length, i + 1, N, E.res[i].d === Infinity) - N;
-}
-// the host opens the bets with the palet; the bots choose at once
-{ const base = jtEntrStart; jtEntrStart = function () {
-  base(); const E = G.entr; if (!E) return;
-  E.pari = {}; E.pariW = 0;
-  for (const k of new Set(E.order)) {
-    const b = G.b[k], N = b ? pariStake(b) : 0; if (!b || !b.alive || N < 1) continue;
-    if (b.bot) { if (Math.random() < (PARI_P[diffKey] ?? 0.5)) { b.gold -= N; E.pari[k] = N; } else E.pari[k] = 0; }
-    else E.pari[k] = 'p';
-  }
-}; }
-// a choice, before the first throw only (the stake leaves the purse at once)
-function jtPari(k, yes) {
-  const E = G.entr, b = G.b[k]; if (!E || !E.pari || E.phase !== 'intro' || E.pari[k] !== 'p' || !b || !b.alive) return 'x';
-  const N = pariStake(b);
-  if (yes && N >= 1) { b.gold -= N; E.pari[k] = N; } else E.pari[k] = 0;
-  return '';
-}
-{ const base = jtAction; jtAction = function (k, a) { return a && a[1] === 'pari' ? jtPari(k, a[2] === 1 || a[2] === '1') : base(k, a); }; }
-// the palet waits for the choices, ten seconds at most (then « Passer »)
-function pariWaiting(E, dt) {
-  if (!E.pari || E.client) return false;
-  const wait = Object.keys(E.pari).filter(k => E.pari[k] === 'p'); if (!wait.length) return false;
-  E.pariW = (E.pariW || 0) + dt;
-  if (E.pariW < PARI_WAIT) return true;
-  for (const k of wait) E.pari[k] = 0;
-  return false;
-}
-// the payout, when the palet is counted
-{ const base = palFinish; palFinish = function () {
-  const E = G.entr, was = !!(E && E.phase === 'end'); base();
-  if (!E || was || !E.pari || E.pariDone) return; E.pariDone = true;
-  for (const k of Object.keys(E.pari)) { const N = E.pari[k], net = pariNet(E, +k); if (N > 0 && net !== null && G.b[k]) G.b[k].gold += N + net; }
-}; }
-// the network: the stakes after the palet's string (p: still choosing, -: no bet), read back by the guests
-const pariEnc = E => G.b.map(b => { const v = E.pari[b.k]; return v === 'p' ? 'p' : v > 0 ? b36(Math.min(46655, v), 3) : '-'; }).join('.');
-{ const base = jtSnap; jtSnap = function () { const s = base(), E = G.entr; return E && E.pari && !E.client ? s + ':' + pariEnc(E) : s; }; }
-{ const base = jtApplySnap; jtApplySnap = function (s) {
-  base(s);
-  const E = G.entr; if (!E || !E.client || typeof s !== 'string') return;
-  const parts = (s.split('|')[5] || '').split(':'); if (parts.length < 6) return;
-  const mine = E.pari ? E.pari[G.me] : undefined, P2 = {};
-  parts[5].split('.').forEach((x, k) => { if (x === 'p') P2[k] = 'p'; else if (x && x !== '-') P2[k] = parseInt(x, 36); });
-  if (mine !== undefined && mine !== 'p' && P2[G.me] === 'p') P2[G.me] = mine;     // my own choice shows at once, before the host has it
-  E.pari = P2;
-}; }
-// the panel: the offer at the bottom of the palet's screen, then the result on the alley
-function pariOfferHTML(me, n) {
-  const N = pariStake(me), rows = [['1er', '×3']].concat(n === 2 ? [['2e', 'tout perdu']] : [['2e', '+¼'], ['3e', '−½']].concat(n > 3 ? [['4e', 'tout perdu']] : []));
-  return `<div class="fp-k">Avant le palet · ton or : <b>${Math.max(0, me.gold)}</b></div><div class="fp-t">Le pari</div>`
-    + `<div class="fp-r">${rows.map(([a, v]) => `${a} <b>${v}</b>`).join(' · ')}</div>`
-    + `<div class="fp-n">Or de la partie, jamais d’argent réel.</div>`
-    + `<button class="go fp-b" type="button" data-pari="1">Parier ${N} or</button><button class="sec fp-b" type="button" data-pari="0">Passer</button>`;
-}
-function pariResHTML(E) {
-  const net = pariNet(E, G.me), i = E.res.findIndex(r => r.k === G.me), out = i < 0 || E.res[i].d === Infinity;
-  return `<div class="fp-k">Le palet · ton pari</div><div class="fp-t${net < 0 ? ' down' : ''}">${out ? 'Hors de l’allée' : i === 0 ? '1er' : (i + 1) + 'e'} · ${net < 0 ? '−' : '+'}${Math.abs(net)} or</div>`;
-}
-function fouPariUI() {
-  const E = G.entr, me = G.b[G.me]; let el = $('fouPari');
-  const st = E && E.pari ? E.pari[G.me] : undefined;
-  const offer = !!(E && E.phase === 'intro' && st === 'p' && !G.spec && me && me.alive && !fouTrBusy() && pariStake(me) >= 1);
-  const res = !offer && !!(E && E.phase === 'end' && E.res && st > 0 && pariNet(E, G.me) !== null);
-  const n = E ? new Set(E.order).size : 0;
-  const key = offer ? `o|${pariStake(me)}|${Math.max(0, me.gold)}|${n}` : res ? `r|${pariNet(E, G.me)}` : '';
-  if (!key) { if (el && !el.hidden) el.hidden = true; return; }
-  if (!el) {
-    el = document.createElement('div'); el.id = 'fouPari'; el.className = 'fou-pari'; el.setAttribute('aria-live', 'polite');
-    $('jtEntr').querySelector('.jt-entr-in').appendChild(el);
-    el.addEventListener('click', e => { const t = e.target.closest('[data-pari]'); if (!t) return; sfx('click'); act(['J', 'pari', t.dataset.pari === '1' ? 1 : 0]); fouPariUI(); });
-  }
-  if (el.dataset.k !== key) { el.dataset.k = key; el.innerHTML = offer ? pariOfferHTML(me, n) : pariResHTML(E); el.classList.toggle('res', !offer); }
-  if (el.hidden) el.hidden = false;
-}
-
+/* ---------------------------------------------------------------- the palet's bet, « Le pari » (version 50), taken away in version 54
+   Patrick, 23/10, 11 h 34: « on peut enlever les paris, ça sert à rien ». The palet keeps its own prizes (the relic for the 1st, the bag of gold
+   for the 2nd), without a stake. A guest of this page in an older host's room is offered nothing: the host counts « Passer » after 10 s. */
 
 /* =============== v46 · the profile (fork « Profil », Patrick 20/10, 23 h 33) ===============
    The player's profile, kept on the device (web app): localStorage 'ddl-meta'. The mastery of each general, the titles, the outfits and
