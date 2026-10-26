@@ -16037,9 +16037,9 @@ function l2CardOpen(slot) {
   if (C.self) act = `<button class="go sp-go" type="button" data-go="1">${key === 'm' ? 'Viser mon couloir' : 'Lancer'}</button>`;
   else {
     const nx = nextAlive(G.me), cr = G.crown, bt = [];
-    const tg = (k, cap) => `<button class="sp-b" type="button" data-tg="${k}"><i style="background:${pc(k)}"></i><span>${esc(G.b[k].name)}${k === cr ? `<span class="sp-cr" title="la couronne">${L2_CROWN}</span>` : ''}<small>${cap}</small></span></button>`;
-    if (nx >= 0) bt.push(tg(nx, nx === cr ? 'ta cible · le leader, +10 or' : 'ta cible'));
-    if (cr >= 0 && cr !== G.me && cr !== nx && G.b[cr] && G.b[cr].alive) bt.push(tg(cr, 'le leader · +10 or'));
+    const rivals = G.b.filter(b => b.alive && b.k !== G.me).map(b => b.k).sort((a, c) => (a === nx ? -1 : c === nx ? 1 : a - c));
+    const tg = (k, cap) => `<button class="sp-b" type="button" data-tg="${k}"><i style="background:${pc(k)}"></i><span>${esc(G.b[k].name)}${k === cr ? `<span class="sp-cr" title="la couronne">${L2_CROWN}</span>` : ''}${cap ? `<small>${cap}</small>` : ''}</span></button>`;
+    for (const k of rivals) bt.push(tg(k, k === nx ? (k === cr ? 'ta cible · le leader, +10 or' : 'ta cible') : k === cr ? 'le leader · +10 or' : ''));
     act = `<div class="sp-r">${bt.join('')}</div>`;
   }
   el.innerHTML = `<span class="sp-t">${esc(C.n)}</span><span class="sp-d">${esc(L2_SPELL[key] || C.d)}</span>${act}`;
@@ -16058,6 +16058,10 @@ function l2CardPlace() {
     if (!G) return;
     const me = G.b[G.me], key = me.cards[slot];
     if (!key || (G.aim && G.aim.slot === slot)) return base.apply(this, arguments);
+    // version 56 (Patrick, 26/10): quick. Météore starts the aim at once (then a touch where to strike); one rival left (a duel): the spell
+    // goes to him, no choice. The card stays for Gel, and for a choice between two rivals or more.
+    const rivals = G.b.filter(b => b.alive && b.k !== G.me).length, C = CARDS[key];
+    if (key === 'm' || (C && !C.self && rivals <= 1)) { l2CardClose(); return base.apply(this, arguments); }
     if (LOT2.card && LOT2.card.slot === slot) { l2CardClose(); sfx('click'); return; }
     if (G.aim) setAim(null);
     sfx('click'); l2CardOpen(slot);
