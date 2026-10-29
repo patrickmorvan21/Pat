@@ -1358,6 +1358,13 @@ body:has(#startOv:not([hidden]):not([data-view=home])[data-view=modes]),body:has
 /* the game in its frame, over everything; the bars of the phone in the colour of the game's own bars */
 .gem-host{position:fixed;inset:0;z-index:60;background:#252e22}
 .gem-host iframe{position:absolute;top:env(safe-area-inset-top,0px);bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px);right:env(safe-area-inset-right,0px);width:calc(100% - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));height:calc(100% - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));border:0;display:block;background:#203324}
+/* version 62 · the maps as plans: the four whole maps side by side in the strip, taller (their width follows the column) */
+.gtb .tcar-s{display:flex;justify-content:space-between;gap:8px;margin:0;padding:4px 0 2px;overflow:visible;scroll-snap-type:none}
+.gtb .tcar-s::after{content:none}
+.gtb .tcar-t{width:auto;height:auto;flex:none;padding:0;background:none;scroll-snap-align:none}
+.gtb .tcar-t canvas{display:block;opacity:.68;image-rendering:crisp-edges;image-rendering:pixelated;transition:opacity .15s ease}
+.gtb .tcar-t[aria-checked="true"] canvas{opacity:1}
+@media (prefers-reduced-motion:reduce){.gtb .tcar-t canvas{transition:none}}
 /* ---- version 62 · Farm TD: its table (Gem TD's, with the trèfle behind it), the game in its frame ---- */
 #startOv[data-view=ftable] .hbg{display:none}
 #startOv[data-view=ftable][data-view]{--scn:#0b1317;background:#0b1317}
@@ -1540,7 +1547,7 @@ body:has(#startOv:not([hidden]):not([data-view=home])[data-view=ftable]){backgro
       <input class="tb-in" id="gtNick" maxlength="6" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Ton pseudo" hidden>
     </div>
     <div class="tb-rows">
-      <div class="tcar" id="gtCar"><div class="tcar-h" aria-hidden="true"><span class="cp">Carte</span><b id="gtMapName"></b></div><div class="tcar-s" id="gtStrip" role="radiogroup" aria-label="Carte"><button type="button" class="tcar-t" role="radio" aria-checked="false" tabindex="-1" data-map="sablier" aria-label="Le Sablier"><img alt="" draggable="false" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAACICAMAAAB5qzHWAAAAb1BMVEX/////+Nzw+/L05LDz46jw4rPa0cPnz4bdxoPgxnrPxLXD7cuR1qJitnqvpJbEqFyRqYqMpYWHoIG5mlJ/lnl7lHV7knWbkIWLckB9cGJwh2pwhGpsgGdofWpDk15fcmBuYlUzckpTZFVVUD8oWjvRQyPhAAAEtUlEQVR42u2c63qiMBCGlaXdIpbVioceWEr1/q9xGWdjzsnESltIvh8+BJPJK0wySQjOnnrtdk9B+u78swSdoL8AenuWfJSgv8o9GH6CTr1Hgp4i9LpXXa8vGhaCVksc0LJuB02zHC+02XgotMl+gqaYp0OjBbP9BH0raG4hQQ8HLVuw2U/QPuMuo3LJskzQQ0DrJfM8QYdAq+bNRk3lErQIvd2+vGy3YASn/NdB86aHynrl+XwO2AMEl1FCm4xyfHbkMsrLLZcMOs8BeTYD7DzHri9B+xuiXIloVM7zt9fyIpd7DDwJ+IHQda8FQfVZu7Pe3uATz8i5ug6gH88CV8lzOPv6aqpjJ0g+i/btGif0er0gyjTUVPMAdJap0Dax262eJfj0KKGrioJcVTI0dGL4DQ8munuUpdtqTNCLxX5vw64E7fciNHZmkIeHE8BWobFsgkZoALIZ3V8k/oCyxAANN18OJ12XZSI0lnQ5HRNPTxmaYlTUYsHdgzsEQGbZbMa6vCxj7uGrgV8UOIoT2lQJ6+jUwA3QqnvkeZa53I9fGHTCpiENmKKAlpEZNLgEQvMuD/ChK/Tb545nhha3CsQHrQduFXq5xO6Q4nJu6Ju5x7dDh2Kz0C0Hbh0aUo+PCVqEDgGvKjF069B8EkCDlgNXDNByoHZVwkBFh8AOjqcgjdC+yxELdDiyGxqGUrJ7+F0vHmh5iO8fSLLQLXdyckp0jwTN3UOeUPnMU6C5e7gnXPFA6wMm15Adft7hIDbEsoTjsoQUTHUZdFkitH8SIMNPGTpkqgW3erPpuvlchsamVxTs5wAyvSHKy5wxQfuWybquKFjTKwoAwxRCY6oo4FsGTceGZbdpQpvMmSrhnVJRbDZ5DoDQxRXF6dSdJeeH70+9Nhva8ECErutpQqvGKo+Ki45HxD8ezQDHIyzX2OyYLxZbtJ8mNNdqpR+JC+vweTgwaGiGKNvNhu8qklh9sUA3DcKtVnikQuPA6nAWx7I3K8inL8qrlwRSrD5Y+gJo9QWf8UPLBqEoLLiCdGDxvAhmh76/x7JNo9aj1oo14+Mor3uMEhow+OMgOG7+ay8JszNo+hALm69qUbaOtfKHftOEbnt9fLQtboRoNdW1uGkCzoRBoxu0TtWKYKuFc+vEKKGp24H4zWmatqUPZW1DTVddXveICFrENA+A2NkEff0WN4QWH8G7BCVhW6j4SM2HHTs0CoIEQtNkXxJwQd9sB+RooTEct6043NEHnuKkwbX4kqD90Hxo6doK4XaPBO0yy6ERy75dy98Q7dhX7J8eIbTPLIembdgKe20qHmiK2aGhg98JmAy0avi20KbX4KcPTTPLoSlbmCmP2NQON0Hr0PYwHgIt1hADNLWpyNCuRxJ0aFZH8LtbE4OWsRm07gwmV7FDPDzc3X36LbkIoH2LNeJLIWaI9/fn5wTtgza9WJKgh4cepXv8SGg9uJgDd1iXl6Ap0KZF9dAwnqApE1tbw9OHUAmaAu1eVKdslsfH0wla/uPKsEV1yvIBLEMm6M9Bi0PTaye2sUGrf33hFm51gK0WVGj7X18A9C9NpvxqDeOEDnMPvqh+G/f4LelPLz2/XsMoof8BslUaoxzxo5wAAAAASUVORK5CYII="></button><button type="button" class="tcar-t" role="radio" aria-checked="false" tabindex="-1" data-map="croix" aria-label="La Croix"><img alt="" draggable="false" src="data:image/png;base64,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"></button><button type="button" class="tcar-t" role="radio" aria-checked="false" tabindex="-1" data-map="lacets" aria-label="Les Lacets"><img alt="" draggable="false" src="data:image/png;base64,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"></button><button type="button" class="tcar-t" role="radio" aria-checked="false" tabindex="-1" data-map="etoile" aria-label="L’Étoile"><img alt="" draggable="false" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAACICAMAAAB5qzHWAAAAhFBMVEX/////+Nz/9Nzz46jw+/LD7cv/4Ir03KLd2MX/0nroxHrgxnrBu6OR1qLzmkWvqJG5mlKTpn+Ln3ditnqDmXSGl3R+kWx7kWl3i2pDk152hWZwhGBsgF9vf19qfV1pel1idFbZZS6LckBgclUzckqoQCpVZEpNVEg2OzNUHhwpLCYqFBgvZGgYAAAEsklEQVR42u3cC3eaMBQHcKldAbHTWRXXUuuj2qrf//uNy12aB3mBSpuY/zlTK0h/Ow3cJEZ70yqTKvP5pFFw/z8WKQr4Vz++/lWzGdzWf2/PSXQdYRP2oHboySSgm6BlBzWDIfDq1Yo8smOzaHqUovAfLT+oObrjX715OIhWHVQNFX/lbaPZE+NyaF0xsmfD8WWvcBM9Z/L6OtdkVsvz80wa1RHE4ydCZMeX7esm+honIn0NLQhwzx8/kUbePPh9fEfbFxd9V7YNejj0F83/YeXwa6BZPkEvl6PR8Cu+ocWweNvioivjyyUC1BkOWWirNv2j0GRQ23Rga981lR0fIKMR/0dXoetbXEWfN4XQDL2sUqeMRiq0rOG4jEZ4u8kaU7Gnp952KyfrTkQf0dPpYsGelu3QajZFJ0lA06bSHl1nn4MW967KuEfoei6Ftj0N2TIuPus3Woa3Q/OXPH3RVnWY+NwG2q7sm9D100sVtlN1i2hz2a93l3i0fXg2/HRraFPZFwdbFE0ZuiEWC8UYyrjnaPuizzYPYJuHs3yMHSbP0DCVQO6bdbB0lzx+6IVRkW8FLe5P/hOXQ5sax62i9Z3XgL4G2sQWy7gNWb5PQOvZ9Q6TqWGoGlBA69nmrmlimYBughYnd3lyHAe0eX85eTq1LS6Qft8/9ILJ29uiUVT71xdNwLPb7X6/3dqdcj6iL988ZE0EnpNPi/3+CkuOIh07oFVsfKaO/l1LHPf7QO71okg+TRnQKjb9WUTvyiD1dOIbCTYP9eSvm+iiyMtcAy2GLy6Hw263LkPQaUrYsJWQFZPqDqOR3R2akNfrND1VSdNeGcL2GQ3sLtBxjGhCpui7O9JEhkPYq/7GxVdxcRKd512i8WJ2OCA6TVk0hJyMOAHJTkNyZTygDeg4xgIdx3gaAvPhAdEPDyxafOtC6DA5je7mktevQi54NmjpYkKH0d2VcbiY3Sb6el1TdRk3X/I6nFT3Gi0v42lKuqotl7gFtICGXyvrmuLPMASTTUkGtB0XA+gk2VSh7PX6dCKPYLCL279hWsx59HLJojebcZXj8XCIY2wgUUTIcXw84nYdO6Bt0MCNomOVwQDKzG6XZbvdocpggFuiaDwO6PPQSfL5mWWfVeAeqFkGtx9lsuzjA7f8qBPxgmhcaNIFOsvG434f2XiLVAyicQ//0ADuEo0hNHpPHuGQLMu0ZdxjNH5VBf+oXXHJmIgcmMrBLZuNenm4q+huL3mEISNjsMOkW1oR0HbFxRzZss2Lr+r1EM0OApp+LOcbpxAujuaXQqzKwCNy327phJjt/+z356J/VXET3c0UQpPmoV7+9vgY0HzBV7FhMZDp46i6pYZ/yzyW8Q2dK6JD086XfFqMMnVfJKDK+zugn558QudWsUeTE9Fmcb36ax38Q+eWeXnhm4u5jBNQ8w8E+4jO82ZoM5vtmqo/aqZbmhzQzdH15d6mQOG+L0PQ9/cBbe4wNflaAQzpJAG70+bhKJp/89N2KAC3pJME8QVdFKsVkGHS67po+y/aoZc5aCa+oLF55HnT5tFugay4yDigTei2S5FNHzcjRSig6SVSNbySDWybfFUG30lyHv0P7Tmai7Om7Q8AAAAASUVORK5CYII="></button></div></div>
+      <div class="tcar" id="gtCar"><div class="tcar-h" aria-hidden="true"><span class="cp">Carte</span><b id="gtMapName"></b></div><div class="tcar-s" id="gtStrip" role="radiogroup" aria-label="Carte"><button type="button" class="tcar-t" role="radio" aria-checked="false" tabindex="-1" data-map="sablier" aria-label="Le Sablier"><canvas aria-hidden="true"></canvas></button><button type="button" class="tcar-t" role="radio" aria-checked="false" tabindex="-1" data-map="croix" aria-label="La Croix"><canvas aria-hidden="true"></canvas></button><button type="button" class="tcar-t" role="radio" aria-checked="false" tabindex="-1" data-map="lacets" aria-label="Les Lacets"><canvas aria-hidden="true"></canvas></button><button type="button" class="tcar-t" role="radio" aria-checked="false" tabindex="-1" data-map="etoile" aria-label="L’Étoile"><canvas aria-hidden="true"></canvas></button></div></div>
       <button class="tb-row" id="gtSet" type="button"><span class="ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M2 6h18M2 16h18" stroke="currentColor" stroke-width="2"/><path d="M13 3v6M8 13v6" stroke="currentColor" stroke-width="4"/></svg></span><span class="tx"><span class="cp">Réglages</span><b id="gtSetVal"></b></span><svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M4 1 L9 6 L4 11" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button>
     </div>
     <div class="tb-cta">
@@ -16826,7 +16833,7 @@ function renderGemTable() {
   $('gtStrip').querySelectorAll('.tcar-t').forEach(b => { const on = b.dataset.map === M.id; b.setAttribute('aria-checked', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; });
   $('gtBgI').style.backgroundImage = `url(${GEM_BG[M.id]})`;
   $('gtSetVal').textContent = N > 1 ? `Bots ${GT_LV[diffKey] || 'normaux'} · même tirage` : `Sons : ${SFX.on ? 'oui' : 'non'}`;
-  gtLayout(); gtEditPlace();
+  gtLayout(); gtEditPlace(); gtPlans();
 }
 // square places as big as fit, as on Line Towers' table (no arrows: nobody sends anything, it is a race)
 function gtLayout() {
@@ -16881,8 +16888,95 @@ $('gtSet').addEventListener('click', () => {
 $('diffChoice').addEventListener('click', () => { if (!$('gtable').hidden) setTimeout(renderGemTable, 0); });
 ['snAll', 'snTw', 'snVib', 'snMus'].forEach(id => { const b = $(id); if (b) b.addEventListener('click', () => { if (!$('gtable').hidden) setTimeout(renderGemTable, 0); }); });
 $('gtGo').addEventListener('click', openGem);
-if (window.ResizeObserver) new ResizeObserver(() => { if (!$('gtable').hidden && !GTB.edit) gtLayout(); }).observe($('gtMap'));
-else window.addEventListener('resize', () => { if (!$('gtable').hidden && !GTB.edit) gtLayout(); });
+if (window.ResizeObserver) { new ResizeObserver(() => { if (!$('gtable').hidden && !GTB.edit) gtLayout(); }).observe($('gtMap')); new ResizeObserver(() => { if (!$('gtable').hidden) gtPlans(); }).observe($('gtCar')); }
+else window.addEventListener('resize', () => { if (!$('gtable').hidden) { if (!GTB.edit) gtLayout(); gtPlans(); } });
+
+/* ---------------------------------------------------------------- version 62 · the maps as plans on Gem TD's table (Patrick, 29/10:
+   « j'agrandirais l'espace en hauteur des terrains pour qu'on voit vraiment le terrain, ce n'est pas la texture décor qui nous intéresse
+   mais plus l'ordre des paliers 1, 2, 3, 4 »; A on the planche, taller): each map whole, 13 × 17 cells of 3 plan pixels in their true
+   proportions, the way in at the top, the Demeure at the bottom, the flags with their number where they stand, and the creatures' way
+   on the empty map (as the game finds it) in thin dashes, as in the game. On the chosen map a little light walks the way: the part
+   walked turns gold, each flag sparkles as it is reached, in its order. Drawn pixel by pixel at the screen's own pixels. */
+var PLAN_CPS = {"sablier": [[2, 3], [10, 13], [10, 3], [2, 13]], "croix": [[2, 8], [10, 8], [6, 3], [6, 13]], "lacets": [[10, 4], [2, 7], [10, 10], [2, 13]], "etoile": [[2, 5], [10, 11], [6, 2], [2, 11]]};
+var PLAN_ROUTE = {"sablier":{"c":[6,5,18,17,30,29,42,41,54,55,68,69,82,83,96,97,110,123,124,137,138,151,152,165,166,179,166,153,140,127,114,101,88,75,62,49,62,61,74,73,86,85,98,97,110,123,122,135,134,147,146,159,158,171,172,185,186,199,200,213,214],"seg":[0,7,25,35,53,60]},"croix":{"c":[6,19,18,31,44,43,56,69,68,81,94,93,106,107,108,109,110,111,112,113,114,101,100,87,86,73,72,59,58,45,58,71,84,97,110,123,136,149,162,175,188,201,214],"seg":[0,12,20,29,39,42]},"lacets":{"c":[6,19,20,21,34,47,48,49,62,61,74,73,72,71,84,83,82,81,94,93,94,107,108,109,110,123,124,125,126,139,140,139,152,151,150,149,162,161,160,159,172,171,172,185,186,199,200,213,214],"seg":[0,8,19,30,41,48]},"etoile":{"c":[6,19,18,31,30,43,42,55,54,67,68,81,82,95,96,109,110,111,124,125,138,139,152,153,140,139,126,113,112,99,86,73,72,59,46,45,32,45,44,57,70,69,82,95,108,107,120,133,132,145,158,159,172,173,186,187,200,201,214],"seg":[0,9,23,36,49,58]}};
+var PLAN_TERR = { sablier: 'champs', croix: 'riviere', lacets: 'champs', etoile: 'riviere' };
+var PLAN_W = 41, PLAN_H = 53, PLAN_COLS = 13;
+var PLAN_FLAG = [['#e9a59a', '#c97e74', '#f6c9c1'], ['#9ab8d8', '#7192b6', '#c4d8ee'], ['#e7cf86', '#c4a85c', '#f4e4b0'], ['#a6c79a', '#7fa274', '#cde3c3']];
+var PLAN_DIG = { 1: ['010', '110', '010', '010', '111'], 2: ['111', '001', '111', '100', '111'], 3: ['111', '001', '011', '001', '111'], 4: ['101', '101', '111', '001', '001'] };
+var PLAN_PAL = {
+  champs: { g: '#87a081', t: '#7e977a', rim: '#d3b98b', low: '#d3b98b', way: '#efe6c9', faint: '#a9b897' },
+  riviere: { g: '#839974', t: '#7a916c', rim: '#3f5d42', low: '#8fb2bf', way: '#efe6c9', faint: '#a5b38f' },
+};
+var GTP = { raf: 0, t0: 0, kf: 2, map: '', ways: {} };
+function planXY(c, r) { return [3 * c + 2, 3 * r + 2]; }
+function planWay(id) {
+  if (GTP.ways[id]) return GTP.ways[id];
+  const R = PLAN_ROUTE[id], pts = [[20, 0]];
+  for (const i of R.c) pts.push(planXY(i % PLAN_COLS, (i / PLAN_COLS) | 0));
+  const L = [0]; for (let i = 1; i < pts.length; i++) L.push(L[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  return (GTP.ways[id] = { pts, L, len: L[L.length - 1], flags: PLAN_CPS[id].map((_, k) => L[1 + R.seg[k + 1]]) });
+}
+function planAt(way, d) {
+  let i = 1; while (i < way.pts.length - 1 && way.L[i] < d) i++;
+  const a = way.pts[i - 1], b = way.pts[i], t = Math.max(0, Math.min(1, (d - way.L[i - 1]) / ((way.L[i] - way.L[i - 1]) || 1)));
+  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+}
+// kf: screen pixels to a plan pixel (any value: each plan pixel is rounded to whole screen pixels); u: the light, 0 to 1, or null
+function planDraw(cv, id, kf, u) {
+  const W = PLAN_W, H = PLAN_H, cw = Math.round(W * kf), ch = Math.round(H * kf);
+  if (cv.width !== cw || cv.height !== ch) { cv.width = cw; cv.height = ch; }
+  const x = cv.getContext('2d'), P = PLAN_PAL[PLAN_TERR[id]] || PLAN_PAL.champs, X = v => Math.round(v * kf);
+  const px = (a, b, c, w = 1, h = 1) => { a = Math.round(a); b = Math.round(b); x.fillStyle = c; x.fillRect(X(a), X(b), X(a + w) - X(a), X(b + h) - X(b)); };
+  px(0, 0, P.g, W, H);
+  for (let j = 4; j < H - 3; j += 5) for (let i = 3 + ((j / 5) % 2 ? 3 : 0); i < W - 3; i += 6) { px(i, j, P.t); px(i + 1, j - 1, P.t); }
+  // the edges: the wheat of the fields, or the pines and the river below; the way in, between two posts
+  px(0, 0, P.rim, W, 1); px(0, 0, P.rim, 1, H); px(W - 1, 0, P.rim, 1, H); px(0, H - 1, P.low, W, 1);
+  px(19, 0, P.g, 3, 1); px(18, 0, '#7d7062', 1, 2); px(22, 0, '#7d7062', 1, 2); px(18, 0, '#e7cf86'); px(22, 0, '#e7cf86');
+  // the way, in thin dashes; while the light walks it, what is left is faint and what is walked gold
+  const way = planWay(id), dw = u == null ? -1 : u * way.len;
+  for (let d = 0; d <= way.len; d++) { if (d % 4 >= 2) continue; const q = planAt(way, d); px(q[0], q[1], dw < 0 ? P.way : d <= dw ? '#f7da84' : P.faint); }
+  // the Demeure
+  px(19, 48, '#c98e7a', 3, 1); px(18, 49, '#c98e7a', 5, 1); px(18, 50, '#efe6d2', 5, 2); px(20, 51, '#8a6f5a');
+  // the flags, in their colours, their number on them; reached by the light, a sparkle
+  PLAN_CPS[id].forEach(([c, r], i) => {
+    const [ax, ay] = planXY(c, r), F = PLAN_FLAG[i], g = PLAN_DIG[i + 1];
+    px(ax - 3, ay - 3, '#7d7062', 1, 7); px(ax - 3, ay - 4, '#e7cf86');
+    px(ax - 2, ay - 3, F[0], 5, 7); px(ax - 2, ay - 3, F[2], 5, 1); px(ax + 2, ay - 2, F[1], 1, 6);
+    for (let j = 0; j < 5; j++) for (let q = 0; q < 3; q++) if (g[j][q] === '1') px(ax - 1 + q, ay - 2 + j, '#fffaf0');
+    if (dw >= 0) {
+      const e = dw - way.flags[i]; if (e < 0 || e >= 16) return;
+      const sz = e < 7 ? 2 : 1, cx = ax + 4, cy = ay - 5; px(cx, cy, '#ffffff');
+      for (let q = 1; q <= sz; q++) { px(cx + q, cy, F[2]); px(cx - q, cy, F[2]); px(cx, cy + q, F[2]); px(cx, cy - q, F[2]); }
+      if (e < 10) { px(ax - 6, ay + 1, '#ffffff'); px(ax + 5, ay + 3, '#f2d98a'); }
+    }
+  });
+  // the light, at the head of the gold
+  if (dw >= 0 && dw < way.len) { const q = planAt(way, dw); px(q[0], q[1], '#ffffff'); px(q[0] - 1, q[1], '#fff3c4'); px(q[0] + 1, q[1], '#fff3c4'); px(q[0], q[1] - 1, '#fff3c4'); px(q[0], q[1] + 1, '#fff3c4'); }
+}
+// the light: 0.4 s still at the way in, 3.4 s to the Demeure, 0.8 s all gold, again
+function planU(ms) { const T = ms % 4600; return T < 400 ? 0 : T < 3800 ? (T - 400) / 3400 : 1; }
+function planStill() { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
+// the four plans as wide as the column allows (four side by side, 8 px apart, 96 px at most), drawn, the chosen one walked
+function gtPlans() {
+  const car = $('gtCar'), strip = $('gtStrip'); if (!car || !strip) return;
+  const dpr = window.devicePixelRatio || 1, w = Math.max(44, Math.min(96, Math.floor(((car.clientWidth || 320) - 24) / 4)));
+  GTP.kf = w * dpr / PLAN_W;
+  if (GTP.map !== GTB.map) { GTP.map = GTB.map; GTP.t0 = performance.now(); }
+  strip.querySelectorAll('.tcar-t').forEach(b => {
+    const cv = b.querySelector('canvas'); if (!cv) return;
+    const on = b.dataset.map === GTB.map;
+    planDraw(cv, b.dataset.map, GTP.kf, on ? (planStill() ? 1 : planU(performance.now() - GTP.t0)) : null);
+    cv.style.width = (cv.width / dpr) + 'px'; cv.style.height = (cv.height / dpr) + 'px';
+  });
+  if (!GTP.raf && !planStill()) GTP.raf = requestAnimationFrame(gtPlansTick);
+}
+function gtPlansTick(now) {
+  GTP.raf = 0;
+  const ov = $('startOv'); if (!ov || ov.hidden || $('gtable').hidden || GEMX.open) return;
+  const b = $('gtStrip').querySelector('.tcar-t[aria-checked="true"]'), cv = b && b.querySelector('canvas');
+  if (cv) planDraw(cv, b.dataset.map, GTP.kf, planU(now - GTP.t0));
+  GTP.raf = requestAnimationFrame(gtPlansTick);
+}
 
 /* ---------------------------------------------------------------- the game, in its frame */
 function gemCfg() {
