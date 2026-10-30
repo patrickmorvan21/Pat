@@ -860,6 +860,22 @@ body:has(#startOv:not([hidden])) .toasts .toast{text-align:center}
 .guide .link{color:var(--pmut);padding:6px 8px;font-size:14px}
 .guide .go{padding:8px 16px;font-size:15px;color:var(--pink)}
 .guide-hl{position:relative;z-index:2;animation:ghl 1s steps(2) infinite}
+/* version 68 · the guided game in two waves: small squares for the progress, the path's length, the pinch, the frame of the Rat */
+.guide-n.g68sq{display:flex;gap:4px;align-items:center}
+.guide-n.g68sq i{display:block;width:8px;height:8px;background:rgba(36,50,58,.22)}
+.guide-n.g68sq i.on{background:#7a5a24}
+.guide-n.g68sq i.now{background:#b8862e}
+#guideT b{font-weight:700;color:#5b3f12}
+.g68-chip{position:fixed;left:0;top:0;z-index:6;display:flex;align-items:baseline;gap:7px;padding:6px 10px 7px;background:rgba(18,30,36,.9);color:#e0e5e6;font-weight:700;font-size:15px;line-height:1;white-space:nowrap;pointer-events:none}
+.g68-chip b{font-family:var(--ft);font-weight:400;font-size:24px;line-height:.8;color:var(--gold)}
+.g68-chip b.o{color:#8ea2a7}
+.g68-chip .ar{color:var(--gold)}
+.g68-pinch{position:fixed;left:0;top:0;z-index:6;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+.g68-pinch svg{display:block}
+.g68-pinch span{padding:5px 9px 6px;background:rgba(18,30,36,.9);color:#e0e5e6;font-weight:700;font-size:14px;line-height:1;white-space:nowrap}
+.g68-ring{position:fixed;left:0;top:0;z-index:6;box-sizing:border-box;border:2px solid var(--gold);box-shadow:0 0 0 2px rgba(18,30,36,.55);pointer-events:none}
+.g68-ring span{position:absolute;left:50%;bottom:calc(100% + 5px);transform:translateX(-50%);padding:3px 6px 4px;background:rgba(18,30,36,.9);color:var(--gold);font-weight:700;font-size:12px;line-height:1;white-space:nowrap}
+.g68-chip[hidden],.g68-pinch[hidden],.g68-ring[hidden]{display:none}
 @keyframes ghl{0%{box-shadow:inset 0 0 0 3px var(--gold),0 0 0 2px var(--gold)}50%{box-shadow:inset 0 0 0 3px transparent,0 0 0 2px transparent}}
 .toast.specnote{background:var(--parch);color:var(--pink);box-shadow:inset calc(var(--u)*2) 0 0 var(--gold);font-weight:600}
 @media (max-height:700px){.guide-in{padding:9px 12px 8px;gap:6px}.guide-in p{font-size:15px;line-height:1.3}}
@@ -17241,6 +17257,190 @@ window.addEventListener('message', e => {
   }
 });
 /* ================================================================ /version 62 */
+
+/* ================================================================ version 68 · the guided game in two waves (Patrick, 30/10, 9 h 30 :
+   « Pour le tuto de line towers je suis pour : A · Les deux premières vagues guidées ») */
+// Seven bubbles, one line each, when the action comes. The game waits only for the first tower and the walls (the first wave comes
+// after them), then between the steps of the second part (no second wave until « C'est parti »). The statue stands at (6, 5), in the
+// line of walls, the gap at the right end; the rival's statue stands away from its path, so that the guide's Rat gets through.
+const G68 = { len0: 0, lv0: 0, nLine: 7, raf: 0, chipOn: false, pinchOn: false, ringOn: false };
+const G68_ROW = 5, G68_EM = [6, 5], G68_GAP = 8, G68_N = 7;
+function g68Rival() { return G && G.b ? G.b.find(b => b.k !== G.me) || null : null; }
+function g68RivalName() { const r = g68Rival(); return r ? r.name : 'ton rival'; }
+// the cells beside the path, a little below the gate (row 3, else 2, else 4)
+function g68Side() {
+  const me = G.b[G.me], path = pathCells(me, SPAWN).map(i => [i % COLS, (i / COLS) | 0]), out = [];
+  for (const row of [3, 2, 4]) {
+    for (const [c, r] of path) if (r === row) for (const dc of [-1, 1]) {
+      const cc = c + dc;
+      if (cc >= 0 && cc < COLS && !me.grid[idx(cc, r)] && !buildReason(me, cc, r) && !out.some(([a, b]) => a === cc && b === r)) out.push([cc, r]);
+    }
+    if (out.length) break;
+  }
+  return out.slice(0, 2);
+}
+// the line: row 5, from the left edge to the cell before the gap; the statue stands in it
+function g68LineFree() {
+  const me = G.b[G.me], out = [];
+  for (let c = 0; c < G68_GAP; c++) { const i = idx(c, G68_ROW); if (!me.grid[i] && !obBlocks(me.ob[i]) && !OBST[i]) out.push([c, G68_ROW]); }
+  return out;
+}
+const g68LineDone = () => g68LineFree().length === 0;
+// the camera pulled back (a pinch, the wheel, « Montre-moi »), or the rival's lane in sight, nine tenths of it (a wide screen),
+// where the camera is or is going
+function g68RivalSeen(c) {
+  const rv = g68Rival(); if (!rv) return true;
+  c = c || cam.goal || cam;
+  const sx = x => (x - c.x) * c.z + view.cx, sy = y => (y - c.y) * c.z + view.cy;
+  const l = sx(rv.ox), r = sx(rv.ox + COLS), t = sy(rv.oy), bt = sy(rv.oy + ROWS);
+  const vis = Math.max(0, Math.min(r, W) - Math.max(l, 0)) * Math.max(0, Math.min(bt, view.bottom) - Math.max(t, view.top));
+  return vis >= 0.9 * (r - l) * (bt - t);
+}
+function g68Wide() {
+  if (!G || !G.running) return false;
+  const rv = g68Rival(); if (!rv) return true;
+  const c = cam.goal || cam; if (c.z < homeCam().z * 0.8) return true;
+  return g68RivalSeen(c);
+}
+// the player's Rat no longer on the rival's lane (it got through, or it was stopped)
+function g68RatGone() { const rv = g68Rival(); if (!rv || !G.guide) return true; return G.t - G.guide.t0 > 0.6 && !rv.creeps.some(cr => cr.from === G.me) && !rv.queue.some(q => q.from === G.me); }
+function g68Emblem(b, c, r) {
+  const em = b && b.jt && b.jt.em; if (!em) return;
+  if (b.ob[em.i] === OB_EMB) b.ob[em.i] = 0;
+  em.c = c; em.r = r; em.i = idx(c, r); b.ob[em.i] = OB_EMB; b.dist = bfs(b.grid);
+}
+function g68Setup() {
+  if (!G || !G.guide) return;
+  const me = G.b[G.me], rv = g68Rival();
+  g68Emblem(me, G68_EM[0], G68_EM[1]);
+  if (rv) g68Emblem(rv, 1, 8);
+  if (G.jt && G.jt.prog) G.jt.prog = G.jt.prog.filter(e => e.w > 5);     // no map event before wave 6
+  G68.len0 = pathCells(me, SPAWN).length;
+}
+const G68_STEPS = [
+  { sq: 1, say: '', tool: 'arrow', cells: 'g68side', only: true, sayF: () => 'Pose un <b>Archer</b> au bord du chemin : il tirera tout seul.',
+    hl: () => (G.tool === 'arrow' ? '' : '#items [data-tool="arrow"]'), done: me => me.grid.some(t => t && t.type !== 'wall') },
+  { sq: 2, say: '', tool: 'wall', cells: 'g68line', only: true, line: true, sayF: () => `Pose ${G68.nLine} <b>murs</b> sur la ligne dorée : ils barrent le chemin, sauf au bout.`,
+    hl: () => (G.tool === 'wall' ? '' : '#items [data-tool="wall"]'), done: () => g68LineDone() },
+  { sq: 3, say: '', wave: true, chip: true, sayF: () => 'Le chemin passe devant ton Archer : plus il est long, plus il tire.',
+    done: me => G.wave >= 1 && G.t - G.guide.t0 > 5 && !me.creeps.length && !me.queue.length, max: 45 },
+  { sq: 4, say: '', gold: 24, cells: 'tower', sayF: () => 'Touche ton Archer, puis <b>Améliorer</b> : il frappe plus fort.',
+    hl: () => (document.querySelector('#pop:not([hidden]) [data-act="u"]') ? '#pop [data-act="u"]' : ''), done: me => me.grid.some(t => t && t.type !== 'wall' && t.lvl >= 2) },
+  { sq: 5, say: '', gold: 20, sayF: () => 'Ouvre <b>Envoyer</b>, puis touche le <b>Rat</b> : il part chez ton rival.',
+    hl: () => (G.mode === 'send' ? '#items [data-send="rat"]' : '#dock [data-mode="send"]'), done: me => !!(me.jt && me.jt.sent > 0) },
+  { sq: 6, say: '', pinch: true, btn: 'Montre-moi', show: true, sayF: () => `Ton Rat est parti chez <b>${esc(g68RivalName())}</b>. Pince l’écran pour le suivre.`,
+    done: () => g68Wide() },
+  { sq: 6, say: '', ring: true, sayF: () => `Ton Rat court chez <b>${esc(g68RivalName())}</b> : s’il passe sa porte, tu lui prends une vie.`,
+    done: () => g68RatGone(), max: 40 },
+  { sq: 7, say: '', last: true, btn: 'C’est parti',
+    sayF: me => (me.lives > G68.lv0 ? 'Une vie volée ! Ses créatures font pareil chez toi.' : `${esc(g68RivalName())} a arrêté ton Rat : envoies-en plusieurs pour passer.`) },
+];
+GUIDE_STEPS.splice(0, GUIDE_STEPS.length, ...G68_STEPS);
+{ const base = guideCells; guideCells = function (kind) {
+    if (kind === 'g68side') return g68Side();
+    if (kind === 'g68line') return g68LineFree();
+    return base.apply(this, arguments);
+}; }
+// while the guide speaks, the rival waits: its lane gets no wave (only what the player sends it)
+{ const base = startWave; startWave = function () {
+    const r = base.apply(this, arguments);
+    const st = G && G.guide ? GUIDE_STEPS[G.guide.step] : null;
+    if (st && !st.last) {                        // on the last bubble the game is live again: waves as usual
+      for (const b of G.b) if (b.k !== G.me) b.queue = b.queue.filter(q => q.from >= 0);
+      // the guided wave: only the creatures of its bestiary (no character, no gold, no boss mixed in)
+      const me = G.b[G.me], stg = typeof jtStage === 'function' ? jtStage(G.wave) : null;
+      if (stg && stg.kinds) me.queue = me.queue.filter(q => q.from >= 0 || (q.wave && stg.kinds.includes(q.kind)));
+      G.guide.hold = true;                       // one wave only while the guide speaks: the next waits for « C'est parti »
+    }
+    return r;
+}; }
+// a guided game: the statues where the guide wants them, then the first bubble again
+{ const base = startGuide; startGuide = function () { const r = base.apply(this, arguments); g68Setup(); guideGo(0); return r; }; }
+// each bubble: its line (with the rival's name, the number of walls), the squares, what shows over the lanes
+{ const base = guideGo; guideGo = function (i) {
+    const r = base.apply(this, arguments);
+    const GD = G && G.guide, st = GUIDE_STEPS[i]; if (!GD || !st || GD.step !== i) return r;
+    const me = G.b[G.me];
+    if (st.line) { G68.nLine = g68LineFree().length; const need = jtCost(me, 'wall') * G68.nLine; if (me.gold < need) me.gold = need; }
+    if (st.sq === 5) G68.lv0 = me.lives;
+    $('guideT').innerHTML = st.sayF ? st.sayF(me) : esc(st.say || '');
+    const n = $('guideN'); n.classList.add('g68sq'); n.setAttribute('aria-label', `Étape ${st.sq} sur ${G68_N}`);
+    n.innerHTML = Array.from({ length: G68_N }, (_, k) => `<i class="${k < st.sq - 1 ? 'on' : k === st.sq - 1 ? 'now' : ''}"></i>`).join('');
+    G68.chipOn = !!st.chip; G68.pinchOn = !!st.pinch; G68.ringOn = !!st.ring;
+    if (st.ring && G.running && !g68RivalSeen()) goCam(allCam());     // after a pinch, both lanes in the frame: the Rat stays in sight
+    if (!G68.raf) G68.raf = requestAnimationFrame(g68Frame);
+    guideLayout();
+    return r;
+}; }
+// the end of the guide (« C'est parti », or « Passer le guide »): the camera back home
+{ const base = guideEnd; guideEnd = function () {
+    const was = !!(G && G.guide);
+    const r = base.apply(this, arguments);
+    G68.chipOn = G68.pinchOn = G68.ringOn = false;
+    if (was && G && G.running && !G.ended && !isHome()) { goCam(homeCam()); G.userCam = false; }
+    return r;
+}; }
+// « Montre-moi »: the camera pulls back for those who cannot pinch (taken before the guide's own button hears it)
+$('guide').addEventListener('click', e => {
+  if (!e.target.closest('#guideBtn')) return;
+  const GD = G && G.guide, st = GD && GUIDE_STEPS[GD.step];
+  if (!st || !st.show) return;
+  e.stopImmediatePropagation(); e.preventDefault();
+  sfx('click'); closePop(); goCam(allCam());
+}, true);
+// while the guide shows golden cells to build on, a touch elsewhere does not build
+{ const base = onTap; onTap = function (sx, sy) {
+    const GD = G && G.guide, st = GD && GUIDE_STEPS[GD.step];
+    if (st && st.only && G.running && !G.ended && G.mode === 'build' && !G.sel && !G.aim) {
+      const me = G.b[G.me], [wx, wy] = s2w(sx, sy), c = Math.floor(wx - me.ox), r = Math.floor(wy - me.oy);
+      if (c >= 0 && c < COLS && r >= 0 && r < ROWS && !me.grid[idx(c, r)] && GD.cells && !GD.cells.some(([a, b]) => a === c && b === r)) {
+        sfx('error'); G.bad = { c, r, t: 0.4 }; toast('Sur une case dorée', 'bad'); return;
+      }
+    }
+    return base.apply(this, arguments);
+}; }
+// what shows over the lanes, every frame while the guide speaks: the path's length, the pinch, the frame around the Rat
+const G68_PINCH = (() => {
+  const P = 4, px = [], R = (x, y, w = 1, h = 1, c = '#ece3cb') => px.push(`<rect x="${x * P}" y="${y * P}" width="${w * P}" height="${h * P}" fill="${c}"/>`);
+  const tip = x0 => { R(x0 + 1, 3, 3, 1); R(x0, 4, 5, 4); R(x0 + 1, 8, 3, 1); R(x0 + 1, 9, 3, 3); R(x0 + 2, 12, 1, 1, '#c9bea3'); };
+  tip(0); tip(21);
+  const G1 = '#d5bf7b';
+  R(7, 5, 5, 2, G1); R(12, 4, 1, 4, G1); R(11, 3, 1, 1, G1); R(11, 8, 1, 1, G1);
+  R(14, 5, 5, 2, G1); R(13, 4, 1, 4, G1); R(14, 3, 1, 1, G1); R(14, 8, 1, 1, G1);
+  return `<svg width="${26 * P}" height="${13 * P}" viewBox="0 0 ${26 * P} ${13 * P}" shape-rendering="crispEdges" aria-hidden="true">${px.join('')}</svg>`;
+})();
+function g68El(id, cls, html) {
+  let el = $(id);
+  if (!el) { el = document.createElement('div'); el.id = id; el.className = cls; el.setAttribute('aria-hidden', 'true'); el.innerHTML = html; el.hidden = true; document.body.appendChild(el); }
+  return el;
+}
+function g68Frame() {
+  G68.raf = 0;
+  const live = !!(G && G.guide && G.running && !G.ended && $('startOv').hidden && $('endOv').hidden && $('menuOv').hidden);
+  const me = live ? G.b[G.me] : null, rv = live ? g68Rival() : null;
+  const chip = g68El('g68chip', 'g68-chip', '');
+  if (live && G68.chipOn) {
+    const L1 = pathCells(me, SPAWN).length, [x, y] = w2s(me.ox, me.oy);
+    const txt = `<span>Chemin</span><b class="o">${G68.len0}</b><span class="ar">→</span><b>${L1}</b><span>cases</span>`;
+    if (chip.dataset.t !== txt) { chip.innerHTML = txt; chip.dataset.t = txt; }
+    chip.style.transform = `translate(${Math.round(x + 4)}px,${Math.round(Math.max(view.top + 4, y + 4))}px)`; chip.hidden = false;
+  } else if (!chip.hidden) chip.hidden = true;
+  const pin = g68El('g68pinch', 'g68-pinch', G68_PINCH + '<span></span>');
+  if (live && G68.pinchOn && !g68Wide()) {
+    const [x, y] = w2s(me.ox + COLS / 2, me.oy + ROWS * 0.56), t = `Pince pour voir chez ${g68RivalName()}`, sp = pin.querySelector('span');
+    if (sp.textContent !== t) sp.textContent = t;
+    pin.style.transform = `translate(${Math.round(x)}px,${Math.round(y)}px) translate(-50%,-50%)`; pin.hidden = false;
+  } else if (!pin.hidden) pin.hidden = true;
+  const ring = g68El('g68ring', 'g68-ring', '<span>ton Rat</span>');
+  const cr = live && G68.ringOn && rv ? rv.creeps.find(c => c.from === G.me) : null;
+  if (cr) {
+    const [x, y] = w2s(rv.ox + cr.x, rv.oy + cr.y), sz = Math.max(18, Math.round(cam.z * 0.9));
+    ring.style.width = ring.style.height = sz + 'px';
+    ring.style.transform = `translate(${Math.round(x - sz / 2)}px,${Math.round(y - sz / 2 - 2)}px)`; ring.hidden = false;
+  } else if (!ring.hidden) ring.hidden = true;
+  if (live) G68.raf = requestAnimationFrame(g68Frame);
+}
+/* ================================================================ /version 68 */
 
 useTerrain(TERKEY);
 demo();
