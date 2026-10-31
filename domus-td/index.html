@@ -1651,12 +1651,13 @@ body:has(#startOv:not([hidden]):not([data-view=home])[data-view=ftable]){backgro
     <div class="tb-head">
       <button class="back" type="button" data-back="modes" aria-label="Retour"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 4 L7 12 L15 20" stroke="currentColor" stroke-width="3" stroke-linecap="square"/></svg></button>
       <h2 class="ds tb-title"><img class="mdpen" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIgAAACYCAYAAAA/bKHJAAACWUlEQVR4Xu3csU3DQBiGYYKYIDMg6rRkBkagTMMCDJEF0lAyAjNAS42YgRWgoOb+6DtZZ5vnqbETkei9yy/rNqfD/vsC/nDpP0OLLwi+IOQUBAUhpyAoCLmr6tLdzbb6Exbs/eNLQcjZg6Ag5BQEBSGnICgIOQVBQcgpCApCTkFQEHIKgoKQK58HGe36/th8C5/Pj11vcen3n5olBksMOQVBQcgpCApCTkFomv0cpJpzTD3HqIx+/akpCPYg5BQEBSGnICgIOQWhaVOdk7r080GqOUWvak4zd84HoYslBptUcgqCgpBTEBSE3OyfB+lVzSmqOUl1/dpZYrDEkFMQFIScgqAg5BSEptXPQao5R6W6fu1zEgXBHoScgqAg5BQEBSGnIKx7DtI7pxh9/dwpCPYg5BQEBSGnICgIOQVh2XOQ3jnF1KrnQeb+/isKgj0IOQVBQcgpCApCTkFoWv05qbQ5J5UulhhsUskpCApCTkFQEHIKgoKQUxAUhJyCoCDkFAQFIbfJL/31drz77r0H07l9fOn6jC0xWGLIKQgKQk5BUBByCkJT12/kc5iTTKt3zlFREOxByCkICkJOQVAQcgpC0+RzkMrpsG8+T7K72Va3WLTqfI6Hp9ehn5GCYA9CTkFQEHIKgoKQUxCahv7GPsfS5yRzn3NUFAR7EHIKgoKQUxAUhJyCsOw5SGX0nGTpc46KgmAPQk5BUBByCoKCkFMQ1j0HqfTOSdY+56goCPYg5BQEBSGnICgIOQXhf89BKtWcZPT5HKMpCPYg5BQEBSGnICgIOQWh6Qefama9RMRfJwAAAABJRU5ErkJggg==">Farm TD</h2>
-      <span></span>
+      <button class="tb-quit" id="ftLeave" type="button" hidden>Quitter</button>
     </div>
     <div class="tb-mode" id="ftMode"><button class="sg" type="button" data-n="1" aria-pressed="false">Seul</button><button class="sg" type="button" data-n="2" aria-pressed="false">2 joueurs</button><button class="sg" type="button" data-n="4" aria-pressed="false">4 joueurs</button><button class="sg" type="button" data-n="6" aria-pressed="false">6 joueurs</button></div>
     <div class="tb-map" id="ftMap">
       <div class="tb-grid" id="ftGrid" role="group" aria-label="Les joueurs de la partie"></div>
       <input class="tb-in" id="ftNick" maxlength="6" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Ton pseudo" hidden>
+      <button class="tb-inv" id="ftInvite" type="button" hidden><svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 11V2.5M5.5 6 9 2.5 12.5 6M3 9.5V15h12V9.5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg><span id="ftInviteTxt">Inviter des amis</span></button>
     </div>
     <div class="tb-rows">
       <button class="tb-row" id="ftBoard" type="button" disabled><span class="th" style="background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAAAsCAMAAADxVg45AAAAnFBMVEX////z8uz/8bDw6Nbi4Nj23ITZ2dPwz2LPxLXVv3vNvZ67vLe+s6TAsI+4rJ2vpJarnYWprraopqOYpoqVrciRqYqWoHmMpYWHoIHJmjqpmn+WmJqEmn5/lnl7knVxkrabkIWihGqCiI9whGpufGZsgGdofWpWco9fcmDMX0y/XzpuUj9rUDhdcGBeXGhaQDg6OEI+LiAuKiwrJjIWFZ0uAAACxElEQVR42p3WAXuaMBAGYHQVaRiTJXOkYWrdGGhB7db//992dwkQIKF2X7XFS/I+R1BpsNtulUqShHVRW8yP7Utd1+oIuWW3DHN7eMmyvYTgAgpMN7OCHa5SU+gKxWuNzrEWgqQrPicQUzTLD2EAOR4F5CYEIBgHRLMCRbEcpivq9fXVtCPeRHF+OwssmcGeYUzPCpgzOK1J6MSwIfEJng8CSn26uXqWB0KpYWQUEHAKQbYD0rN8EKQ5HCo9SZzxN0JQGjsaEvMQpILLK1Aq2lI1gmpKMDmjMQSXTKcrIWUvgn7YsKNh07iqKqATambU0QDCIQeUdFBVFGvca5wIR2zd75G1isaLOYila/hpA8dQmlwzxvTwHASLewmO3FB6D0SUgeAAIHYPlDigVqI/CDH3maVB4odYT2iHoElaKBlD9Klk7aqcreMwXLMF60p6eNiAckFdR+jkMSSELBYdJNVkZ11QYkMoBXEYkOOEzKLA6rOH6Owa892TY0fKKjE1hqAY7DIXJOVeNlKHIH3YYF1Nv7pgvgMix4aWy+UMxKAfGAp+7SaQ2kN+75u9Tr78+xTqwwbrY0jPx46G260b6jvK3zk13FGpT230rTCE2uu/WHghWgFQpm8KQ6eH4thILSSV8kDmPuWEIoAieNiQ/B+I5zHncci53RH7GPQH+oksKJJY2rsdhKQHwn44z3OAAAtDburKddEsiDmgr8N4INlCSrmhKPo5TDQPqcQ1ABDffBmGvwM5B05lyZ9G4WX5ISiTZVme4IptPg/Do2gGmgxcSswJrtjzKFDyQ+OBNO0hzh+bLo9UmIPsEbwfGOhg/mH4pmNezkLtEN5xemijUxnBvCRo+Km1INzvlG5cLmgFzOpO6KIVD7TChw0xD1SWF3uTJqe2AmcWog8tvPGk9VZy7tHqMAsp+hpp92gOsjb7u6+jf5Xp3irZ1ZuWAAAAAElFTkSuQmCC)"></span><span class="tx"><span class="cp">Terrain</span><b id="ftBoardVal">Le Trèfle</b></span><svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M4 1 L9 6 L4 11" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg></button>
@@ -1664,6 +1665,7 @@ body:has(#startOv:not([hidden]):not([data-view=home])[data-view=ftable]){backgro
     </div>
     <div class="tb-cta">
       <button class="go big" id="ftGo" type="button">Jouer</button>
+      <p class="tb-note" id="ftNote" hidden></p>
     </div>
   </div></div>
 
@@ -3056,7 +3058,8 @@ function hostPresence() {
   const base = { role: 'host', name: nick, ph: NET.phase, gi: NET.gid | 0, N: NET.N, tr: TERKEY, gt: gatesPref, pm: NET.pm || 'lt', gm: GTB.map, gl: NET.diff || diffKey, seats: NET.seats.map((s, k) => s ? [s.name, s.peer || '', s.bot ? 1 : 0, s.col ?? -1, k === NET.hostSeat ? profWire(myMaison) : profWireOf(s.cos)] : null) };
   let o = base;
   if (NET.phase === 'gem' || GEMX.mine) o = Object.assign({}, base, { gc: NET.phase === 'gem' ? NET.gc || null : null, gx: GEMX.mine || null });
-  if (NET.phase !== 'lobby' && NET.phase !== 'launch' && NET.phase !== 'gem' && G) for (let maxC = WEB ? 80 : 50; maxC >= 0; maxC -= 10) { o = Object.assign({}, base, snapObj(maxC)); if (JSON.stringify(o).length <= (WEB ? 12000 : 3900)) break; }
+  if (NET.phase === 'farm' || FARMX.mine) o = Object.assign({}, o, { fc: NET.phase === 'farm' ? NET.fc || null : null, fx: FARMX.mine || null });
+  if (NET.phase !== 'lobby' && NET.phase !== 'launch' && NET.phase !== 'gem' && NET.phase !== 'farm' && G) for (let maxC = WEB ? 80 : 50; maxC >= 0; maxC -= 10) { o = Object.assign({}, base, snapObj(maxC)); if (JSON.stringify(o).length <= (WEB ? 12000 : 3900)) break; }
   NET.game.presence(o).catch(() => {});
   const lob = NET.phase === 'lobby' ? { c: NET.code, n: nick, p: seatCount(), N: NET.N, m: NET.pm || 'lt', col: myCol, h: myMaison } : null, key = JSON.stringify(lob);
   if (NET.lobby && !WEB && key !== NET.lobbyKey) { NET.lobbyKey = key; NET.lobby.presence({ g: lob }).catch(() => {}); }
@@ -17769,16 +17772,16 @@ $('tbSheet').addEventListener('click', e => {
   NET.pm = m; PLAYMODE = m; showPanel(tableOf(m)); hostPresence();
 }, true);
 // a friend's link, the plate of claude.ai: the room's mode, before its table shows
-{ const base = pvJoin; pvJoin = function () { const pr = TBX.pv && TBX.pv.pr; if (pr) NET.pm = pr.pm === 'gem' ? 'gem' : 'lt'; return base.apply(this, arguments); }; }
+{ const base = pvJoin; pvJoin = function () { const pr = TBX.pv && TBX.pv.pr; if (pr) NET.pm = pmOf(pr.pm); return base.apply(this, arguments); }; }
 { const base = waitPlate; waitPlate = function () {
     const r = base.apply(this, arguments), p = $('waitPlate');
-    if (p && !p.hidden) { const h = DZX.peers.find(x => x.presence && x.presence.g && x.presence.g.c === p.dataset.code); p.dataset.m = h && h.presence.g.m === 'gem' ? 'gem' : 'lt'; }
+    if (p && !p.hidden) { const h = DZX.peers.find(x => x.presence && x.presence.g && x.presence.g.c === p.dataset.code); p.dataset.m = pmOf(h && h.presence.g.m); }
     return r;
 }; }
-document.addEventListener('click', e => { const p = e.target.closest && e.target.closest('#waitPlate'); if (p && NET.mode === 'solo') NET.pm = p.dataset.m === 'gem' ? 'gem' : 'lt'; }, true);
+document.addEventListener('click', e => { const p = e.target.closest && e.target.closest('#waitPlate'); if (p && NET.mode === 'solo') NET.pm = pmOf(p.dataset.m); }, true);
 // the first look at a Gem TD table from a link: its banner, its map, a race under way
 function pvBanner(on) {
-  let w = $('tbPvm'); const m = TBX.pv && TBX.pv.pr && TBX.pv.pr.pm === 'gem' ? 'gem' : 'lt';
+  let w = $('tbPvm'); const m = pmOf(TBX.pv && TBX.pv.pr && TBX.pv.pr.pm);
   if (w && on && w.dataset.m !== m) { w.remove(); w = null; }
   if (!w && on) {
     w = document.createElement('div'); w.id = 'tbPvm'; w.className = 'tb-pvm'; w.dataset.m = m; w.setAttribute('aria-hidden', 'true');
@@ -17909,7 +17912,7 @@ $('gtLeave').addEventListener('click', () => {
     GEMX.lastCh = ch;
     const host = ch.peers.find(p => !p.sameTab && p.presence && p.presence.role === 'host'), pr = host ? host.presence : null;
     if (pr) {
-      const pm = pr.pm === 'gem' ? 'gem' : 'lt'; if (pm !== NET.pm) { NET.pm = pm; PLAYMODE = pm; }
+      const pm = pmOf(pr.pm); if (pm !== NET.pm) { NET.pm = pm; PLAYMODE = pm; }
       if (GEM_MAPS.some(m => m.id === pr.gm)) { NET.gm = pr.gm; if (NET.pm === 'gem') GTB.map = pr.gm; }
       if (GT_LV[pr.gl]) NET.gl = pr.gl;
       NET.hph = pr.ph || '';
@@ -18033,6 +18036,244 @@ window.addEventListener('message', e => {
   } else if (d.t === 'again' && NET.mode === 'host') gemRematch();
 });
 /* ================================================================ /version 71 */
+
+/* ================================================================ version 72 · Farm TD with friends
+   Patrick, 31/10, 14 h 02: « Inviter des amis » at Farm TD's table too. The same as at Gem TD's (version 71): the table becomes the room,
+   a friend takes the place of a bot, « Quitter », the note; the room's mode can be Farm TD (the sheet « Mode »), the friends follow.
+   The race: the host's « Lancer » gives the places, the draw and the bots' level to all (NET.fc); each phone opens Farm TD with them and
+   a part of its own (FARM_NET_JS): each one plays his own farm; what each phone says of its player (FARMX.mine, in the presence) goes
+   on that player's House on the others' phones (the bar: his lives, his fall); the bots are played on every phone, the same everywhere;
+   the end, the same ranking for all. The host's « Revanche »: a new race for the table. */
+var V72 = true;
+MODE_NET.farm = true;
+NET.fc = null;
+Object.assign(FARMX, { net: false, mine: null, gid: 0, me: -1, fc: null, netNext: null, over: false, pushT: 0, pushAt: 0, lastCh: null });
+var FARM_NET_JS = "/* Domus TD · Farm TD with friends (version 72). Domus adds this part to the page of a race between friends (window.__FARMCFG.net),\n   after the page's own script, so that it stays when the page of Farm TD changes. Patrick, 31/10, 14 h 02: « Inviter des amis » at\n   Farm TD's table too, as at Gem TD's (version 71).\n   - The race: the same draw for all (the page gives every House the same draw), each plays his own farm on his own phone; the bar\n     shows the others (their lives, their fall) as it shows the bots.\n   - A friend's House is not played here: what his phone says of it goes on it (his lives, his score, the wave he fell at).\n   - The bots are played on every phone, the same everywhere: their game depends only on the game's time (their skill, their own\n     draw and their statue are drawn again here from the race's draw: the page draws them around the seat of « me »).\n   - Between friends: no intermission (the palet mixes the Houses' games), the speed stays at ×1, the menu does not stop the game.\n   - After his fall a player watches the bar until every friend is done (« Léa joue encore »); a friend left alone standing wins.\n   - The end: the same ranking on every phone (the winner; the bots still up at the last fall, by their score; then the falls, the\n     latest first, in the game's time). The host's « Revanche » asks Domus for a new race. */\n(function () {\n  'use strict';\n  var C = window.__FARMCFG; if (!C || !C.net) return;\n  function bad(n) { try { window.parent.postMessage({ farmtd: 1, t: 'net', bad: n }, '*'); } catch (e) {} }\n  var NEED = ['Game', 'startGame', 'endGame', 'updateDock', 'updateHud', 'setPaused', 'openPause', 'toDomus', 'toast', 'prng'];\n  for (var q = 0; q < NEED.length; q++) if (typeof window[NEED[q]] !== 'function') { bad(NEED[q]); return; }\n  try { if (typeof G === 'undefined' || typeof BOT_SKILL === 'undefined' || typeof speed === 'undefined' || typeof MODE === 'undefined') { bad('G'); return; } } catch (e) { bad('G'); return; }\n\n  var NF = window.NETF = { me: C.net.me | 0, gi: C.net.gi | 0, host: !!C.net.host, hn: String(C.net.hn || ''), peers: {}, here: null, seen: {}, t0: performance.now(),\n    ended: false, iWon: false, winS: 0, win: -1, T: 0, ffTo: -1, order: null, sent: '', sentAt: 0 };\n  var NETK = []; (C.seats || []).forEach(function (s, k) { if (s && s.net) NETK.push(k); });   // the friends' places\n  function stepN() { return G ? Math.round(G.t * 60) : 0; }\n  function escN(v) { return String(v).replace(/[&<>\"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[c]; }); }\n  function alive() { return G.H.filter(function (h) { return h.alive; }).length; }\n\n  // ---- the bots, the same on every phone\n  function fixBots() {\n    var lv = BOT_SKILL[C.lv] ? C.lv : 'normal', sk = BOT_SKILL[lv], r = prng((G.seed ^ 0x7f4a7c15) | 0);\n    for (var k = 0; k < G.H.length; k++) {\n      var H = G.H[k], v = r();\n      if (!H.bot || NETK.indexOf(k) >= 0) continue;\n      H.skill = sk[0] + (sk[1] - sk[0]) * v;\n      H.rngMisc = prng((G.seed ^ 0x2d4f1a37 ^ (k * 977)) | 0);\n      H.statue = null;\n      var cell = G.bestPlot(H, null, 1.4 - H.skill, 1.7);\n      if (cell >= 0) G.placeStatue(H, cell);\n    }\n    G.events = G.events.filter(function (e) { return !(e.type === 'statue' && e.h !== G.me); });\n  }\n\n  // ---- the race on this phone's game\n  function install() {\n    if (!G || G.__net) return;\n    G.__net = true; NF.ended = false; NF.iWon = false; NF.win = -1; NF.ffTo = -1; NF.order = null;\n    fixBots();\n    NETK.forEach(function (k) { var H = G.H[k]; if (H) { H.skip = true; H.bot = false; H.queue = []; H.creatures = []; } });\n    var base = G.step;\n    G.step = function (dt) {\n      if (G.phase !== 'play') return base.call(G, dt);\n      G.entracteDone[G.wave + 1] = true;                                       // no palet between friends\n      var off = [], before = [], w0 = G.wave, i, H;\n      for (i = 0; i < G.H.length; i++) { H = G.H[i]; before.push(H.alive); if (H.skip && H.alive) { H.alive = false; off.push(H); } }\n      base.call(G, dt);\n      for (i = 0; i < off.length; i++) { off[i].alive = true; off[i].queue.length = 0; off[i].creatures.length = 0; }\n      var s = stepN();\n      for (i = 0; i < G.H.length; i++) { H = G.H[i]; if (before[i] && !H.alive && !H.skip && H.outT == null) H.outT = s; }\n      // the bots' score at each new wave: the ranking of those still up at the end reads it\n      if (G.wave !== w0) for (i = 0; i < G.H.length; i++) { H = G.H[i]; if (H.bot && H.alive) (H.netHist || (H.netHist = [])).push([s, G.score(H)]); }\n      if (G.phase === 'over') { G.phase = 'play'; G.won = false; }            // the page's own end: the race goes on\n      var n = alive();\n      for (i = G.events.length - 1; i >= 0; i--) { var e = G.events[i]; if (e.type === 'over' || e.type === 'entracte') G.events.splice(i, 1); else if (e.type === 'out') e.left = n; }\n    };\n    speed = 1;\n    var sb = document.getElementById('speedBtn'); if (sb) sb.hidden = true;\n  }\n  var baseStart = startGame;\n  startGame = function () { var r = baseStart.apply(this, arguments); install(); return r; };\n  // the menu does not stop the game between friends (the end does)\n  var baseP = setPaused;\n  setPaused = function (v) { return baseP.call(this, !!v && (NF.ended || !G || !G.__net)); };\n  var basePause = openPause;\n  openPause = function () { var r = basePause.apply(this, arguments), h = document.querySelector('#sheet .sheet-h h2'); if (h && G && G.__net && !NF.ended && document.getElementById('sheet').dataset.kind === 'pause') h.textContent = 'Menu'; return r; };\n\n  // ---- what this phone says of its player, what the others say of theirs\n  function mine() {\n    var H = G && G.H[NF.me]; if (!H) return null;\n    return { s: stepN(), al: H.alive ? 1 : 0, lv: H.lives | 0, ow: H.outWave | 0, ot: H.outT == null ? 0 : H.outT, kp: H.stats.killPts | 0, wh: H.stats.wavesHeld | 0,\n      w: G.wave | 0, won: NF.iWon ? 1 : 0, ws: NF.winS | 0 };\n  }\n  function post(force) {\n    var st = mine(); if (!st) return;\n    var key = [st.al, st.lv, st.ow, st.won, st.kp, st.wh, st.w, NF.ended ? 1 : 0].join('|'), now = performance.now();\n    if (!force && key === NF.sent && now - NF.sentAt < 1000) return;\n    NF.sent = key; NF.sentAt = now;\n    try { window.parent.postMessage({ farmtd: 1, t: 'net', gi: NF.gi, st: st, end: NF.ended ? 1 : 0 }, '*'); } catch (e) {}\n  }\n  window.addEventListener('message', function (e) {\n    var d = e.data; if (!d || d.farmnet !== 1 || e.source !== window.parent || d.t !== 'peers') return;\n    NF.here = Array.isArray(d.here) ? d.here : [];\n    NF.here.forEach(function (k) { NF.seen[k] = 1; });\n    (d.ps || []).forEach(function (p) { if (Array.isArray(p) && NETK.indexOf(p[0]) >= 0 && p[1] && (p[1].gi | 0) === NF.gi) { NF.peers[p[0]] = p[1]; NF.seen[p[0]] = 1; } });\n    tick();\n  });\n  function fall(H, ow, ot, left) {\n    H.alive = false; H.outWave = ow || 1; H.outT = ot | 0; H.outOrder = ++G.outCount; H.netLeft = !!left;\n    if (left) toast(H.name + ' a quitté la course');\n    else G.events.push({ type: 'out', h: H.k, left: alive() });\n  }\n  function applyPeers() {\n    NETK.forEach(function (k) {\n      var H = G.H[k], R = NF.peers[k], st = R && R.st; if (!H) return;\n      if (st) {\n        H.lives = st.lv | 0; H.stats.killPts = st.kp | 0; H.stats.wavesHeld = st.wh | 0; H.netW = st.w | 0; H.netS = st.s | 0;\n        if (st.won && !H.netWon) { H.netWon = true; H.netWinS = st.ws | 0; }\n      }\n      if (!H.alive) return;\n      if (st && !st.al) { fall(H, st.ow, st.ot, false); return; }\n      var gone = (R && R.left) || (NF.here && NF.here.indexOf(k) < 0 && (NF.seen[k] || performance.now() - NF.t0 > 30000));\n      if (gone && !H.netWon) fall(H, H.netW || G.wave || 1, H.netS || stepN(), true);\n    });\n  }\n\n  // ---- the end of the race\n  function humanDone(k) {\n    var H = G.H[k]; if (!H) return true;\n    return k === NF.me ? !H.alive || NF.iWon : !H.alive || !!H.netWon;\n  }\n  function checkEnd() {\n    if (NF.ended || NF.ffTo >= 0 || G.phase !== 'play') return;\n    var meH = G.H[NF.me];\n    if (meH.alive && !NF.iWon && G.H.every(function (h) { return h === meH || !h.alive; })) { NF.iWon = true; NF.winS = stepN(); post(true); }\n    var hum = [NF.me].concat(NETK);\n    if (!hum.every(humanDone)) return;\n    // every friend is done: the end, in the game's time (the winner's, or the last fall); the bots' games are played up to it\n    var win = -1, T = 0;\n    hum.forEach(function (k) { var H = G.H[k]; if (k === NF.me ? NF.iWon : H.netWon) { win = k; T = k === NF.me ? NF.winS : (H.netWinS | 0); } });\n    if (win < 0) hum.forEach(function (k) { T = Math.max(T, G.H[k].outT | 0); });\n    NF.win = win; NF.T = T; NF.ffTo = T;\n  }\n  function anyBot() { return G.H.some(function (h) { return h.bot && h.alive; }); }\n  function ffStep() {\n    if (NF.ffTo < 0 || NF.ended) return;\n    var n = 0;\n    while (n < 900 && stepN() < NF.ffTo && anyBot() && G.phase === 'play') { G.step(1 / 60); n++; }\n    if (n) G.events.length = 0;\n    if (stepN() >= NF.ffTo || !anyBot()) finish();\n  }\n  function scoreAt(H, T) { var h = H.netHist || [], v = 0; for (var i = 0; i < h.length && h[i][0] <= T; i++) v = h[i][1]; return v; }\n  function finish() {\n    if (NF.ended) return;\n    var T = NF.T, win = NF.win, n = G.H.length, up = [], down = [], k, H;\n    for (k = 0; k < n; k++) {\n      H = G.H[k]; if (k === win) continue;\n      if (H.bot && (H.alive || (H.outT | 0) > T)) up.push(H); else down.push(H);\n    }\n    up.sort(function (a, b) { return scoreAt(b, T) - scoreAt(a, T) || a.k - b.k; });\n    down.sort(function (a, b) { return (b.outT | 0) - (a.outT | 0) || G.score(b) - G.score(a) || a.k - b.k; });\n    var order = (win >= 0 ? [G.H[win]] : []).concat(up, down), nUp = (win >= 0 ? 1 : 0) + up.length;\n    NF.order = order.map(function (h) { return h.k; });\n    order.forEach(function (h, i) { h.alive = i < nUp; h.outOrder = n - i; });   // the page's own standing reads these\n    NF.ended = true; G.phase = 'over'; G.won = win === NF.me;\n    post(true);\n    endGame(win === NF.me, NF.order.indexOf(NF.me) + 1);\n    endSheet(); dockWait();\n  }\n  function endSheet() {\n    var lis = document.querySelectorAll('#sheetIn .rank li');\n    (NF.order || []).forEach(function (k, i) { var H = G.H[k], li = lis[i]; if (!li || !H || !H.netLeft) return; var sp = li.querySelector('.who span'); if (sp) sp.textContent = 'Parti à la vague ' + H.outWave; });\n    var again = document.querySelector('#sheetIn [data-act=\"again\"]');\n    if (again && !NF.host) { again.disabled = true; again.removeAttribute('data-act'); again.classList.remove('gold'); again.innerHTML = '<span>En attente de ' + escN(NF.hn || 'l’hôte') + '</span>'; }\n  }\n  // the host's « Revanche »: a new race for the table, asked of Domus\n  document.addEventListener('click', function (e) {\n    var b = e.target && e.target.closest && e.target.closest('#sheetIn [data-act=\"again\"]');\n    if (!b || !G || !G.__net || !NF.ended) return;\n    e.stopPropagation(); e.preventDefault();\n    if (NF.host) toDomus({ t: 'again' });\n  }, true);\n\n  // ---- after his fall: the dock says who still plays\n  var css = document.createElement('style');\n  css.textContent = '.dock.netwait .drawbtn,.dock.netwait .gantbtn{display:none}' +\n    '.netw{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;min-height:52px;text-align:center;color:#f3ead2}' +\n    '.netw b{font-size:17px;font-weight:600;letter-spacing:.01em}.netw span{font-size:13px;opacity:.78}';\n  document.head.appendChild(css);\n  function dockWait() {\n    var meH = G.H[NF.me], dock = document.getElementById('dock'); if (!dock || !meH) return;\n    var w = document.getElementById('netw'), on = !meH.alive && !NF.ended;\n    if (!w) { w = document.createElement('div'); w.id = 'netw'; w.className = 'netw'; w.hidden = true; (dock.querySelector('.dock-in') || dock).appendChild(w); }\n    if (on) {\n      var still = [NF.me].concat(NETK).filter(function (k) { return !humanDone(k); }).map(function (k) { return G.H[k].name; });\n      var html = '<b>Tombé à la vague ' + (meH.outWave || G.wave || 1) + '</b><span>' +\n        (still.length === 1 ? escN(still[0]) + ' joue encore' : still.length ? still.length + ' amis jouent encore' : 'Le classement arrive…') + '</span>';\n      if (w.innerHTML !== html) w.innerHTML = html;\n    }\n    w.hidden = !on; dock.classList.toggle('netwait', on);\n  }\n\n  function tick() {\n    if (!G || !G.__net || MODE !== 'game') return;\n    applyPeers(); checkEnd(); ffStep(); dockWait(); updateHud(); post(false);\n  }\n  if (G) install();\n  setInterval(tick, 200);\n})();\n";
+function pmOf(m) { return m === 'gem' || m === 'farm' ? m : 'lt'; }
+
+// ---- the room's table is the table of its mode
+function tableOf(m) { return NET.mode !== 'solo' ? (NET.pm === 'gem' ? 'gtable' : NET.pm === 'farm' ? 'ftable' : 'table') : m === 'gem' ? 'gtable' : m === 'farm' ? 'ftable' : 'table'; }
+{ const base = showPanel; showPanel = function (p) { if (p === 'table' && NET.mode !== 'solo' && NET.pm === 'farm') p = 'ftable'; return base.call(this, p); }; }
+{ const base = renderLobby; renderLobby = function () { const r = base.apply(this, arguments); if (!$('startOv').hidden && !$('ftable').hidden) renderFarmTable(); return r; }; }
+{ const base = leaveRoom; leaveRoom = function () { const r = base.apply(this, arguments); NET.fc = null; FARMX.mine = null; return r; }; }
+// the first look at a Farm TD table from a link: its banner (pvBanner, version 71), its board, a race under way
+{ const base = pvRender; pvRender = function () {
+    const r = base.apply(this, arguments), pv = TBX.pv, pr = pv && pv.pr;
+    if (!pv || NET.mode !== 'solo' || $('table').hidden || !(pr && pr.pm === 'farm')) return r;
+    $('terCar').style.display = 'none';
+    $('setVal').textContent = 'Le Trèfle · même tirage';
+    if (pr.ph && pr.ph !== 'lobby' && !pv.msg) $('tbNote').textContent = 'Une partie est en cours : tu joueras à la suivante.';
+    tableLayout();
+    return r;
+}; }
+
+// ---- Farm TD's table in a room: the room's places, the host's bots, « Inviter des amis », « Quitter », the note
+{ const base = renderFarmTable; renderFarmTable = function () {
+    const room = NET.mode !== 'solo', host = NET.mode === 'host', guest = NET.mode === 'client';
+    if (room) FTB.n = NET.N === 2 ? 2 : NET.N === 6 ? 6 : 4;
+    const r = base.apply(this, arguments);
+    const one = $('ftMode').querySelector('[data-n="1"]'); if (one) one.hidden = room;
+    $('ftMode').hidden = guest;
+    $('ftSet').disabled = guest;
+    $('ftLeave').hidden = !room;
+    $('ftInvite').hidden = !(host || (NET.mode === 'solo' && onlineOK()));
+    const go = $('ftGo'), note = $('ftNote');
+    if (!room) { go.textContent = 'Jouer'; go.disabled = false; note.hidden = true; ftLayout(); return r; }
+    const M = tbModel();
+    $('ftGrid').innerHTML = M.tiles.map((t, k) => t.free
+      ? `<button type="button" class="tl free" data-k="${k}" aria-label="Place ${k + 1} : libre. Toucher pour t’y asseoir"><span class="nm ds">libre</span></button>`
+      : `<button type="button" class="tl${t.mine ? ' me' : ''}" data-k="${k}" aria-label="Place ${k + 1} : ${t.mine ? 'toi, ' : ''}${esc(t.name)}, ${esc(PCOL_N[t.col])}${t.mine ? '. Toucher pour changer ton nom' : '. Toucher pour t’y asseoir'}">` +
+        `<i class="band" style="background:${PCOL[t.col]};box-shadow:inset 0 -2px 0 ${PDARK[t.col]}"></i><img class="sh" alt="" draggable="false" src="${shieldSrc(t.col, t.mine ? myMaison : '')}">` +
+        `<span class="nm ds">${esc(t.name)}</span><span class="tg">${t.tag}${t.mine ? PENCIL : ''}</span></button>`).join('');
+    $('ftSetVal').textContent = `Bots ${GT_LV[guest ? NET.gl : (NET.diff || diffKey)] || 'normaux'} · même tirage`;
+    if (host) {
+      const n = seatCount(), bots = M.N - n;
+      go.textContent = bots ? `Lancer · ${n} joueur${n > 1 ? 's' : ''} + ${bots} bot${bots > 1 ? 's' : ''}` : 'Lancer la partie'; go.disabled = !!FARMX.open;
+      note.textContent = 'Garde cette page ouverte pendant la partie.';
+    } else {
+      go.textContent = hostWaitTxt(); go.disabled = true;
+      note.textContent = NET.hph === 'farm' ? 'Une partie est en cours : tu joueras à la suivante.' : NET.hostAwayAt ? 'L’hôte ne répond plus pour l’instant… on l’attend.' : NET.hostPeer ? 'La partie commencera quand l’hôte la lancera.' : (TBX.msg || 'Connexion à la partie…');
+    }
+    note.hidden = false;
+    ftLayout(); ftEditPlace();
+    return r;
+}; }
+// the places as big as fit, less « Inviter des amis » under them (as on the two other tables)
+function ftLayout() {
+  const m = $('ftMap'), g = $('ftGrid'); if (!m || !g || !m.clientWidth) return;
+  const N = FTB.n, cols = N === 6 ? 3 : N === 1 ? 1 : 2, rows = N <= 2 ? 1 : 2, Wm = m.clientWidth, inv = $('ftInvite');
+  const under = inv && !inv.hidden ? inv.offsetHeight + 12 : 0, Hm = Math.max(60, m.clientHeight - under);
+  const gx = N <= 2 ? 56 : 28, gy = 28, cap = N <= 2 ? 108 : N === 4 ? 100 : 92;
+  let tw = Math.min(cap, (Wm - (cols - 1) * gx) / cols, (Hm - (rows - 1) * gy) / rows); tw = Math.max(56, Math.floor(tw / 2) * 2);
+  const Wg = cols * tw + (cols - 1) * gx, Hg = rows * tw + (rows - 1) * gy, big = tw >= 88;
+  g.style.width = Wg + 'px'; g.style.height = Hg + 'px';
+  const st = m.style; st.setProperty('--sc', big ? 2 : 1); st.setProperty('--nm', Math.max(16, Math.min(22, Math.round(tw * 0.22))) + 'px'); st.setProperty('--tg', (big ? 11 : 10) + 'px'); st.setProperty('--band', (big ? 8 : 6) + 'px');
+  g.querySelectorAll('.tl').forEach((el, k) => { const p = N === 1 ? [0, 0] : smPos(N, k); if (!p) return; const s2 = el.style; s2.left = p[0] * (tw + gx) + 'px'; s2.top = p[1] * (tw + gy) + 'px'; s2.width = tw + 'px'; s2.height = tw + 'px'; });
+}
+// in a room, the table's touches are the room's: the places asked of the host, the host's settings, its « Lancer »
+$('ftCol').addEventListener('click', e => {
+  if (NET.mode === 'solo') return;
+  const t = e.target, host = NET.mode === 'host';
+  const n = t.closest('#ftMode [data-n]');
+  if (n) { e.stopPropagation(); if (host && +n.dataset.n >= 2) { sfx('click'); ftEditDone(); hostSetN(+n.dataset.n); } return; }
+  const tl = t.closest('#ftGrid .tl');
+  if (tl && !tl.classList.contains('me')) { e.stopPropagation(); lobbyPick(+tl.dataset.k); return; }
+  if (t.closest('#ftSet')) { if (!host) e.stopPropagation(); return; }
+  if (t.closest('#ftGo')) { e.stopPropagation(); if (host) farmHostLaunch(); return; }
+}, true);
+// the name changed on the place: the room learns it
+{ const base = ftEditDone; ftEditDone = function (cancel) { const was = FTB.edit, r = base.apply(this, arguments); if (was && !cancel && NET.mode !== 'solo') netNick(); return r; }; }
+// « Inviter des amis »: alone, the table becomes the room first (its places kept), then the sheet
+async function farmInvite() {
+  audioInit(); sfx('click');
+  if (NET.busy) return;
+  if (NET.mode === 'solo') {
+    if (!onlineOK()) return;
+    ftEditDone();
+    const n0 = soloN, s0 = soloSeat, inv = $('ftInvite');
+    soloN = FTB.n > 1 ? FTB.n : 2; soloSeat = 0; NET.pm = 'farm';
+    inv.disabled = true; $('ftInviteTxt').textContent = 'Connexion…';
+    let ok = false;
+    try { ok = await hostCreate({ keep: true }); }
+    finally { soloN = n0; soloSeat = s0; inv.disabled = false; $('ftInviteTxt').textContent = 'Inviter des amis'; }
+    if (!ok) { NET.pm = 'lt'; return; }
+    FTB.n = NET.N;
+  }
+  if (NET.mode !== 'host') return;
+  ivOpen();
+}
+$('ftInvite').addEventListener('click', farmInvite);
+$('ftLeave').addEventListener('click', () => {
+  if (NET.mode === 'solo') return;
+  sfx('back');
+  const sr = NET.mode === 'host' && NET.sr, n = NET.N;
+  leaveRoom(); NET.sr = false;
+  if (sr) FTB.n = n;
+  showPanel(sr ? 'ftable' : 'home');
+});
+
+// ---- the room's word, read
+{ const base = clientOnPeers; clientOnPeers = function (ch) {
+    FARMX.lastCh = ch;
+    const host = ch.peers.find(p => !p.sameTab && p.presence && p.presence.role === 'host'), pr = host ? host.presence : null;
+    const r = base.apply(this, arguments);
+    if (NET.mode !== 'client') { if (FARMX.open && FARMX.net) farmNetRelay(null); return r; }      // the host has gone
+    if (pr && pr.ph === 'farm' && pr.fc && (pr.gi | 0) !== FARMX.gid) farmNetJoin(pr);
+    if (pr && pr.ph === 'lobby' && FARMX.open && FARMX.net && FARMX.over) closeFarm();             // the host is back at the table: so are we, our game over
+    if (FARMX.open && FARMX.net) farmNetRelay(ch);
+    // come during the race (by the code, the link, the plate): Farm TD's table, « tu joueras à la suivante »
+    if (pr && pr.ph === 'farm' && !FARMX.open && !$('startOv').hidden && $('startOv').dataset.view === 'table') showLobby();
+    if (pr && !$('ftable').hidden && !$('startOv').hidden) renderFarmTable();
+    return r;
+}; }
+{ const base = hostOnPeers; hostOnPeers = function (ch) {
+    FARMX.lastCh = ch;
+    if (NET.phase === 'farm') {
+      // a friend gone during the race: his place is free for the next one
+      for (const p of ch.left) {
+        const seat = NET.peerSeat.get(p.peer); if (seat === undefined) continue;
+        NET.peerSeat.delete(p.peer); const st = NET.seats[seat];
+        if (st && !st.bot) toast(`${st.name} a quitté la table`);
+        NET.seats[seat] = null;
+      }
+      ch = Object.assign({}, ch, { left: [] });
+    }
+    const r = base.call(this, ch);
+    if (FARMX.open && FARMX.net) farmNetRelay(ch);
+    return r;
+}; }
+
+// ---- the race: the host's « Lancer », each phone's frame
+function farmHostLaunch() {
+  if (NET.mode !== 'host' || FARMX.open) return;
+  ftEditDone(); audioInit();
+  const N = NET.N === 2 ? 2 : NET.N === 6 ? 6 : 4, used = new Set(), seats = [];
+  for (let k = 0; k < N; k++) { const st = NET.seats[k]; if (st && !st.bot && st.col >= 0) used.add(st.col); }
+  for (let k = 0; k < N; k++) {
+    const st = NET.seats[k], me = k === NET.hostSeat;
+    if (!st || st.bot) { let c = 0; while (used.has(c)) c++; used.add(c); seats.push([PCOL_N[c], 1, c, MAISONS[(k + 1) % MAISONS.length], '']); continue; }
+    seats.push([cleanName(st.name), 0, st.col >= 0 ? st.col : k, me ? myMaison : (EMB[st.maison] ? st.maison : MAISONS[k % MAISONS.length]), me ? 'host' : (st.peer || '')]);
+  }
+  NET.fc = { seed: (Math.random() * 1e9) | 0, lv: NET.diff || diffKey, n: N, seats };
+  NET.phase = 'farm'; NET.gid = (NET.gid | 0) + 1;
+  hostPresence();
+  farmOpenNet(NET.fc, NET.hostSeat, NET.gid);
+}
+function farmRematch() {
+  if (NET.mode !== 'host') return;
+  if (FARMX.open) closeFarm();
+  // the friends who came during the race (« tu joueras à la suivante ») take the free places before the new one
+  if (NET.phase === 'lobby' && FARMX.lastCh) hostOnPeers(FARMX.lastCh);
+  farmHostLaunch();
+}
+function farmNetJoin(pr) {
+  const fc = pr.fc; if (!fc || !Array.isArray(fc.seats)) return;
+  FARMX.gid = pr.gi | 0;                        // seen: a friend who is not in this race plays the next one
+  const me = fc.seats.findIndex(x => Array.isArray(x) && x[4] === NET.myPeer); if (me < 0) return;
+  if (FARMX.open) closeFarm();
+  farmOpenNet(fc, me, pr.gi | 0);
+}
+function farmOpenNet(fc, me, gi) {
+  const x = fc.seats[me]; if (!x) return;
+  const h = fc.seats.find(y => y[4] === 'host');
+  const cfg = {
+    nick, col: x[2], house: myMaison, seed: fc.seed, n: fc.n, lv: fc.lv, rec: farmRec(),
+    sound: !!SFX.on, tw: SFX.tw !== false, vib: !!VIB.on, sh: shieldSrc(x[2], myMaison),
+    seats: fc.seats.map((y, k) => ({ name: k === me ? nick : y[0], col: y[2], house: k === me ? myMaison : y[3], me: k === me, bot: !!y[1], net: !y[1] && k !== me, k, sh: shieldSrc(y[2], k === me ? myMaison : y[3]) })),
+    net: { me, gi, host: NET.mode === 'host', hn: h ? h[0] : '' },
+  };
+  Object.assign(FARMX, { netNext: cfg, gid: gi, me, fc, over: false, mine: null });
+  openFarm();
+  FARMX.net = FARMX.open;
+}
+{ const base = farmCfg; farmCfg = function () { if (FARMX.netNext) { const c = FARMX.netNext; FARMX.netNext = null; return c; } return base.apply(this, arguments); }; }
+{ const base = farmDoc; farmDoc = function (cfg) { const d = base.apply(this, arguments); return cfg && cfg.net ? d.replace('</body>', () => '<script>' + FARM_NET_JS + '<\/script></body>') : d; }; }
+{ const base = closeFarm; closeFarm = function () {
+    const net = FARMX.net;
+    FARMX.net = false; FARMX.over = false; clearTimeout(FARMX.pushT); FARMX.pushT = 0;
+    if (net) FARMX.mine = Object.assign({}, FARMX.mine || {}, { gi: FARMX.gid, left: 1 });     // a word to the others: this one has left the race
+    if (net && NET.mode === 'host' && NET.phase === 'farm') NET.phase = 'lobby';
+    const r = base.apply(this, arguments);
+    if (net && NET.mode === 'host') hostPresence();
+    else if (net && NET.mode === 'client' && NET.game) NET.game.presence(farmGuestPresence()).catch(() => {});
+    return r;
+}; }
+// what the frame says of the player's game goes into the room (at most every 150 ms); what the room says of the others goes to the frame
+function farmGuestPresence() { const o = { role: 'player', name: nick, in: [], w: NET.want, mai: myMaison, cos: profWire(myMaison) }; if (FARMX.mine) o.fx = FARMX.mine; return o; }
+function farmNetPush() {
+  if (FARMX.pushT) return;
+  FARMX.pushT = setTimeout(() => {
+    FARMX.pushT = 0; FARMX.pushAt = performance.now();
+    if (!FARMX.net) return;
+    if (NET.mode === 'host') hostPresence();
+    else if (NET.mode === 'client' && NET.game) NET.game.presence(farmGuestPresence()).catch(() => {});
+  }, Math.max(0, 150 - (performance.now() - FARMX.pushAt)));
+}
+function farmNetRelay(ch) {
+  if (!FARMX.open || !FARMX.net || !FARMX.fr || !FARMX.fc) return;
+  const fc = FARMX.fc, ps = [], here = [];
+  if (ch && NET.mode !== 'solo') for (const p of ch.peers) {
+    if (p.sameTab) continue;
+    const pr = p.presence || {}, id = pr.role === 'host' ? 'host' : p.peer, k = fc.seats.findIndex(y => Array.isArray(y) && y[4] === id);
+    if (k < 0 || k === FARMX.me) continue;
+    here.push(k);
+    if (pr.fx && (pr.fx.gi | 0) === FARMX.gid) ps.push([k, pr.fx]);
+  }
+  try { FARMX.fr.contentWindow.postMessage({ farmnet: 1, t: 'peers', ps, here }, '*'); } catch (e) {}
+}
+window.addEventListener('message', e => {
+  const d = e.data; if (!d || d.farmtd !== 1 || !FARMX.fr || e.source !== FARMX.fr.contentWindow || !FARMX.net) return;
+  if (d.t === 'net') {
+    if (d.bad) { console.warn('Farm TD à plusieurs : il manque ' + d.bad); return; }
+    if ((d.gi | 0) !== FARMX.gid || !d.st) return;
+    const first = !FARMX.mine;
+    FARMX.mine = { gi: FARMX.gid, st: d.st };
+    if (first && FARMX.lastCh) farmNetRelay(FARMX.lastCh);           // the frame's first word: it gets the others' at once
+    if (d.end) FARMX.over = true;
+    farmNetPush();
+  } else if (d.t === 'again' && NET.mode === 'host') farmRematch();
+});
+/* ================================================================ /version 72 */
 
 useTerrain(TERKEY);
 demo();
