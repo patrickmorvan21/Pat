@@ -1465,6 +1465,64 @@ body:has(#startOv:not([hidden]):not([data-view=home])[data-view=ftable]){backgro
 @media (prefers-reduced-motion:reduce){#startOv[data-view=ftable] .ftbg{animation:none}}
 .farm-host{position:fixed;inset:0;z-index:60;background:#313734}
 .farm-host iframe{position:absolute;top:env(safe-area-inset-top,0px);bottom:env(safe-area-inset-bottom,0px);left:env(safe-area-inset-left,0px);right:env(safe-area-inset-right,0px);width:calc(100% - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));height:calc(100% - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));border:0;display:block;background:#2b3530}
+/* version 75 · the records of all: the row « Record » on the three tables, the board « Records », the crown on the home */
+.tb-row.rkrow{position:relative}
+.tb-row.rkrow .ic{height:52px}
+.tb-row.rkrow[hidden]{display:none}
+.rk-sc{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:5px;margin-left:4px}
+.rk-sc b{font:400 26px/20px var(--fb);color:var(--gold);white-space:nowrap}
+.rk-sc small{font:700 11px/1 var(--f);letter-spacing:.14em;text-transform:uppercase;color:var(--cap);white-space:nowrap}
+.rk-sc small.me{color:var(--gold)}
+.tb-row.rkrow .cp{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:360px){.tb-row.rkrow .rk-mp{display:none}}
+@media (max-height:700px){.tb-row.rkrow .ic{height:46px}}
+@media (max-height:620px){.tb-row.rkrow .ic{height:42px}}
+#recBtn .px{width:18px;height:14px}
+#records{background:var(--bg);overflow:hidden}
+#records .sp-col{height:100%;min-height:0}
+#records .tb-head{flex:none}
+.rk-ttl{display:flex;align-items:center}
+.rk-ttl .px{display:block;margin-right:10px;filter:drop-shadow(0 3px 0 rgba(8,14,18,.7))}
+.rk-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:6px 20px 0;box-shadow:inset 0 -1px 0 rgba(142,162,167,.25);flex:none}
+.rk-tabs button{height:42px;padding:0;border:0;border-radius:0;background:none;color:#8ea2a7;font:700 13px/1 var(--f);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.rk-tabs [aria-selected=true]{color:var(--gold);box-shadow:inset 0 -3px 0 var(--gold)}
+.rk-maps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:12px 20px 0;flex:none}
+.rk-maps .sg{height:36px;font-size:14px;padding:0 4px}
+.rk-list{flex:1;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:6px;padding:14px 20px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.rk-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:16px;margin-top:6px;padding:18px 16px 14px 14px;background:#22343c;box-shadow:inset 0 0 0 1px rgba(213,191,123,.5);flex:none}
+.rk-top.me{box-shadow:inset 0 0 0 2px var(--gold)}
+.rk-top .hav{position:relative;width:92px;height:92px}
+.rk-top .hav canvas{width:84px;height:84px}
+.rk-cr{position:absolute;left:50%;top:-14px;transform:translateX(-50%);display:block;line-height:0;filter:drop-shadow(0 2px 0 rgba(8,14,18,.75))}
+.rk-cr .px{display:block}
+.rk-top .nm{display:flex;flex-direction:column;gap:6px;min-width:0}
+#records .rk-top .cp{color:var(--gold)}
+.rk-top .nm b{display:flex;min-width:0;font:400 34px/30px var(--ft);color:var(--ink);text-shadow:0 3px 0 rgba(8,14,18,.6);white-space:nowrap}
+#records .rk-top .cp{display:flex;align-items:center;gap:8px}
+.rk-top .nm small{font:600 13px/1 var(--f);color:var(--cap)}
+.rk-top .sc{font:400 36px/1 var(--fb);color:var(--gold);white-space:nowrap}
+.rk-r{display:grid;grid-template-columns:32px 44px minmax(0,1fr) auto;align-items:center;column-gap:12px;height:52px;padding:0 14px 0 4px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line);flex:none}
+.rk-r .n{font:400 22px/1 var(--fb);color:var(--muted);text-align:center;white-space:nowrap}
+.rk-r.r2 .n{color:#cfd6d8}
+.rk-r.r3 .n{color:#c9935e}
+.rk-r .av{display:grid;place-items:center;width:44px;height:44px;background:#2a4352;box-shadow:inset 0 0 0 2px var(--pc,#5b7d96)}
+.rk-r .av canvas{width:40px;height:40px}
+.rk-r canvas,.rk-top canvas{display:block;image-rendering:crisp-edges;image-rendering:pixelated}
+.rk-r .nm{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rk-r .nm b{display:flex;align-items:center;gap:8px;min-width:0;font:700 16px/18px var(--f);color:var(--ink);white-space:nowrap}
+.rk-r .nm small{font:600 12px/1 var(--f);color:var(--cap)}
+.rk-r .sc{font:400 24px/1 var(--fb);color:var(--ink);white-space:nowrap}
+.rk-r.me{background:#22343c;box-shadow:inset 0 0 0 2px var(--gold)}
+.rk-r.me .n{color:var(--gold)}
+.rk-nm{overflow:hidden;text-overflow:ellipsis}
+.rk-tag{flex:none;padding:3px 5px 3px 6px;font:700 10px/1 var(--f);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);text-shadow:none}
+.rk-top .rk-tag{letter-spacing:.14em}
+.rk-empty{margin:28px 0 0;text-align:center;font-weight:600;font-size:15px;line-height:20px;color:var(--cap)}
+.rk-note{flex:none;margin:0;padding:8px 20px 0;text-align:center;font-weight:600;font-size:13px;line-height:16px;color:var(--cap)}
+.rk-pin{flex:none;display:flex;flex-direction:column;gap:6px;padding:0 20px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.rk-more{display:flex;justify-content:center;gap:6px;padding:6px 0 4px}
+.rk-more i{display:block;width:4px;height:4px;background:#4d636b}
+@media (max-height:620px){.rk-top{padding:14px 14px 12px 12px}.rk-top .hav{width:68px;height:68px}.rk-top .hav canvas{width:56px;height:56px}.rk-top .sc{font-size:32px}.rk-top .nm b{font-size:30px;line-height:26px}}
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
 </head>
@@ -7424,7 +7482,7 @@ onmessage = e => {
     } else if (!c) return;
     else if (m.k === 'sub') { if (c.connected) c.subscribe(m.f, { qos: 0 }); }
     else if (m.k === 'unsub') { if (c.connected) c.unsubscribe(m.f); }
-    else if (m.k === 'pub') { if (c.connected) c.publish(m.t, m.p, { qos: 0 }); }
+    else if (m.k === 'pub') { if (c.connected) c.publish(m.t, m.p, { qos: 0, retain: !!m.r }); }
     else if (m.k === 'kick') { if (c.connected && c.stream) c.stream.destroy(); }
     else if (m.k === 'reconnect') c.reconnect();
     else if (m.k === 'end') { c.end(true); if (!m.keep) C.delete(m.bi); }
@@ -7438,7 +7496,7 @@ function netWorker() {
   w.onmessage = e => {
     const m = e.data;
     if (m.k === 'tick') { workerTick(); return; }
-    const L = MQ.links[m.bi]; if (L && L.client) L.client._event(m);
+    const L = MQ.links[m.bi] || (typeof RKX !== 'undefined' && RKX.links[m.bi]); if (L && L.client) L.client._event(m);
   };
   return w;
 }
@@ -7456,7 +7514,7 @@ function workerClient(bi, url, opts) {
     },
     subscribe(f) { w.postMessage({ k: 'sub', bi, f }); },
     unsubscribe(f) { w.postMessage({ k: 'unsub', bi, f }); },
-    publish(t, p) { w.postMessage({ k: 'pub', bi, t, p }); },
+    publish(t, p, r) { w.postMessage({ k: 'pub', bi, t, p, r: !!r }); },
     kick() { w.postMessage({ k: 'kick', bi }); },
     reconnect() { w.postMessage({ k: 'reconnect', bi }); },
     end(keep) { cl.connected = false; w.postMessage({ k: 'end', bi, keep: !!keep }); },
@@ -18293,6 +18351,281 @@ var FARM_WORLD_JS = "/* Domus TD · Farm TD, the others' farms beside one's own 
    goes on up to a small pale bridge on the canal of the farm above. Mockup validated (13 h 39: « je valide »). */
 var V74 = true;
 /* ================================================================ /version 74 */
+
+/* ================================================================ version 75 · the records of all
+   Patrick, 01/11, 14 h 48: « on voit le meilleur record quand on va sur un mode de jeu, mais on ne sait pas qui détient ce meilleur
+   record … un bouton … ça t'ouvre un tableau … par ordre croissant, les meilleurs records ». Mockup « 01/11 · Les records », validated
+   02/11, 20 h 11: A, the row « Record » (without its crown), the board, the crown on the home.
+   - Each board (Line Towers; Gem TD map by map; Farm TD) has one record per player: his best. A device keeps a random id (ddl-pid) and
+     its own bests with their wave and date (ddl-rec-meta). On the public page it sends them as retained messages to the brokers of the
+     online game (domus-td/rec/v1/<mode>/<board>/<id>, again at each connection: a broker that forgot them gets them back) and reads
+     everyone's (domus-td/rec/v1/#). Its own links (r0, r1, r2 in the worker), apart from the rooms'. On claude.ai: one's own only.
+   - The row « Record » on the three tables, between the terrain and the settings: the holder's face in his colour, « Record · La Croix »,
+     his name, his score in gold, one's place (« toi · 4e », « toi » in gold when it is oneself); a touch opens the board there. The
+     captions of the maps lose their « · record 8 710 ».
+   - The board « Records » (a panel): three tabs, Gem TD's four maps, the first in big and crowned, one row per player, oneself framed in
+     gold and pinned at the bottom when further down. The crown on the home opens it on the last mode played. */
+var V75 = true;
+var RKX = { pid: '', meta: {}, store: {}, links: {}, tried: 0, state: 'off', sig: '', tm: 0, from: 'home', mode: 'lt', map: 'croix', io: null };
+const RK_TOPIC = 'domus-td/rec/v1/', RK_MAX = 100;
+const RK_CAP = { lt: 500000, gem: 20000000, farm: 50000000 };
+const RK_KEYS = ['lt/all'].concat(GEM_MAPS.map(m => 'gem/' + m.id), ['farm/trefle']);
+const rkKeyOf = (mode, map) => mode === 'gem' ? 'gem/' + (GEM_MAPS.some(m => m.id === map) ? map : 'croix') : mode === 'farm' ? 'farm/trefle' : 'lt/all';
+const RK_MODE = { lt: 'Line Towers', gem: 'Gem TD', farm: 'Farm TD' };
+const rkPal = () => Object.assign({}, PROF_CROWN_PAL, PROF_CROWN && PROF_CROWN.pal || {});
+const rkCrown = s => PROF_CROWN && PROF_CROWN.rows ? profPx(PROF_CROWN.rows, rkPal(), s, '') : profPx(PROF_CROWN7, rkPal(), s, '');
+
+// ---- one's id and one's own bests (the records made before version 75 come in, without their wave and date)
+RKX.pid = (() => { let p = ''; try { p = localStorage.getItem('ddl-pid') || ''; } catch (e) {} if (!/^[a-z0-9]{10,16}$/.test(p)) { p = rid(12); try { localStorage.setItem('ddl-pid', p); } catch (e) {} } return p; })();
+function rkMetaLoad() {
+  let m = {}; try { m = JSON.parse(localStorage.getItem('ddl-rec-meta') || '{}') || {}; } catch (e) { m = {}; }
+  if (typeof m !== 'object' || Array.isArray(m)) m = {};
+  for (const k of Object.keys(m)) { const o = m[k]; if (!RK_KEYS.includes(k) || !o || !(Math.floor(+o.s) > 0)) delete m[k]; }
+  const up = (k, s, w) => { s = Math.floor(+s || 0); if (s > 0 && !(m[k] && m[k].s >= s)) m[k] = { s, w: Math.max(0, Math.floor(+w || 0)), t: 0 }; };
+  up('lt/all', podBest(), 0);
+  const g = gemRecs(); GEM_MAPS.forEach(x => up('gem/' + x.id, g[x.id], 0));
+  const f = farmRec(); up('farm/trefle', f.score, f.wave);
+  return m;
+}
+function rkMetaSave() { try { localStorage.setItem('ddl-rec-meta', JSON.stringify(RKX.meta)); } catch (e) {} }
+RKX.meta = rkMetaLoad();
+// a game just ended with this score: a new best of this board?
+function rkMine(key, s, w) {
+  s = Math.floor(+s || 0); if (!(s > 0) || !RK_KEYS.includes(key)) return false;
+  const o = RKX.meta[key]; if (o && o.s >= s) return false;
+  RKX.meta[key] = { s, w: Math.max(0, Math.floor(+w || 0)), t: Math.floor(Date.now() / 1000) };
+  rkMetaSave(); rkPubOne(key); rkChanged(); return true;
+}
+const rkHouse = () => EMB[myMaison] ? myMaison : 'cerf';
+function rkMe(key) {
+  const o = RKX.meta[key]; if (!o || !(o.s > 0)) return null;
+  const h = rkHouse();
+  return { pid: RKX.pid, n: nick || 'Joueur', h, c: myCol, u: profCos(h).tenue, s: o.s, w: o.w | 0, t: o.t | 0, me: true };
+}
+// everyone's best on this board, the best first (on a tie, the one who made it first)
+function rkList(key) {
+  const st = RKX.store[key], out = [];
+  if (st) st.forEach((o, pid) => { if (pid !== RKX.pid) out.push(o); });
+  const me = rkMe(key); if (me) out.push(me);
+  out.sort((a, b) => b.s - a.s || (a.t || 0) - (b.t || 0) || (a.pid < b.pid ? -1 : 1));
+  return out;
+}
+
+// ---- the brokers (the public page only): the records' own links, apart from the rooms'
+function rkClean(d, mode) {
+  if (!d || typeof d !== 'object') return null;
+  const s = Math.floor(+d.s); if (!(s > 0 && s <= RK_CAP[mode])) return null;
+  const c = Math.floor(+d.c);
+  return {
+    n: cleanName(typeof d.n === 'string' ? d.n : ''), h: EMB[d.h] ? d.h : 'cerf', c: c >= 0 && c < PCOL.length ? c : 0,
+    u: TENUE_WIRE.includes(d.u) ? d.u : 'bois', s, w: Math.max(0, Math.min(999, Math.floor(+d.w || 0))), t: Math.max(0, Math.floor(+d.t || 0))
+  };
+}
+function rkMsg(topic, payload) {
+  if (typeof topic !== 'string' || topic.lastIndexOf(RK_TOPIC, 0) !== 0) return;
+  const parts = topic.slice(RK_TOPIC.length).split('/'); if (parts.length !== 3) return;
+  const key = parts[0] + '/' + parts[1], pid = parts[2];
+  if (!RK_KEYS.includes(key) || !/^[a-z0-9]{6,16}$/.test(pid) || pid === RKX.pid) return;
+  const st = RKX.store[key] || (RKX.store[key] = new Map());
+  const raw = typeof payload === 'string' ? payload : '';
+  if (!raw) { if (st.delete(pid)) rkChanged(); return; }               // an empty retained message: that record is gone
+  let d; try { d = JSON.parse(raw); } catch (e) { return; }
+  const o = rkClean(d, parts[0]); if (!o) return;
+  o.pid = pid;
+  const old = st.get(pid);
+  if (old && old.s === o.s && old.n === o.n && old.h === o.h && old.c === o.c && old.u === o.u && old.w === o.w) return;
+  if (!old && st.size >= 5000) return;
+  st.set(pid, o); rkChanged();
+}
+const rkSig = () => { const h = rkHouse(); return [nick, h, myCol, profCos(h).tenue].join('|'); };
+function rkPayload(key) {
+  const me = rkMe(key); if (!me) return '';
+  return JSON.stringify({ v: 1, n: me.n, h: me.h, c: me.c, u: me.u, s: me.s, w: me.w, t: me.t });
+}
+function rkPubTo(L, key) { const p = rkPayload(key); if (!p || !L.up) return; try { L.client.publish(RK_TOPIC + key + '/' + RKX.pid, p, true); } catch (e) {} }
+function rkPubAll(L) { RK_KEYS.forEach(k => rkPubTo(L, k)); }
+function rkPubOne(key) { Object.values(RKX.links).forEach(L => rkPubTo(L, key)); }
+// one's name, House, colour or outfit changed: the records go out again with them
+function rkMaybeRepub() { const s = rkSig(); if (s === RKX.sig) return; RKX.sig = s; Object.values(RKX.links).forEach(L => { if (L.up) rkPubAll(L); }); }
+function rkLink(bi) {
+  const key = 'r' + bi; if (RKX.links[key]) return;
+  const b = BROKERS[bi]; if (!b) return;
+  const L = { key, bi, client: null, up: false };
+  RKX.links[key] = L;
+  const c = L.client = workerClient(key, b.url, Object.assign({ clientId: 'ddr' + RKX.pid.slice(0, 8) + rid(5), clean: true, keepalive: 30, reconnectPeriod: 6000, connectTimeout: 7000, protocolVersion: 4, resubscribe: false, queueQoSZero: false }, b.opts || {}));
+  const fail = setTimeout(() => { if (L.up || L.was) return; c.end(); if (RKX.links[key] === L) delete RKX.links[key]; rkState(); }, 9000);
+  c.on('connect', () => { L.up = L.was = true; clearTimeout(fail); c.subscribe(RK_TOPIC + '#'); rkPubAll(L); RKX.sig = rkSig(); rkState(); });
+  c.on('close', () => { if (L.up) { L.up = false; rkState(); } });
+  c.on('message', (t, p) => rkMsg(t, p));
+}
+function rkStart() {
+  if (!WEB || typeof BROKERS === 'undefined' || typeof workerClient !== 'function') { RKX.state = 'off'; return; }
+  if (Object.values(RKX.links).some(L => L.up)) return;
+  if (RKX.tried && Date.now() - RKX.tried < 20000) return;
+  RKX.tried = Date.now();
+  try { BROKERS.forEach((b, i) => rkLink(i)); } catch (e) {}
+  rkState();
+}
+function rkState() {
+  const ls = Object.values(RKX.links);
+  RKX.state = !WEB ? 'off' : ls.some(L => L.up) ? 'ok' : ls.length ? 'wait' : 'down';
+  rkNote();
+}
+function rkChanged() {
+  if (RKX.tm) return;
+  RKX.tm = setTimeout(() => { RKX.tm = 0; const v = $('startOv').dataset.view; if (RK_ROW_AT[v]) rkRow(v); if (v === 'records') rkRender(true); }, 120);
+}
+
+// ---- the faces: the general's head (20 x 20 art px, twice) on a row, his bust (28 x 28, three times) on the first one's plate
+function rkFace(cv) {
+  if (!cv.isConnected) return;
+  const h = EMB[cv.dataset.h] ? cv.dataset.h : 'cerf', c = +cv.dataset.c || 0, u = cv.dataset.u || 'bois', big = cv.dataset.k === 'b';
+  const src = profStill(h, c, u); if (!src) { profWhen(h, () => rkFace(cv)); return; }
+  const x = cv.getContext('2d'), n = big ? 28 : 20; let [sx, sy] = (big ? PROF_BUST : PROF_FACE)[h]; if (!big) { sx += 2; sy += 2; }
+  x.imageSmoothingEnabled = false; x.clearRect(0, 0, cv.width, cv.height); x.drawImage(src, sx, sy, n, n, 0, 0, n, n);
+}
+const rkFaces = root => root.querySelectorAll('canvas[data-h]').forEach(rkFace);
+const rkCv = (o, k) => `<canvas width="${k === 'b' ? 28 : 20}" height="${k === 'b' ? 28 : 20}" data-h="${o.h}" data-c="${o.c}" data-u="${o.u}" data-k="${k}"></canvas>`;
+
+// ---- the row « Record » on the three tables
+const RK_ROW_AT = { table: ['table', 'terCar'], gtable: ['gtable', 'gtCar'], ftable: ['ftable', 'ftBoard'] };
+const rkModeOf = p => p === 'gtable' ? 'gem' : p === 'ftable' ? 'farm' : 'lt';
+function rkRow(p) {
+  const at = RK_ROW_AT[p], panel = at && $(at[0]), anchor = at && $(at[1]); if (!panel || !anchor) return;
+  let r = panel.querySelector('.rkrow');
+  if (!r) {
+    r = document.createElement('button'); r.type = 'button'; r.className = 'tb-row rkrow';
+    r.innerHTML = `<span class="ic"><span class="hav"><canvas width="24" height="24"></canvas></span></span><span class="tx"><span class="cp"></span><b></b></span><span class="rk-sc"><b></b><small></small></span>${V69_R12}`;
+    anchor.after(r); r.addEventListener('click', () => rkOpen(p));
+  }
+  const mode = rkModeOf(p), key = rkKeyOf(mode, GTB.map), list = rkList(key), top = list[0];
+  r.hidden = !top; if (!top) return;
+  const meI = list.findIndex(o => o.me), mapN = mode === 'gem' ? (GEM_MAPS.find(m => 'gem/' + m.id === key) || {}).n : '';
+  r.querySelector('.cp').innerHTML = 'Record' + (mapN ? `<span class="rk-mp"> · ${esc(mapN)}</span>` : '');
+  r.querySelector('.tx b').textContent = top.n;
+  r.querySelector('.rk-sc b').textContent = profNum(top.s);
+  const sm = r.querySelector('.rk-sc small');
+  sm.textContent = meI === 0 ? 'toi' : meI > 0 ? 'toi · ' + (meI + 1) + 'e' : ''; sm.className = meI === 0 ? 'me' : ''; sm.hidden = meI < 0;
+  r.querySelector('.hav').style.setProperty('--pc', PCOL[top.c] || PCOL[0]);
+  r.setAttribute('aria-label', `${mapN ? 'Record de ' + mapN : 'Record'} : ${top.n}, ${profNum(top.s)}${meI === 0 ? ', c’est toi' : meI > 0 ? ', tu es ' + (meI + 1) + 'e' : ''}. Toucher pour voir tous les records`);
+  const cv = r.querySelector('canvas'), k = top.h + '|' + top.c + '|' + top.u;
+  if (cv.dataset.k !== k) {
+    cv.dataset.k = ''; cv.dataset.want = k;
+    const draw = () => { if (cv.dataset.want !== k) return true; const ok = profCrop(cv, top.h, top.c, top.u, PROF_FACE, 24); if (ok) cv.dataset.k = k; return ok; };
+    if (!draw()) profWhen(top.h, draw);
+  }
+}
+
+// ---- the board « Records »
+const RK_BACK = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 4 L7 12 L15 20" stroke="currentColor" stroke-width="3" stroke-linecap="square"/></svg>';
+(() => {
+  const ov = $('startOv'); if (!ov || $('records')) return;
+  const d = document.createElement('div'); d.className = 'sp rk'; d.id = 'records'; d.dataset.p = 'records'; d.hidden = true;
+  d.innerHTML = `<div class="sp-col"><div class="tb-head"><button class="back" id="rkBack" type="button" aria-label="Retour">${RK_BACK}</button><h2 class="ds tb-title rk-ttl">${rkCrown(3)}Records</h2><span></span></div>` +
+    `<div class="rk-tabs" id="rkTabs" role="tablist" aria-label="Mode">${Object.keys(RK_MODE).map(m => `<button type="button" role="tab" data-m="${m}" aria-selected="false">${RK_MODE[m]}</button>`).join('')}</div>` +
+    `<div class="rk-maps" id="rkMaps" role="radiogroup" aria-label="Carte">${GEM_MAPS.map(m => `<button class="sg" type="button" data-map="${m.id}" aria-pressed="false">${esc(m.n)}</button>`).join('')}</div>` +
+    `<div class="rk-list" id="rkList" role="list"></div><p class="rk-note" id="rkNote" hidden></p><div class="rk-pin" id="rkPin" hidden></div></div>`;
+  ov.appendChild(d);
+  $('rkBack').addEventListener('click', () => { sfx('back'); rkClose(); });
+  $('rkTabs').addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (!b || b.dataset.m === RKX.mode) return; sfx('click'); RKX.mode = b.dataset.m; rkRender(false); });
+  $('rkMaps').addEventListener('click', e => { const b = e.target.closest('[data-map]'); if (!b || b.dataset.map === RKX.map) return; sfx('click'); RKX.map = b.dataset.map; rkRender(false); });
+})();
+const rkLine = (o, rank) => `<div class="rk-r r${rank}${o.me ? ' me' : ''}" role="listitem"><span class="n">${rank}</span><span class="av" style="--pc:${PCOL[o.c] || PCOL[0]}">${rkCv(o, 's')}</span>` +
+  `<span class="nm"><b><span class="rk-nm">${esc(o.n)}</span>${o.me ? '<i class="rk-tag">toi</i>' : ''}</b>${o.w ? `<small>vague ${o.w}</small>` : ''}</span><span class="sc">${profNum(o.s)}</span></div>`;
+const rkPlate = o => `<div class="rk-top${o.me ? ' me' : ''}" role="listitem"><span class="hav" style="--pc:${PCOL[o.c] || PCOL[0]}">${rkCv(o, 'b')}<i class="rk-cr">${rkCrown(3)}</i></span>` +
+  `<span class="nm"><span class="cp">Record${o.me ? '<i class="rk-tag">toi</i>' : ''}</span><b><span class="rk-nm">${esc(o.n)}</span></b>${o.w ? `<small>vague ${o.w}</small>` : ''}</span><span class="sc">${profNum(o.s)}</span></div>`;
+function rkNote() {
+  const n = $('rkNote'); if (!n) return;
+  const t = RKX.state === 'off' ? 'Sur claude.ai, seulement tes records.' : RKX.state === 'wait' ? 'Les records de tous arrivent…' : RKX.state === 'down' ? 'Hors ligne : seulement tes records.' : '';
+  n.textContent = t; n.hidden = !t;
+}
+function rkRender(keep) {
+  const el = $('records'); if (!el || el.hidden) return;
+  const mode = RK_MODE[RKX.mode] ? RKX.mode : 'lt', key = rkKeyOf(mode, RKX.map), list = rkList(key);
+  $('rkTabs').querySelectorAll('[data-m]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.m === mode)));
+  $('rkMaps').hidden = mode !== 'gem';
+  $('rkMaps').querySelectorAll('[data-map]').forEach(b => b.setAttribute('aria-pressed', String('gem/' + b.dataset.map === key)));
+  const box = $('rkList'), y = keep ? box.scrollTop : 0, shown = list.slice(0, RK_MAX), meI = list.findIndex(o => o.me);
+  box.innerHTML = shown.length ? shown.map((o, i) => i ? rkLine(o, i + 1) : rkPlate(o)).join('') : '<p class="rk-empty">Aucun record pour l’instant</p>';
+  box.setAttribute('aria-label', 'Records · ' + RK_MODE[mode] + (mode === 'gem' ? ' · ' + (GEM_MAPS.find(m => 'gem/' + m.id === key) || {}).n : ''));
+  box.scrollTop = y; rkFaces(box);
+  const pin = $('rkPin');
+  pin.innerHTML = meI >= 1 ? '<div class="rk-more" aria-hidden="true"><i></i><i></i><i></i></div>' + rkLine(list[meI], meI + 1) : '';
+  if (meI >= 1) rkFaces(pin);
+  rkPinWatch(meI);
+  rkNote();
+}
+// one's own row stays at the bottom while it is out of sight (always, past the first hundred)
+function rkPinWatch(meI) {
+  if (RKX.io) { RKX.io.disconnect(); RKX.io = null; }
+  const pin = $('rkPin'), row = $('rkList').querySelector('.rk-r.me');
+  if (meI < 1) { pin.hidden = true; return; }
+  if (!row) { pin.hidden = false; return; }
+  if (!('IntersectionObserver' in window)) { pin.hidden = meI < 7; return; }
+  pin.hidden = true;
+  RKX.io = new IntersectionObserver(es => { const e = es[es.length - 1]; pin.hidden = e.isIntersecting; }, { root: $('rkList'), threshold: 0.9 });
+  RKX.io.observe(row);
+}
+function rkOpen(from) {
+  audioInit(); sfx('click');
+  RKX.from = from || 'home';
+  if (from === 'gtable') { RKX.mode = 'gem'; RKX.map = GTB.map; }
+  else if (from === 'ftable') RKX.mode = 'farm';
+  else if (from === 'table') RKX.mode = 'lt';
+  else { let m = ''; try { m = localStorage.getItem('ddl-rk-mode') || ''; } catch (e) {} RKX.mode = RK_MODE[m] ? m : 'lt'; RKX.map = GTB.map; }
+  rkStart(); rkMaybeRepub();
+  showPanel('records'); rkRender(false);
+  try { $('rkBack').focus({ preventScroll: true }); } catch (e) {}
+}
+function rkClose() {
+  if (RKX.io) { RKX.io.disconnect(); RKX.io = null; }
+  const to = (RK_ROW_AT[RKX.from] || RKX.from === 'home') ? RKX.from : 'home';
+  showPanel(to);
+  const b = to === 'home' ? $('recBtn') : $(RK_ROW_AT[to][0]).querySelector('.rkrow');
+  if (b && !b.hidden) try { b.focus({ preventScroll: true }); } catch (e) {}
+}
+
+// ---- the crown on the home, by « ? » and the settings
+(() => {
+  const top = document.querySelector('.hm-top'); if (!top || $('recBtn')) return;
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'hm-ic'; b.id = 'recBtn'; b.setAttribute('aria-label', 'Les records');
+  b.innerHTML = rkCrown(2); top.insertBefore(b, top.firstChild);
+  b.addEventListener('click', () => rkOpen('home'));
+})();
+
+// ---- where the scores come from: Line Towers' end (podResults), Gem TD's and Farm TD's pages (their message « score »)
+{ const base = podResults; podResults = function () {
+    const r = base.apply(this, arguments);
+    try { if (G && G.podRec === 1 && !G.rkDone && r && r.rec && r.rec.fresh) { G.rkDone = 1; rkMine('lt/all', r.rec.v, G.wave); } } catch (e) {}
+    return r;
+}; }
+window.addEventListener('message', e => {
+  const d = e.data; if (!d || d.t !== 'score' || !isFinite(d.score) || d.score < 0) return;
+  const w = isFinite(d.wave) ? Math.round(d.wave) : 0;
+  if (d.gemtd === 1 && GEMX.fr && e.source === GEMX.fr.contentWindow) { if (GEM_MAPS.some(m => m.id === d.map)) rkMine('gem/' + d.map, Math.round(d.score), w); }
+  else if (d.farmtd === 1 && FARMX.fr && e.source === FARMX.fr.contentWindow) rkMine('farm/trefle', Math.round(d.score), w);
+});
+
+// ---- the tables: the row, and the captions of the maps without their record (the row says it)
+{ const base = renderGemTable; renderGemTable = function () {
+    const r = base.apply(this, arguments), M = GEM_MAPS.find(m => m.id === GTB.map) || GEM_MAPS[1];
+    $('gtMapName').textContent = M.n; rkRow('gtable'); return r;
+}; }
+{ const base = renderFarmTable; renderFarmTable = function () { const r = base.apply(this, arguments); $('ftBoardVal').textContent = 'Le Trèfle'; rkRow('ftable'); return r; }; }
+{ const base = renderTable; renderTable = function () { const r = base.apply(this, arguments); rkRow('table'); return r; }; }
+{ const base = showPanel; showPanel = function (p) {
+    const r = base.apply(this, arguments);
+    if (RK_ROW_AT[p]) { try { localStorage.setItem('ddl-rk-mode', rkModeOf(p)); } catch (e) {} rkRow(p); rkMaybeRepub(); }
+    return r;
+}; }
+// the music of the home plays on the board too
+{ const base = musWanted; musWanted = function () {
+    const ov = $('startOv');
+    if (ov && !ov.hidden && ov.dataset.view === 'records') return !!(MUS.on && SFX.on && !document.hidden);
+    return base.apply(this, arguments);
+}; }
+if (WEB) setTimeout(rkStart, 1200);
+/* ================================================================ /version 75 */
 
 useTerrain(TERKEY);
 demo();
