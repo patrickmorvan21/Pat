@@ -1527,6 +1527,21 @@ body:has(#startOv:not([hidden]):not([data-view=home])[data-view=ftable]){backgro
 #records .rk-top.long{grid-template-columns:auto minmax(0,1fr);row-gap:4px}
 #records .rk-top.long .hav{grid-row:1 / span 2}
 #records .rk-top.long .sc{grid-column:2;grid-row:2;justify-self:start;font-size:32px}
+/* ================================================================ version 77 · the fou's games at the Entracte */
+/* the field takes every finger: no scroll, no zoom, no selection while a game is on */
+.jt-entr.fg-on .jt-pal-box{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+/* the chips: the cabbages each House has, or a gold mark when it has finished */
+.jt-pal-who .pw .fg-v{margin-left:auto;flex:none;font-style:normal;font-family:var(--fb);font-weight:400;font-size:var(--t);line-height:1;color:var(--gold)}
+.jt-pal-who .pw .fg-v:empty{display:none}
+.jt-pal-who .pw .fg-v i{display:block;width:calc(var(--u)*3.4);height:calc(var(--u)*3.4);background:var(--gold)}
+/* « 3 », « 2 », « 1 », « Partez ! » over the field, on the fou's parchment */
+.fg-cd{position:absolute;left:50%;top:44%;z-index:3;transform:translate(-50%,-50%);pointer-events:none;padding:calc(var(--u)*4) calc(var(--u)*11) calc(var(--u)*5);background:var(--parch);box-shadow:inset 0 0 0 calc(var(--u)*1.34) var(--pink);color:var(--pink);font-family:var(--ft);font-weight:400;font-size:calc(var(--t)*3.4);line-height:1;white-space:nowrap}
+.fg-cd.go{font-size:calc(var(--t)*2.3)}
+.fg-cd.in{animation:fgCd .3s steps(3) both}
+@keyframes fgCd{from{opacity:0;transform:translate(-50%,-50%) scale(1.5)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@media (prefers-reduced-motion:reduce){.fg-cd.in{animation:none}}
+/* a narrow phone: the game's name stays on one line */
+@media (max-width:380px){.jt-entr.fg-on .jt-entr-k{font-size:calc(var(--t)*1.22);letter-spacing:.04em;white-space:nowrap}}
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
 </head>
@@ -18656,6 +18671,771 @@ function gemQuickSet(on) {
     if (nm && nm.scrollWidth > nm.clientWidth + 1) t.classList.add('long');
     return r;
 }; }
+
+/* ================================================================ version 77 · the fou's games at the Entracte
+   Patrick, 03/11, 16 h 34: « Je veux bien que tu mettes les jeux du fou à l'entracte en ligne… tu peux l'envoyer sur Line Towers »,
+   after the board of 21/10 (« Les jeux du fou · six mini-jeux pour l'Entracte »): its first three come now, la course des sangliers,
+   des choux pour le fou and le mât de cocagne. One finger, all the Houses at once, 25 or 30 s, a ranking presented by the fou, and the
+   palet's prizes: the 1st chooses a relic among three (and keeps the golden palet on his blazon), the 2nd gets the bag of gold.
+   At each Entracte the fou plays one game among the palet and these three, never the one of the last Entracte played on this device
+   (ddl-fou-last); it is drawn when the joust starts, so the programme and his cry a wave before can name it. jtEntrStart() itself is
+   still the palet (the older suites call it).
+   Each House's game is its own, worked out from its taps and the conditions the host drew from one seed, the same for all (the fou's
+   windows, the drum's beats): a guest plays on his own clock and sends his taps (['J', 'fg', index of the first, taps…]); the host
+   replays them, ranks everyone (a tie goes to the fastest) and hands out the prizes. The host's snapshot carries the game in a 7th
+   field (an older guest ignores it and only sees the joust stand still for a moment).
+   Everything wraps the game's own functions and draws in the palet's own screen and canvas (120 x 270 art pixels). */
+const FG_DT = 1 / 60, FG_INTRO = 5.4, FG_CDN = 2.4, FG_GRACE = 1.2, FG_SEND = 0.15, FG_W = PAL_W + 20, FG_H = PAL_H + 20;
+const FG = {
+  course: { c: 'c', n: 'La course des sangliers', k: 'ENTRACTE · LA COURSE DES SANGLIERS', short: 'la course des sangliers', dur: 25,
+    d: 'Le premier sanglier arrivé choisit une relique', say: '« Oyez ! La course des sangliers ! Tape pour encourager le tien… sans l’essouffler ! »',
+    cnt: '« Qui a passé la ligne le premier ? »', cv: 'La course des sangliers' },
+  choux: { c: 'h', n: 'Des choux pour le fou', k: 'ENTRACTE · DES CHOUX POUR LE FOU', short: 'des choux pour le fou', dur: 30,
+    d: 'Le plus de choux sur le fou choisit une relique', say: '« Oyez ! Des choux pour le fou ! Touche-moi d’un chou… pas ma marotte ! »',
+    cnt: '« On compte les choux… »', cv: 'Le castelet du fou et ses six fenêtres' },
+  mat: { c: 'm', n: 'Le mât de cocagne', k: 'ENTRACTE · LE MÂT DE COCAGNE', short: 'le mât de cocagne', dur: 30,
+    d: 'Le premier en haut du mât prend la relique', say: '« Oyez ! Le mât de cocagne ! Grimpe au rythme de mon tambour ! »',
+    cnt: '« Qui est le plus haut ? »', cv: 'Les mâts de cocagne' },
+};
+const FG_DEC = { c: 'course', h: 'choux', m: 'mat', p: 'palet' };
+const FG_POOL = ['palet', 'course', 'choux', 'mat'];
+const FG_PH = { intro: 'i', play: 'p', count: 'c', end: 'e' }, FG_PHD = { i: 'intro', p: 'play', c: 'count', e: 'end' };
+// what this page keeps of the game on screen: my own play on a guest's page, the little effects, the cached backgrounds
+const FGX = { force: '', mine: null, fx: [], bg: {}, txt: {}, say: '', sayT: 0, sayAt: null, cdk: '', beat: -1, disp: {}, seenF: {}, nth: 0, goT: 0 };
+
+/* ---------------------------------------------------------------- the draw: one game per Entracte, never the last one again */
+function fgPick() {
+  if (FGX.force === 'palet' || FG[FGX.force]) return FGX.force;
+  let last = ''; try { last = localStorage.getItem('ddl-fou-last') || ''; } catch (e) {}
+  const pool = FG_POOL.filter(g => g !== last);
+  return pool[(Math.random() * pool.length) | 0];
+}
+function fgRemember(g) { try { localStorage.setItem('ddl-fou-last', g); } catch (e) {} }
+const fgPlan = () => { const g = G && G.jt && G.jt.fgGame; return g === 'palet' || FG[g] ? g : ''; };
+// the programme names the Entracte that is coming (« Entracte : la course des sangliers »)
+(function fgEv() {
+  const E0 = EV.entracte, n0 = E0.n, d0 = E0.d;
+  Object.defineProperty(E0, 'n', { configurable: true, enumerable: true, get() { const g = fgPlan(); return FG[g] ? 'Entracte : ' + FG[g].short : n0; } });
+  Object.defineProperty(E0, 'd', { configurable: true, enumerable: true, get() { const g = fgPlan(); return FG[g] ? FG[g].d : d0; } });
+})();
+
+/* ---------------------------------------------------------------- the rules: pure, from a state and a list of taps (host and guest agree) */
+// the race: each tap pushes the boar on but costs breath; out of breath, he only trots for a moment. Resting brings it back faster.
+const RACE = { LEN: 72, DV: 1.9, VMAX: 10, DEC: 0.977, COST: 0.075, REGT: 0.22, REGR: 0.7, RESTT: 0.35, EXT: 1.2, EXDEC: 0.93, TROT: 1.5, BR0: 0.4 };
+// the cabbages: one throw every 0.3 s at most; the fou counts +1, his marotte -1
+const CHOU = { RELOAD: 0.3 };
+// the pole: a tap on the beat (up to 0.12 s early, 0.18 s late) climbs a step; off the beat, or twice on one beat, slips one down
+const MAT = { H: 18, E: 0.12, L: 0.18 };
+function fgCond(game, seed) {
+  const R = prng(seed);
+  if (game === 'choux') {
+    const pops = []; let t = 0.9, last = -1;
+    while (t < FG.choux.dur - 0.7) {
+      const u = t / FG.choux.dur; let w;
+      do { w = (R() * 6) | 0; } while (w === last);
+      const kind = pops.length > 2 && R() < 0.22 ? 'm' : 'f';
+      pops.push({ i: pops.length, t: Math.round(t * 100) / 100, w, kind, d: Math.round((1.15 - 0.4 * u) * 100) / 100 });
+      last = w; t += (0.62 + R() * 0.42) * (1 - 0.3 * u);
+    }
+    return { pops };
+  }
+  if (game === 'mat') {
+    const beats = []; let t = 1.0;
+    while (t < FG.mat.dur + 0.4) { beats.push(Math.round(t * 1000) / 1000); t += 0.64 - 0.14 * (t / FG.mat.dur); }
+    return { beats };
+  }
+  return {};
+}
+function fgInit(game) {
+  if (game === 'course') return { n: 0, t: 0, i: 0, x: 0, v: 0, br: 1, ex: 0, fin: -1, lt: -9, ok: 0, lost: 0, exT: -9 };
+  if (game === 'choux') return { t: 0, i: 0, score: 0, tS: 0, last: -9, thr: 0, hit: {}, mar: 0, ev: [] };
+  return { t: 0, i: 0, h: 0, tH: 0, lb: -1, fin: -1, slipT: -9, upT: -9, ev: [] };
+}
+function fgRaceTap(st, tp) {
+  if (st.fin >= 0 || st.ex > 0) { st.lost++; return; }
+  st.ok++; st.lt = tp.t;
+  st.v = Math.min(RACE.VMAX, st.v + RACE.DV);
+  st.br -= RACE.COST;
+  if (st.br <= 0) { st.br = 0; st.ex = RACE.EXT; st.exT = tp.t; }
+}
+function fgRaceTick(st, t1) {
+  if (st.fin < 0) { st.x += st.v * FG_DT; if (st.x >= RACE.LEN) { st.x = RACE.LEN; st.fin = Math.round(t1 * 1000) / 1000; } }
+  if (st.ex > 0) { st.v = Math.max(st.fin < 0 ? RACE.TROT : 0, st.v * RACE.EXDEC); st.ex -= FG_DT; if (st.ex <= 1e-9) { st.ex = 0; st.br = RACE.BR0; } }
+  else { st.v *= RACE.DEC; st.br = Math.min(1, st.br + (t1 - st.lt > RACE.RESTT ? RACE.REGR : RACE.REGT) * FG_DT); }
+}
+const fgPopAt = (cond, w, t) => { for (const p of cond.pops) if (p.w === w && t >= p.t && t <= p.t + p.d) return p; return null; };
+function fgChouTap(st, cond, tp) {
+  if (tp.t - st.last < CHOU.RELOAD - 1e-9) return;
+  st.last = tp.t; st.thr++;
+  const p = fgPopAt(cond, tp.w, tp.t); let r = 'miss';
+  if (p && !st.hit[p.i]) {
+    st.hit[p.i] = 1;
+    if (p.kind === 'f') { st.score++; r = 'hit'; } else { if (st.score > 0) st.score--; st.mar++; r = 'mar'; }
+    st.tS = tp.t;
+  }
+  st.ev.push({ t: tp.t, w: tp.w, r, p: p ? p.i : -1 });
+}
+function fgMatTap(st, cond, tp) {
+  if (st.fin >= 0) return;
+  const bs = cond.beats; let b = -1, best = 9;
+  for (let i = 0; i < bs.length; i++) { const d = tp.t - bs[i]; if (d >= -MAT.E && d <= MAT.L && Math.abs(d) < best) { best = Math.abs(d); b = i; } if (bs[i] > tp.t + 1) break; }
+  if (b >= 0 && b > st.lb) {
+    st.lb = b; st.h++; st.tH = tp.t; st.upT = tp.t; st.ev.push({ t: tp.t, r: 'up' });
+    if (st.h >= MAT.H) { st.h = MAT.H; st.fin = tp.t; }
+  } else {
+    if (st.h > 0) { st.h--; st.tH = tp.t; }
+    st.slipT = tp.t; st.ev.push({ t: tp.t, r: 'slip' });
+  }
+}
+// bring a state forward to tTo (never past the game's time): the taps in order, the race's motion tick by tick
+function fgAdvance(game, cond, st, taps, tTo) {
+  tTo = Math.min(tTo, FG[game].dur);
+  if (game === 'course') {
+    while ((st.n + 1) * FG_DT <= tTo + 1e-9) {
+      const t1 = (st.n + 1) * FG_DT;
+      while (st.i < taps.length && taps[st.i].t < t1) fgRaceTap(st, taps[st.i++]);
+      fgRaceTick(st, t1);
+      st.n++; st.t = t1;
+    }
+    return st;
+  }
+  while (st.i < taps.length && taps[st.i].t <= tTo + 1e-9) { const tp = taps[st.i++]; if (game === 'choux') fgChouTap(st, cond, tp); else fgMatTap(st, cond, tp); }
+  if (tTo > st.t) st.t = tTo;
+  return st;
+}
+// the host's state of a House: a tap that came in late (a guest's) replays its race from the start
+function fgSync(E, k, t) {
+  let st = E.st[k]; const taps = E.taps[k];
+  if (E.game === 'course' && st.i < taps.length && taps[st.i].t < st.t - 1e-9) st = E.st[k] = fgInit('course');
+  return fgAdvance(E.game, E.cond, st, taps, t);
+}
+const fgDone = (game, st) => game !== 'choux' && st && st.fin >= 0;
+const fgValid = (game, st) => !!st && (game === 'course' ? st.x > 0.5 : game === 'choux' ? st.score > 0 : st.h > 0);
+// the ranking: the first at the end (race, pole), then the furthest / the most cabbages / the highest, then the fastest to get there
+function fgRank(E) {
+  const g = E.game, R = E.order.map(k => ({ k, st: E.st[k] }));
+  R.sort((a, c) => {
+    const A = a.st, C = c.st;
+    if (g === 'choux') return (C.score - A.score) || (A.tS - C.tS) || (a.k - c.k);
+    const fa = A.fin >= 0, fc = C.fin >= 0;
+    if (fa && fc) return (A.fin - C.fin) || (a.k - c.k);
+    if (fa !== fc) return fa ? -1 : 1;
+    if (g === 'course') return (C.x - A.x) || (a.k - c.k);
+    return (C.h - A.h) || (A.tH - C.tH) || (a.k - c.k);
+  });
+  return R.map(r => ({ k: r.k }));
+}
+
+/* ---------------------------------------------------------------- the bots (the host's): their level is the table's */
+const FG_SKILL = {
+  easy:   { r: 4.0, lo: -1, hi: 0, jit: 0.35, pause: 0.12, see: 0.55, fool: 0.3, react: 0.55, rj: 0.15, hit: 0.55, sd: 0.1 },
+  normal: { r: 5.0, lo: 0.1, hi: 0.4, jit: 0.25, pause: 0.05, see: 0.68, fool: 0.15, react: 0.44, rj: 0.1, hit: 0.7, sd: 0.08 },
+  hard:   { r: 6.0, lo: 0.12, hi: 0.55, jit: 0.18, pause: 0, see: 0.85, fool: 0.06, react: 0.34, rj: 0.07, hit: 0.84, sd: 0.06 },
+};
+const fgSkill = () => FG_SKILL[(NET.mode === 'host' && NET.diff) || diffKey] || FG_SKILL.normal;
+const fgR2 = t => Math.round(t * 100) / 100, fgF2 = t => Math.floor(t * 100 + 1e-6) / 100;
+// the cabbages and the beats are known from the start: the bot's whole game at once (its throws after its reload)
+function fgBotPlan(E) {
+  const S = fgSkill(), out = [];
+  if (E.game === 'choux') {
+    for (const p of E.cond.pops) {
+      if (Math.random() > (p.kind === 'f' ? S.see : S.fool)) continue;
+      const r = S.react + (Math.random() - 0.5) * 2 * S.rj;
+      if (p.kind === 'f' && r > p.d) continue;
+      out.push({ t: p.t + Math.max(0.12, r), w: p.w });
+    }
+    out.sort((a, c) => a.t - c.t);
+    let last = -9; for (const tp of out) { if (tp.t - last < CHOU.RELOAD) tp.t = last + CHOU.RELOAD; tp.t = fgR2(tp.t); last = tp.t; }
+  } else if (E.game === 'mat') {
+    for (const bt of E.cond.beats) {
+      if (Math.random() < S.hit) out.push({ t: fgR2(bt + (Math.random() - 0.5) * 2 * S.sd) });
+      else if (Math.random() < 0.45) out.push({ t: fgR2(bt + (Math.random() < 0.5 ? -1 : 1) * (0.2 + Math.random() * 0.1)) });
+    }
+    out.sort((a, c) => a.t - c.t);
+  }
+  return out;
+}
+function fgBots(E) {
+  const S = fgSkill(), D = FG[E.game].dur;
+  for (const k of E.order) {
+    const b = G.b[k]; if (!b || !b.bot) continue;
+    const taps = E.taps[k], lastT = taps.length ? taps[taps.length - 1].t : -1;
+    const B = E.bot[k] || (E.bot[k] = { list: E.game === 'course' ? null : fgBotPlan(E).filter(tp => tp.t > Math.max(lastT, E.t)), j: 0, next: E.t + 0.15 + Math.random() * 0.25, rest: false });
+    if (B.list) { while (B.j < B.list.length && B.list[B.j].t <= E.t) { const tp = B.list[B.j++]; if (!taps.length || tp.t >= taps[taps.length - 1].t) taps.push(tp); } continue; }
+    // the race: as it goes, watching its breath
+    const st = E.st[k];
+    while (B.next <= E.t && B.next <= D && st.fin < 0) {
+      if (S.lo >= 0 && !B.rest && st.br <= S.lo && st.ex <= 0) B.rest = true;
+      if (B.rest && st.br >= S.hi) B.rest = false;
+      if (B.rest) { B.next += 0.1; continue; }
+      const t = fgR2(B.next); if (!taps.length || t >= taps[taps.length - 1].t) taps.push({ t });
+      B.next += (1 / S.r) * (1 + (Math.random() - 0.5) * 2 * S.jit) + (Math.random() < S.pause * 0.2 ? 0.5 : 0);
+    }
+  }
+}
+
+/* ---------------------------------------------------------------- the host's game: start, step, finish */
+const fgIn = k => { const E = G && G.entr; return !!(E && E.game && E.order.includes(k) && G.b[k] && G.b[k].alive && !G.spec); };
+const fgRemote = E => NET.mode === 'host' && E.order.some(k => k !== G.me && G.b[k] && !G.b[k].bot);
+function fgStart(game) {
+  const alive = G.b.filter(b => b.alive);
+  if (alive.length < 2 || !FG[game]) return;
+  const seed = 1 + ((Math.random() * 2e9) | 0), order = alive.map(b => b.k);
+  const E = G.entr = { game, phase: 'intro', t: 0, seed, order, cond: fgCond(game, seed), taps: {}, st: {}, bot: {}, res: null, auto: 0, endAt: 0, tEnd: 0 };
+  for (const k of order) { E.taps[k] = []; E.st[k] = fgInit(game); }
+  fgReset();
+  closePop(); closeEmCard(); setAim(null);
+  palOpen();
+  fanfare();
+}
+function fgReset() { FGX.mine = null; FGX.fx = []; FGX.txt = {}; FGX.say = ''; FGX.sayT = 0; FGX.cdk = ''; FGX.beat = -1; FGX.disp = {}; FGX.seenF = {}; FGX.nth = 0; FGX.goT = 0; }
+function fgFirst(E) { let f = Infinity; if (E.game === 'choux') return f; for (const k of E.order) { const st = E.st[k]; if (st && st.fin >= 0) f = Math.min(f, st.fin); } return f; }
+function fgStep(dt) {
+  const E = G.entr, D = FG[E.game].dur;
+  E.t += dt;
+  if (E.phase === 'intro') { if (E.t >= FG_INTRO) { E.phase = 'play'; E.t = 0; } }
+  else if (E.phase === 'play') {
+    fgBots(E);
+    for (const k of E.order) fgSync(E, k, E.t);
+    const remote = fgRemote(E);
+    if (!E.endAt && fgFirst(E) < Infinity) E.endAt = E.t + (remote ? FG_GRACE : 0.8);
+    const all = E.game !== 'choux' && E.order.every(k => E.st[k].fin >= 0);
+    if (E.t >= D + (remote ? FG_GRACE : 0) || (E.endAt && E.t >= E.endAt) || (all && !remote)) { E.tEnd = Math.min(D, E.t); E.phase = 'count'; E.t = 0; }
+  }
+  else if (E.phase === 'count') { if (E.t > 1.3) fgFinish(); }
+  else if (E.phase === 'end') { E.auto += dt; if (E.auto > (E.win === G.me && G.b[G.me].jt.relicPick ? 25 : 9)) palClose(); }
+  fgLocal(); fgDraw(); fgText();
+}
+function fgFinish() {
+  const E = G.entr; if (!E || E.phase === 'end') return;
+  for (const k of E.order) fgSync(E, k, E.tEnd || FG[E.game].dur);
+  E.phase = 'end'; E.t = 0; E.auto = 0;
+  const R = E.res = fgRank(E), w = R[0], s = R[1];
+  if (w && fgValid(E.game, E.st[w.k])) {
+    const b = G.b[w.k]; b.jt.palet = true; cache.me = null; cache.rivals = null;
+    const three = shuffled(relicPool(b)).slice(0, 3);
+    if (b.bot) { const pick = rndOf(three); if (pick) { jtGiveRelic(b, pick); E.botRelic = pick; } }
+    else b.jt.relicPick = three;
+    E.win = w.k;
+  }
+  if (s && E.win !== undefined && fgValid(E.game, E.st[s.k])) { const g = 20 + 3 * G.wave; G.b[s.k].gold += g; E.sack = g; E.second = s.k; }
+  sfx(E.win === G.me ? 'payout' : 'jackpot');
+}
+
+/* ---------------------------------------------------------------- my taps */
+// my play time: the host's own clock on its page, my own clock on a guest's (it starts when I see « Partez ! »)
+function fgNow() {
+  const E = G.entr; if (!E || E.phase !== 'play') return -1;
+  if (auth()) return fgF2(E.t);
+  return FGX.mine ? fgF2((performance.now() - FGX.mine.t0) / 1000) : -1;
+}
+const fgMine = () => { const E = G && G.entr; if (!E) return null; return auth() ? E.st[G.me] || null : FGX.mine ? FGX.mine.st : null; };
+function fgTap(ax, ay, inCv) {
+  const E = G.entr; if (!E || !E.game || E.phase !== 'play' || !fgIn(G.me)) return;
+  const t = fgNow(), D = FG[E.game].dur; if (t < 0 || t > D) return;
+  let tp;
+  if (E.game === 'choux') { if (!inCv) return; const w = fgWinAt(ax, ay); if (w < 0) return; tp = { t, w }; }
+  else tp = { t };
+  let st;
+  if (auth()) { const L = E.taps[G.me]; if (L.length && tp.t < L[L.length - 1].t) tp.t = L[L.length - 1].t; L.push(tp); st = fgSync(E, G.me, E.t); }
+  else {
+    const M = FGX.mine; if (!M) return;
+    const L = M.taps; if (L.length && tp.t < L[L.length - 1].t) tp.t = L[L.length - 1].t; L.push(tp);
+    st = fgAdvance(E.game, E.cond, M.st, L, t); fgSend(true);
+  }
+  fgTapFx(E, tp, st);
+}
+// a guest sends the taps the host does not have yet (it says how many it has): small batches, sent again until they are in
+function fgSend(now) {
+  const E = G.entr, M = FGX.mine; if (!E || !M || auth() || !fgIn(G.me)) return;
+  const ack = Math.min((E.n && E.n[G.me]) | 0, M.taps.length); if (ack >= M.taps.length) return;
+  const T = performance.now(); if (!now && T - M.sentAt < FG_SEND * 1000) return;
+  if (now && T - M.sentAt < 60) return;
+  M.sentAt = T;
+  const W = E.game === 'choux' ? 4 : 3, per = Math.floor(10 / W), enc = tp => (W === 4 ? String(tp.w) : '') + b36(Math.round(tp.t * 100), 3);
+  const chunk = M.taps.slice(ack, ack + 2 * per).map(enc);
+  act(['J', 'fg', ack, chunk.slice(0, per).join(''), chunk.slice(per).join('')]);
+}
+// the host takes a guest's taps: in order, inside the game's time, one at each place of the list
+function fgGesture(k, a) {
+  const E = G.entr;
+  if (!E || !E.game) return 'x';
+  if (!auth()) return '';
+  if (E.phase !== 'play' && E.phase !== 'count') return 'x';
+  const list = E.taps[k]; if (!list || !G.b[k] || G.b[k].bot) return 'x';
+  const i0 = a[2], s = String(a[3] || '') + String(a[4] || '');
+  if (!Number.isInteger(i0) || i0 < 0 || i0 > list.length) return 'x';
+  const W = E.game === 'choux' ? 4 : 3, D = FG[E.game].dur, upTo = E.phase === 'play' ? E.t + 0.5 : D + 0.05;
+  for (let j = 0; (j + 1) * W <= s.length; j++) {
+    if (i0 + j < list.length) continue;
+    const p = s.substr(j * W, W), t = parseInt(p.slice(W - 3), 36) / 100, w = W === 4 ? +p[0] : -1;
+    if (!(t >= 0 && t <= Math.min(D + 0.05, upTo)) || (list.length && t < list[list.length - 1].t) || (W === 4 && !(w >= 0 && w < 6)) || list.length >= 400) return 'x';
+    list.push(W === 4 ? { t, w } : { t });
+  }
+  return '';
+}
+
+/* ---------------------------------------------------------------- over the network: the 7th field of the host's tournament string */
+function fgEncSt(game, st) {
+  if (game === 'course') return b36(st.x * 10, 3) + b36(st.br * 35, 1) + (st.fin >= 0 ? 'f' : st.ex > 0 ? 'e' : '.');
+  if (game === 'choux') return b36(st.score, 2) + b36(st.thr, 2) + '.';
+  return b36(st.h, 2) + (G.entr && G.entr.t - st.slipT < 0.45 && G.entr.t >= st.slipT ? 's' : '.') + (st.fin >= 0 ? 'f' : '.') + '.';
+}
+function fgDecSt(game, s) {
+  if (game === 'course') return { x: parseInt(s.slice(0, 3), 36) / 10, br: parseInt(s[3], 36) / 35, ex: s[4] === 'e' ? 1 : 0, fin: s[4] === 'f' ? 1 : -1 };
+  if (game === 'choux') return { score: parseInt(s.slice(0, 2), 36), thr: parseInt(s.slice(2, 4), 36) };
+  return { h: parseInt(s.slice(0, 2), 36), slip: s[2] === 's', fin: s[3] === 'f' ? 1 : -1 };
+}
+function fgEnc(E) {
+  const head = 'F' + FG[E.game].c + FG_PH[E.phase] + b36(Math.min(1295, Math.round(E.t * 10)), 2) + b36(E.seed, 6);
+  const pl = E.order.map(k => k + b36(E.taps[k].length, 2) + fgEncSt(E.game, E.st[k])).join('');
+  const rs = E.res ? E.res.map(r => r.k).join('') + ',' + (E.win ?? '-') + b36(E.sack || 0, 2) + (E.second ?? '-') + (E.botRelic ? RELIC_KEYS.indexOf(E.botRelic) : '-') : '';
+  return head + ':' + pl + ':' + rs;
+}
+// a guest: the host's game, and my own clock when « Partez ! » comes
+function fgApply(f) {
+  const [head = '', pl = '', rs = ''] = f.slice(1).split(':');
+  const game = FG_DEC[head[0]]; if (!FG[game]) return;
+  const ph = FG_PHD[head[1]] || 'intro', t = parseInt(head.slice(2, 4), 36) / 10, seed = parseInt(head.slice(4, 10), 36);
+  let E = G.entr;
+  if (!E || !E.client || E.game !== game || E.seed !== seed) { E = G.entr = { client: true, game, seed, cond: fgCond(game, seed), phase: ph, t, order: [], st: {}, n: {}, res: null }; fgReset(); }
+  const was = E.phase; E.phase = ph; E.t = t; E.order = [];
+  for (let i = 0; i + 8 <= pl.length; i += 8) { const k = +pl[i]; if (!G.b[k]) continue; E.order.push(k); E.n[k] = parseInt(pl.substr(i + 1, 2), 36); E.st[k] = fgDecSt(game, pl.substr(i + 3, 5)); }
+  if (rs) {
+    const [ord = '', tail = ''] = rs.split(',');
+    E.res = ord.split('').map(c => ({ k: +c })).filter(r => G.b[r.k]);
+    E.win = tail[0] === '-' || tail[0] === undefined ? undefined : +tail[0]; E.sack = parseInt(tail.slice(1, 3), 36) || 0;
+    E.second = tail[3] === '-' || tail[3] === undefined ? undefined : +tail[3]; E.botRelic = tail[4] === '-' || tail[4] === undefined ? '' : RELIC_KEYS[+tail[4]] || '';
+  } else E.res = null;
+  // my own game: my clock starts now (or where the host is, if I come late)
+  if (ph === 'play' && !FGX.mine && fgIn(G.me)) FGX.mine = { t0: performance.now() - (t > 1 ? t * 1000 : 0), taps: [], st: fgInit(game), sentAt: 0 };
+  if (ph !== 'play' && was === 'play' && FGX.mine) fgSend(true);
+  if ($('jtEntr').hidden && G.running) { palOpen(); fanfare(); }
+}
+function fgClientClose() {
+  if (!G || !G.entr || !G.entr.game) return;
+  G.entr = null; $('jtEntr').hidden = true; $('jtPalRes').hidden = true; $('jtJRes').hidden = true; cache.palTxt = null;
+  fgCleanup();
+}
+
+/* ---------------------------------------------------------------- every frame: the sounds of the game, my own play on a guest's page */
+const fgRM = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+function fgLocal() {
+  const E = G.entr; if (!E || !E.game) return;
+  // the countdown, then « Partez ! »
+  if (E.phase === 'intro') {
+    const left = FG_INTRO - E.t, n = left <= FG_CDN ? Math.min(3, Math.ceil(left / (FG_CDN / 3))) : 0;
+    if (n && FGX.cdk !== 'n' + n) { FGX.cdk = 'n' + n; sfx('tick'); }
+  } else if (E.phase === 'play' && FGX.cdk !== 'go') { FGX.cdk = 'go'; FGX.goT = performance.now(); sfx('ding'); fgSay('Partez !', 1.2); }
+  // a guest: my game goes on on my own clock; the taps the host still wants
+  if (!auth() && FGX.mine && E.phase === 'play') { const t = fgNow(); fgAdvance(E.game, E.cond, FGX.mine.st, FGX.mine.taps, t); fgSend(false); }
+  else if (!auth() && FGX.mine && E.phase === 'count') fgSend(false);
+  // the drum: each beat, a knock and the fou's stick up
+  if (E.game === 'mat' && E.phase === 'play') {
+    const t = fgT(E), bs = E.cond.beats;
+    while (FGX.beat + 1 < bs.length && bs[FGX.beat + 1] <= t) { FGX.beat++; sfx('thunk'); if (FGX.beat % 4 === 0 && !fgDone('mat', fgMine())) fgSay('Hop ! Hop !', 0.9); }
+  }
+  // the fou cheers the race on, now and then
+  if (E.game === 'course' && E.phase === 'play') {
+    const st = fgMine(), t = fgT(E);
+    if (st && st.ex > 0 && fgIn(G.me) && !FGX.exSaid) { FGX.exSaid = true; sfx('error'); fgSay('Il souffle !', 1.4); }
+    if (st && !(st.ex > 0)) FGX.exSaid = false;
+    if (t > 2 && performance.now() - FGX.sayT > 5200) fgSay(rndOf(['Allez, allez !', 'Plus vite !', 'Hardi !']), 1.6);
+    for (const k of E.order) { const s = k === G.me && fgMine() ? fgMine() : E.st[k]; if (s && s.fin >= 0 && !FGX.seenF[k]) { FGX.seenF[k] = ++FGX.nth; if (FGX.nth === 1) fgSay(k === G.me ? 'Bravo !' : 'Arrivé !', 1.6); if (k === G.me) sfx('crown'); } }
+  }
+  if (E.game === 'mat' && E.phase === 'play') for (const k of E.order) { const s = k === G.me && fgMine() ? fgMine() : E.st[k]; if (s && s.fin >= 0 && !FGX.seenF[k]) { FGX.seenF[k] = ++FGX.nth; if (k === G.me) sfx('crown'); if (FGX.nth === 1) fgSay('En haut !', 1.6); } }
+}
+// what a tap does at once on my screen
+function fgTapFx(E, tp, st) {
+  if (!st) return;
+  if (E.game === 'course') { if (st.ex > 0 || st.fin >= 0) return; sfx((st.ok % 4) === 1 ? 'thunk' : 'tick'); return; }
+  if (E.game === 'choux') {
+    const ev = st.ev[st.ev.length - 1]; if (!ev || ev.t !== tp.t) return;    // still reloading: no cabbage
+    sfx('back'); FGX.fx.push({ k: 'cab', w: ev.w, r: ev.r, at: performance.now() });
+    return;
+  }
+  const ev = st.ev[st.ev.length - 1]; if (!ev || ev.t !== tp.t) return;
+  if (ev.r === 'up') { sfx('tick'); FGX.fx.push({ k: 'ring', at: performance.now() }); }
+  else { sfx('reel'); fgSay('Glisse !', 0.8); }
+}
+
+/* ---------------------------------------------------------------- the pictures (the palet's canvas: 120 x 270 art pixels) */
+const fgCol = k => PCOL[pcol(k)] || '#8a8a8a', fgDark = k => PDARK[pcol(k)] || '#555555';
+const fgLt = (c, t) => tint(c, t, '#ffffff');
+function fgShadow(x, cx, cy, rx, ry) { x.globalAlpha = 0.3; P.ell(cx, cy, rx, ry, '#3a3026'); x.globalAlpha = 1; }
+function fgSpr2(rows, pal, ox, oy, flip = false) { for (let j = 0; j < rows.length; j++) { const r = rows[j]; for (let i = 0; i < r.length; i++) { const c = pal[r[flip ? r.length - 1 - i : i]]; if (c) P.rect(ox + i * 2, oy + j * 2, 2, 2, c); } } }
+function fgBlit(x, s, ax, ay, sc) { if (s && s.cv) x.drawImage(s.cv, Math.round(ax) + s.ox * sc, Math.round(ay) + s.oy * sc, s.cv.width * sc, s.cv.height * sc); }
+function fgFou(x, ax, ay, rows = 'front', flip = false) { const r = JEST_ROWS[rows] || JEST_ROWS.front; fgShadow(x, ax + (r[0].length >> 1), ay + r.length, 6, 2); P.spr(r, JEST_PAL, ax, ay, flip); }
+function fgFrame() {
+  const W = FG_W, H = FG_H;
+  P.rect(0, 0, 3, H, '#2b2a2a'); P.rect(W - 3, 0, 3, H, '#2b2a2a'); P.rect(0, 0, W, 3, '#2b2a2a'); P.rect(0, H - 3, W, 3, '#2b2a2a');
+  for (const bx of [3, W - 7]) { P.rect(bx, 3, 4, H - 6, '#6b5238'); P.vl(bx + (bx < 10 ? 3 : 0), 3, H - 6, '#8a6a48'); for (let j = 10; j < H; j += 26) P.hl(bx, j, 4, '#5a4436'); }
+  P.rect(3, 3, W - 6, 3, '#5a4436'); P.rect(3, H - 6, W - 6, 3, '#5a4436');
+}
+function fgSky(y0, y1, seed) {
+  const bands = ['#a9c4d4', '#b4ccd9', '#bed3dd', '#c8d9e0', '#d2dfe2'];
+  for (let y = y0; y < y1; y++) P.hl(7, y, FG_W - 14, bands[Math.min(bands.length - 1, Math.floor((y - y0) / (y1 - y0) * bands.length))]);
+  for (let i = 0; i < 5; i++) { const cx = 14 + ((i * 37 + seed * 13) % 92), cy = y0 + 8 + ((i * 23 + seed * 7) % Math.max(8, (y1 - y0) / 3)); P.hl(cx - 6, cy, 13, '#e3ecee'); P.hl(cx - 3, cy - 1, 8, '#e3ecee'); }
+}
+function fgTents(yb) {
+  const tc = ['#b5655b', '#ece6d6', '#7192b6', '#ece6d6', '#c78a4c', '#ece6d6', '#9a87bf'];
+  for (let t = 0; t < 5; t++) {
+    const cx = 14 + t * 23, w = 9 + (t % 2) * 3, h = 9 + (t % 3) * 2, c = tc[t % tc.length];
+    for (let j = 0; j < h; j++) { const hw = Math.round(w * j / h); for (let i = -hw; i <= hw; i++) P.px(cx + i, yb - h + j, (Math.floor((i + 40) / 3) % 2) ? c : '#e8e0cf'); }
+    P.rect(cx - w, yb, 2 * w + 1, 4, tint(c, 0.25, '#000000')); P.px(cx, yb - h - 2, '#e6c35a'); P.px(cx, yb - h - 1, '#8a6a48');
+  }
+}
+function fgGrass(y0, y1, seed) {
+  for (let y = y0; y < y1; y++) for (let i = 7; i < FG_W - 7; i++) { const n = phash(i >> 1, y >> 1, seed); P.px(i, y, n > 0.9 ? '#8fb07a' : n < 0.1 ? '#6c8f62' : '#7ea06f'); }
+  for (let i = 0; i < 70; i++) { const gx = 8 + Math.floor(phash(i, 3, seed) * (FG_W - 16)), gy = y0 + 2 + Math.floor(phash(i, 7, seed) * (y1 - y0 - 3)); P.px(gx, gy, '#a3c08a'); P.px(gx + 1, gy - 1, '#a3c08a'); }
+}
+// a background drawn once for a game and its Houses
+function fgBg(E, key, fn) {
+  const id = E.game + '|' + key; let c = FGX.bg[id];
+  if (!c) {
+    const [cv, x] = mkCanvas(FG_W, FG_H), prev = P; P = mkPen(x);
+    try { fn(x); } finally { P = prev; }
+    c = FGX.bg[id] = cv;
+    const ks = Object.keys(FGX.bg); if (ks.length > 12) delete FGX.bg[ks[0]];
+  }
+  return c;
+}
+const fgStOf = (E, k) => (k === G.me && !auth() && FGX.mine ? FGX.mine.st : E.st[k]) || fgInit(E.game);
+const fgT = E => E.phase === 'play' ? (auth() || !FGX.mine ? E.t : Math.max(0, fgNow())) : E.phase === 'intro' ? 0 : (E.tEnd || FG[E.game].dur);
+
+// ---- la course des sangliers: a lane for each House, the stands at the top, my breath at the bottom
+function fgLanes(E) {
+  const n = Math.max(1, E.order.length), LH = Math.min(48, Math.floor(160 / n)), top = 64 + Math.floor((160 - n * LH) / 2);
+  return { n, LH, top };
+}
+// where a boar stands at the start (just past the pennants) and at the end (his snout on the line), at either size
+function fgBoarGeo(sc) {
+  const key = 'boar' + sc; if (FGX[key]) return FGX[key];
+  const s = creepSprite('boar', 'side', 0, 0, 0), l = s && s.cv ? s.ox * sc : -8 * sc, r = s && s.cv ? (s.ox + s.cv.width) * sc : 8 * sc;
+  return (FGX[key] = { a0: 19 - l, a1: 100 - r });
+}
+function fgDrawCourse(x, E) {
+  const L = fgLanes(E), cols = E.order.map(k => pcol(k)).join('');
+  x.drawImage(fgBg(E, L.n + '|' + cols + '|' + (fgIn(G.me) ? 1 : 0), () => {
+    fgFrame(); fgSky(6, 58, 11); fgTents(56);
+    P.rect(7, 56, FG_W - 14, 6, '#8a6a48'); for (let i = 9; i < FG_W - 7; i += 6) P.rect(i, 52, 2, 10, '#6b5238'); P.hl(7, 56, FG_W - 14, '#a8875c');
+    fgGrass(62, 264, 12);
+    E.order.forEach((k, l) => {
+      const y0 = L.top + l * L.LH;
+      for (let y = y0; y < y0 + L.LH; y++) for (let i = 7; i < FG_W - 7; i++) { const nn = phash(i >> 1, y >> 1, 20 + l); P.px(i, y, l % 2 ? (nn > 0.85 ? '#86a876' : '#7ea06f') : (nn > 0.85 ? '#8fb07a' : '#87a977')); }
+      for (let i = 9; i < FG_W - 9; i += 4) P.hl(i, y0, 2, '#e8ecdf');
+      const fy = y0 + Math.max(3, Math.floor(L.LH / 2) - 8);
+      P.vl(10, fy, Math.min(16, L.LH - 4), '#6b5238'); P.rect(11, fy, 6, 5, fgCol(k)); P.px(17, fy + 1, fgCol(k)); P.hl(11, fy + 4, 5, fgDark(k));
+    });
+    P.hl(9, L.top + L.n * L.LH, FG_W - 18, '#e8ecdf');
+    for (let y = L.top; y < L.top + L.n * L.LH; y++) for (let i = 0; i < 4; i++) P.px(100 + i, y, ((i >> 1) + (y >> 1)) % 2 ? '#ece6d6' : '#5a4436');
+    if (fgIn(G.me)) { P.rect(16, 236, 88, 12, '#5a4436'); P.rect(17, 237, 86, 10, '#2e2a30'); P.ell(12, 242, 3, 3, '#c46d5c'); P.px(11, 240, '#e8a090'); }
+  }), 0, 0);
+  const t = fgT(E), now = performance.now(), sc = L.LH >= 34 ? 2 : 1, rm = fgRM(), geo = fgBoarGeo(sc);
+  E.order.forEach((k, l) => {
+    const st = fgStOf(E, k), y = L.top + l * L.LH + Math.min(L.LH - 6, sc === 2 ? 30 : Math.floor(L.LH * 0.75));
+    // the guest's view of the others comes in steps: it eases towards them
+    const d = FGX.disp[k] ?? st.x, xs = rm ? st.x : d + (st.x - d) * 0.35; FGX.disp[k] = xs;
+    const ax = Math.round(geo.a0 + (geo.a1 - geo.a0) * xs / RACE.LEN);
+    const running = st.fin < 0 && (st.v === undefined ? xs !== d : st.v > 1.2) && E.phase === 'play';
+    fgShadow(x, ax, y + 2, sc === 2 ? 15 : 8, sc === 2 ? 3 : 2);
+    if (running && !rm) for (let dd = 1; dd <= 3; dd++) { const ph = ((now / 90) | 0) + dd; P.rect(ax - (sc === 2 ? 18 : 10) - dd * 5, y - 3 - (ph % 2) * 2, 2, 2, '#d8cfbd'); }
+    const fr = running ? ((now / 140) | 0) % 2 : 0, s = creepSprite('boar', 'side', fr, pcol(k), 0);
+    fgBlit(x, s, ax, y, sc);
+    const bw = sc === 2 ? 13 : 7, bh = sc === 2 ? 6 : 3, bx = ax - (sc === 2 ? 8 : 4), by = y - (sc === 2 ? 15 : 8);
+    P.rect(bx, by, bw, bh, fgCol(k)); P.hl(bx, by, bw, fgLt(fgCol(k), 0.3)); P.hl(bx, by + bh - 1, bw, fgDark(k));
+    if (st.ex > 0 && st.fin < 0) for (let j = 0; j < 3; j++) { const px = ax + 10 + j * 4, py = by - 6 - ((((now / 200) | 0) + j) % 3); P.rect(px, py, 3, 2, '#f2f4ec'); P.px(px + 1, py - 1, '#ffffff'); }
+    if (k === G.me && fgIn(G.me)) P.ring(ax - 2, by - 7, 3, 1, '#e6c35a', 1);
+    if (st.fin >= 0 && FGX.seenF[k]) { const m = FGX.seenF[k], c = m === 1 ? '#e6c35a' : m === 2 ? '#c9ced6' : '#c78a4c'; P.ell(110, y - 8, 3, 3, c); P.px(109, y - 10, '#fff2b4'); }
+  });
+  // my breath: ten pips; red when he is out of breath
+  if (fgIn(G.me)) {
+    const st = fgMine() || fgInit('course'), n = Math.round(st.br * 10), ex = st.ex > 0;
+    for (let i = 0; i < 10; i++) P.rect(19 + Math.round(i * 8.4), 239, 6, 6, ex ? ((((now / 160) | 0) % 2) ? '#c46d5c' : '#8a4a43') : i < n ? (i < 3 ? '#b8862e' : '#e6c35a') : '#4a4448');
+  }
+  fgFou(x, 98, 20, E.phase === 'intro' && E.t < FG_INTRO - FG_CDN ? 'ann' : 'front', true);
+}
+
+// ---- des choux pour le fou: his castelet, six windows; he pops out of one, sometimes it is his marotte
+const FG_WX = [19, 63], FG_WY = [40, 98, 156], FG_WW = 38, FG_WH = 46;
+const FG_CAB = ['..gGg..', '.gGlGg.', 'gGlGlGg', 'gGGlGGg', '.gGGGg.', '..ggg..'], FG_CABP = { g: '#6c8f62', G: '#8fb07a', l: '#d6e4c2' };
+const FG_MAROT = ['.b..b.', 'rRRRRr', '.ssss.', 'skssks', '.ssss.', '..ss..'], FG_MAROTP = { b: '#f0d878', r: '#7a3530', R: '#a24a40', s: '#e2b48c', k: '#6c2b39' };
+function fgWinAt(ax, ay) {
+  let best = -1, bd = 1e9;
+  for (let w = 0; w < 6; w++) {
+    const wx = FG_WX[w % 2], wy = FG_WY[w >> 1], dx = Math.max(wx - 4 - ax, 0, ax - (wx + FG_WW + 4)), dy = Math.max(wy - 4 - ay, 0, ay - (wy + FG_WH + 6));
+    const d = dx * dx + dy * dy; if (d < bd) { bd = d; best = w; }
+  }
+  return bd <= 100 ? best : -1;
+}
+function fgDrawChoux(x, E) {
+  x.drawImage(fgBg(E, 'booth', () => {
+    fgFrame(); fgSky(6, 230, 14); fgGrass(230, 264, 15);
+    const bx0 = 14, bx1 = 106, by0 = 30, by1 = 214;
+    P.rect(bx0 - 2, by0 - 12, bx1 - bx0 + 4, 14, '#8a5a32'); for (let i = 0; i < 12; i++) P.hl(bx0 + 30 - i, by0 - 24 + i, bx1 - bx0 - 60 + 2 * i, i % 3 ? '#c9a04a' : '#e6c35a');
+    P.ell(60, by0 - 14, 5, 5, '#b5655b'); P.ell(60, by0 - 15, 3, 3, '#e6c35a');
+    for (let y = by0; y < by1; y++) for (let i = bx0; i < bx1; i++) P.px(i, y, (Math.floor((i - bx0) / 7) % 2) ? '#8a6a48' : '#7d6040');
+    for (const [cx0, w] of [[7, 8], [FG_W - 15, 8]]) for (let y = by0 - 2; y < by1 + 4; y++) for (let i = 0; i < w; i++) P.px(cx0 + i, y, (i % 3 === 0) ? '#8a4a43' : '#b5655b');
+    for (const wy of FG_WY) for (const wx of FG_WX) { P.rect(wx - 2, wy - 2, FG_WW + 4, FG_WH + 4, '#5a4436'); P.rect(wx - 3, wy + FG_WH + 2, FG_WW + 6, 3, '#6b5238'); }
+    P.rect(42, 240, 36, 14, '#a8703e'); for (let i = 42; i < 78; i += 3) P.vl(i, 240, 14, '#8a5a32'); P.hl(42, 240, 36, '#c9a87a');
+    for (const [cx, cy] of [[50, 236], [62, 233], [72, 237]]) fgSpr2(FG_CAB, FG_CABP, cx - 7, cy - 6);
+  }), 0, 0);
+  const t = fgT(E), st = fgMine(), now = performance.now(), rm = fgRM(), mine = fgIn(G.me);
+  // which windows are open, and for whom: the fou or his marotte (my hits send him down at once)
+  for (let w = 0; w < 6; w++) {
+    const wx = FG_WX[w % 2], wy = FG_WY[w >> 1];
+    let pop = null; if (E.phase === 'play') for (const p of E.cond.pops) if (p.w === w && t >= p.t - 0.02 && t <= p.t + p.d + 0.12) { pop = p; break; }
+    let u = 0;
+    if (pop) {
+      const end = mine && st && st.hit && st.hit[pop.i] ? Math.min(pop.t + pop.d, (st.ev.find(e => e.p === pop.i) || { t: pop.t + pop.d }).t + 0.05) : pop.t + pop.d;
+      u = rm ? (t >= pop.t && t <= end ? 1 : 0) : Math.max(0, Math.min(1, (t - pop.t) / 0.1, (end + 0.1 - t) / 0.1));
+    }
+    if (u <= 0) {
+      P.rect(wx, wy, FG_WW, FG_WH, '#a8875c'); P.vl(wx + (FG_WW >> 1), wy, FG_WH, '#6b5238');
+      for (let y = wy + 6; y < wy + FG_WH; y += 8) P.hl(wx, y, FG_WW, '#8a6a48');
+      P.px(wx + (FG_WW >> 1) - 2, wy + (FG_WH >> 1), '#e6c35a'); P.px(wx + (FG_WW >> 1) + 2, wy + (FG_WH >> 1), '#e6c35a');
+      continue;
+    }
+    P.rect(wx, wy, FG_WW, FG_WH, '#2e2a30');
+    x.save(); x.beginPath(); x.rect(wx, wy, FG_WW, FG_WH); x.clip();
+    const lift = Math.round((1 - u) * 34);
+    if (pop.kind === 'f') fgSpr2(st && st.hit && st.hit[pop.i] ? JEST_ROWS.front : JEST_ROWS.ann, JEST_PAL, wx + 3, wy + 6 + lift);
+    else { P.rect(wx + 17, wy + 24 + lift, 3, 24, '#8a6a48'); fgSpr2(FG_MAROT, FG_MAROTP, wx + 13, wy + 10 + lift); }
+    x.restore();
+    P.rect(wx, wy + 36, FG_WW, 10, '#a24a40'); P.hl(wx, wy + 36, FG_WW, '#c96a5a'); P.hl(wx, wy + 45, FG_WW, '#7a3530');
+  }
+  // my cabbages: a flight from the basket, then a splash on the window
+  FGX.fx = FGX.fx.filter(f => now - f.at < 900);
+  for (const f of FGX.fx) {
+    if (f.k !== 'cab') continue;
+    const wx = FG_WX[f.w % 2] + 19, wy = FG_WY[f.w >> 1] + 20, u = rm ? 1 : Math.min(1, (now - f.at) / 220);
+    if (u < 1) { const cx = Math.round(60 + (wx - 60) * u), cy = Math.round(232 + (wy - 232) * u - Math.sin(u * Math.PI) * 18); fgSpr2(FG_CAB, FG_CABP, cx - 7, cy - 6); continue; }
+    if (f.r === 'hit' || f.r === 'miss') { const sx = wx + (f.r === 'miss' ? 6 : 0), sy = wy + (f.r === 'miss' ? 8 : 4); P.ell(sx, sy, 5, 3, '#8fb07a'); P.rect(sx - 7, sy - 3, 2, 2, '#8fb07a'); P.rect(sx + 6, sy + 2, 2, 2, '#6c8f62'); P.rect(sx + 3, sy - 5, 2, 2, '#d6e4c2'); P.rect(sx - 2, sy + 4, 2, 2, '#6c8f62'); }
+    if (!f.said) { f.said = true; if (f.r === 'hit') fgSay(rndOf(['Aïe !', 'Ouille !', 'Pas la tête !']), 0.9, wx, wy - 18); else if (f.r === 'mar') fgSay('Raté, hé hé !', 1.1, wx, wy - 18); }
+  }
+}
+
+// ---- le mât de cocagne: a greased pole for each House, the relic hanging at the top, the fou's drum and its beats
+const FG_CLIMB = ['..hhh..', '.hssh..', '.ssss..', 'a.cc.a.', 'acccca.', '.cccc..', '.cdcc..', '.cccc..', 'l.dd.l.', 'll..ll.', '.l..l..'];
+const FG_CLIMB2 = ['..hhh..', '.hssh..', 'a.ssa..', 'a.cc.a.', '.cccc..', '.cccc..', '.cdcc..', '.cccc..', '.l.dd.l', '.ll..ll', '..l..l.'];
+function fgPoles(n) { const span = n > 1 ? Math.min(72, 24 * (n - 1)) : 0, s0 = 58 - span / 2; return Array.from({ length: n }, (_, i) => Math.round(n > 1 ? s0 + i * span / (n - 1) : 58)); }
+const FG_TOP = 44, FG_FOOT = 228;
+function fgDrawMat(x, E) {
+  const X = fgPoles(E.order.length), cols = E.order.map(k => pcol(k)).join('');
+  x.drawImage(fgBg(E, X.length + '|' + cols, () => {
+    fgFrame(); fgSky(6, 206, 2); fgTents(204); fgGrass(206, 264, 3);
+    const top = FG_TOP;
+    for (let i = 0; i < X.length - 1; i++) { const w = X[i + 1] - X[i]; for (let s = 0; s <= w; s++) { const yy = top - 6 + Math.round(Math.sin(s / w * Math.PI) * 4); P.px(X[i] + s, yy, '#8a6a48'); if (s % 6 === 3) { P.rect(X[i] + s - 1, yy + 1, 3, 3, (i * 4 + s) % 2 ? '#ece6d6' : fgCol(E.order[(i + (s >> 2)) % E.order.length])); P.px(X[i] + s, yy + 4, '#ece6d6'); } } }
+    for (const cx of X) P.ell(cx, top - 6, 2, 2, '#e6c35a');
+    for (const cx of X) {
+      P.rect(cx - 1, top - 4, 3, 250 - top + 4, '#a8875c'); P.vl(cx - 1, top - 4, 250 - top + 4, '#c9a87a'); P.vl(cx + 1, top - 4, 250 - top + 4, '#7d6040');
+      for (let y = top; y < 250; y += 9) { P.px(cx - 1, y, '#efe3c0'); P.px(cx, y + 1, '#efe3c0'); }
+      fgShadow(x, cx, 251, 5, 1); P.rect(cx - 3, 249, 7, 2, '#6b5238');
+    }
+    const mid = X.length > 1 ? Math.round((X[0] + X[X.length - 1]) / 2) : 58;
+    P.vl(mid, top - 2, 6, '#8a6a48');
+    const cy = top + 9; P.rect(mid - 5, cy - 3, 11, 7, '#8a5a32'); P.rect(mid - 5, cy - 4, 11, 2, '#a8703e'); P.hl(mid - 5, cy - 1, 11, '#e6c35a'); P.vl(mid, cy - 4, 8, '#e6c35a'); P.px(mid, cy, '#fff2b4');
+    // the beat's plank, the fou's drum
+    P.rect(36, 238, 72, 9, '#5a4436'); P.rect(37, 239, 70, 7, '#6b5238'); P.hl(37, 239, 70, '#7d6040');
+    P.ell(29, 233, 4, 3, '#b5655b'); P.ell(29, 232, 4, 2, '#ece6d6'); P.hl(25, 234, 9, '#c9a04a');
+  }), 0, 0);
+  const t = fgT(E), now = performance.now(), rm = fgRM(), step = (FG_FOOT - 50) / MAT.H;
+  E.order.forEach((k, i) => {
+    const st = fgStOf(E, k), cx = X[i], tgt = FG_FOOT - st.h * step;
+    const d = FGX.disp[k] ?? tgt, y = rm ? tgt : d + Math.max(-2.2, Math.min(3.5, tgt - d)); FGX.disp[k] = y;
+    const mine = k === G.me && fgIn(G.me), slip = st.slip !== undefined ? !!st.slip : (st.slipT !== undefined && t - st.slipT < 0.4 && t >= st.slipT);
+    const climbing = Math.abs(tgt - y) > 0.5 || (st.upT !== undefined && t - st.upT < 0.25 && t >= st.upT);
+    const pal = { h: '#6b4a32', s: '#e2b48c', c: fgCol(k), d: fgDark(k), a: '#e2b48c', l: '#4a3c40' };
+    fgSpr2(climbing && ((now / 120) | 0) % 2 ? FG_CLIMB2 : FG_CLIMB, pal, cx - 6, Math.round(y) - 22);
+    if (slip && !rm) for (let j = 0; j < 3; j++) { P.vl(cx - 9, Math.round(y) - 36 + j * 6, 3, '#f2f4ec'); P.vl(cx + 9, Math.round(y) - 34 + j * 6, 3, '#f2f4ec'); }
+    if (mine) P.ring(cx + 1, Math.round(y) - 29, 3, 1, '#e6c35a', 1);
+    if (st.fin >= 0) { P.px(cx - 4, Math.round(y) - 30, '#fff2b4'); P.px(cx + 5, Math.round(y) - 32, '#fff2b4'); }
+  });
+  // the beats, coming to the gold ring; the fou knocks his drum on each
+  const rx = 43, bs = E.cond.beats, sp = 40;
+  let flash = 0; for (const f of FGX.fx) if (f.k === 'ring' && now - f.at < 180) flash = 1;
+  FGX.fx = FGX.fx.filter(f => now - f.at < 900);
+  P.ring(rx, 242, 5, 2, flash ? '#fff2b4' : '#e6c35a', 1); P.ell(rx, 242, 2, 2, flash ? '#ffffff' : '#fff2b4');
+  if (E.phase === 'play' || E.phase === 'intro') for (const bt of bs) { const dx = (bt - t) * sp; if (dx < -6) continue; if (dx > 62) break; const nx = Math.round(rx + dx); if (nx < 38) continue; P.ell(nx, 242, 2, 2, '#ece6d6'); P.px(nx - 1, 241, '#ffffff'); }
+  const knock = E.phase === 'play' && FGX.beat >= 0 && t - bs[FGX.beat] < 0.13;
+  fgFou(x, 9, 220, knock ? 'ann' : 'front');
+  if (knock) P.ell(29, 232, 4, 2, '#fff2b4');
+}
+
+function fgDraw() {
+  const E = G && G.entr; if (!E || !E.game || !PAL.cv) return;
+  if (!PAL.art) PAL.art = mkCanvas(FG_W, FG_H);
+  const [ac, x] = PAL.art, prev = P; P = mkPen(x);
+  try { x.clearRect(0, 0, ac.width, ac.height); (E.game === 'course' ? fgDrawCourse : E.game === 'choux' ? fgDrawChoux : fgDrawMat)(x, E); }
+  catch (e) { if (!FGX.err) { FGX.err = 1; console.warn('fou:', e); } }
+  finally { P = prev; }
+  const c2 = PAL.cv.getContext('2d'); c2.imageSmoothingEnabled = false; c2.clearRect(0, 0, PAL.cv.width, PAL.cv.height); c2.drawImage(ac, 0, 0, PAL.cv.width, PAL.cv.height);
+  fgBubble(E); fgCountdown(E);
+}
+// the fou's word, in his bubble (by him, or by the window he speaks from)
+function fgSay(txt, secs, ax, ay) { FGX.say = txt; FGX.sayT = performance.now(); FGX.sayEnd = FGX.sayT + secs * 1000; FGX.sayAt = ax === undefined ? null : [ax, ay]; }
+function fgBubble(E) {
+  const bub = $('jtJBub'); if (!bub || !PAL.cv) return;
+  const on = FGX.say && performance.now() < FGX.sayEnd && E.phase !== 'end';
+  if (!on) { if (!bub.hidden) bub.hidden = true; return; }
+  const at = FGX.sayAt || (E.game === 'course' ? [96, 24] : E.game === 'mat' ? [26, 220] : [60, 20]);
+  const side = at[0] > FG_W / 2 ? 'r' : 'l';
+  if (bub.dataset.t !== side + FGX.say) { bub.dataset.t = side + FGX.say; bub.textContent = FGX.say; bub.className = 'jt-jbub ' + side; }
+  const box = PAL.cv.parentElement.getBoundingClientRect(), r = PAL.cv.getBoundingClientRect(), sc = r.width / FG_W;
+  bub.style.top = Math.round(r.top - box.top + at[1] * sc) + 'px';
+  if (side === 'r') { bub.style.right = Math.round(box.right - (r.left + at[0] * sc)) + 'px'; bub.style.left = ''; }
+  else { bub.style.left = Math.round(r.left - box.left + at[0] * sc) + 'px'; bub.style.right = ''; }
+  bub.hidden = false;
+}
+// « 3 », « 2 », « 1 », « Partez ! » over the field
+function fgCountdown(E) {
+  const box = PAL.cv && PAL.cv.parentElement; if (!box) return;
+  let el = $('fgCd');
+  if (!el) { el = document.createElement('div'); el.id = 'fgCd'; el.className = 'fg-cd'; el.setAttribute('aria-hidden', 'true'); el.hidden = true; box.appendChild(el); }
+  let txt = '';
+  if (E.phase === 'intro') { const left = FG_INTRO - E.t; if (left <= FG_CDN) txt = String(Math.min(3, Math.max(1, Math.ceil(left / (FG_CDN / 3))))); }
+  else if (E.phase === 'play' && performance.now() - FGX.goT < 700) txt = 'Partez !';
+  if (!txt) { if (!el.hidden) el.hidden = true; return; }
+  if (el.textContent !== txt) { el.textContent = txt; el.classList.toggle('go', txt.length > 1); el.classList.remove('in'); void el.offsetWidth; el.classList.add('in'); }
+  el.hidden = false;
+}
+
+/* ---------------------------------------------------------------- the words around the field: who plays, what to do, the time, the result */
+function fgText() {
+  const E = G && G.entr; if (!E || !E.game) return;
+  const g = FG[E.game], me = G.b[G.me], plays = fgIn(G.me), st = fgMine(), end = E.phase === 'end' && E.res;
+  const mine = st || fgInit(E.game);
+  // who plays: the Houses' chips (the cabbages each one has, a gold mark at the end of the race or the pole)
+  const val = k => { const s = fgStOf(E, k); return E.game === 'choux' ? String(s.score | 0) : s.fin >= 0 ? '<i></i>' : ''; };
+  const who = $('jtPalWho'), wh = E.order.map(k => `<span class="pw${k === G.me ? ' on' : ''}">${palIcon(k)}<span>${palName(k)}</span><em class="fg-v">${val(k)}</em></span>`).join('');
+  if (FGX.txt.who !== wh) { FGX.txt.who = wh; who.style.setProperty('--n', Math.min(4, E.order.length)); who.innerHTML = wh; }
+  // what to do now
+  let kick = '', msg = '';
+  const t = fgT(E), left = Math.max(0, g.dur - t);
+  if (E.phase === 'intro') { kick = 'LE FOU'; msg = FG_INTRO - E.t > FG_CDN ? g.say : '« ' + Math.min(3, Math.max(1, Math.ceil((FG_INTRO - E.t) / (FG_CDN / 3)))) + '… »'; }
+  else if (E.phase === 'play' && !plays) { kick = 'TU REGARDES'; msg = 'Les Maisons encore debout jouent'; }
+  else if (E.phase === 'play' && E.game === 'course') {
+    if (mine.fin >= 0) { kick = 'ARRIVÉ'; msg = 'Ton sanglier a passé la ligne'; }
+    else if (mine.ex > 0) { kick = 'ESSOUFFLÉ'; msg = 'Laisse-le souffler un instant…'; }
+    else { kick = 'À TOI · ENCOURAGE'; msg = 'Tape pour l’encourager, garde du souffle'; }
+  }
+  else if (E.phase === 'play' && E.game === 'choux') { const n = mine.score | 0; kick = `À TOI · ${n} CHOU${n > 1 ? 'X' : ''}`; msg = 'Touche la fenêtre où il sort la tête'; }
+  else if (E.phase === 'play') { if (mine.fin >= 0) { kick = 'EN HAUT'; msg = 'Tu as décroché la relique… on attend les autres'; } else { kick = `À TOI · GRIMPE · ${mine.h | 0}/${MAT.H}`; msg = 'Tape au rythme du tambour'; } }
+  else if (E.phase === 'count') { kick = 'LE FOU'; msg = g.cnt; }
+  const mh = `<span class="jt-k">${kick}</span><b>${msg}</b>`;
+  if (!end && FGX.txt.msg !== mh) { FGX.txt.msg = mh; $('jtPalMsg').innerHTML = mh; }
+  // the time left
+  const ring = $('jtPalRing'), on = E.phase === 'play';
+  ring.hidden = !on;
+  if (on) { $('jtPalArc').style.strokeDashoffset = (113.1 * (1 - left / g.dur)).toFixed(1); setTxt('jtPalSec', Math.ceil(left)); ring.classList.toggle('hurry', left < 5); }
+  $('jtPalFoot').hidden = !!end;
+  const res = $('jtPalRes');
+  if (!end) { res.hidden = true; $('jtJRes').hidden = true; setTxt('jtPalSub', g.d); return; }
+  // the result and the prize, in the palet's panel, the fou big over it
+  const w = E.win !== undefined && G.b[E.win] ? E.win : -1, s2 = E.second;
+  const sub = w < 0 ? 'Personne ne gagne la relique cette fois'
+    : E.game === 'course' ? (w === G.me ? 'Ton sanglier arrive le premier' : `Le sanglier de ${G.b[w].name} arrive le premier`)
+    : E.game === 'choux' ? (w === G.me ? 'Tu as mis le plus de choux sur le fou' : `${G.b[w].name} a mis le plus de choux sur le fou`)
+    : (fgStOf(E, w).fin >= 0 ? (w === G.me ? 'Tu es le premier en haut du mât' : `${G.b[w].name} est le premier en haut du mât`) : (w === G.me ? 'Tu es le plus haut sur le mât' : `${G.b[w].name} est le plus haut sur le mât`));
+  setTxt('jtPalSub', sub);
+  const key = [w, s2, E.sack, E.botRelic, (me && me.jt.relicPick || []).join(','), E.myPick || '', NET.mode].join('|');
+  if (FGX.txt.res === key && !res.hidden) return;
+  FGX.txt.res = key;
+  let body = '';
+  if (w === G.me && me.jt.relicPick) body = `<div class="jt-n">Choisis ta relique</div><div class="jt-offers">` + me.jt.relicPick.map(r => `<button type="button" class="jt-offer" data-relic="${r}">${relicIcon(r)}<span class="jt-n">${esc(RELICS[r].n)}</span><span class="jt-d">${esc(RELICS[r].d)}</span></button>`).join('') + '</div>';
+  else if (w === G.me && E.myPick) body = `<div class="jt-n">${esc(RELICS[E.myPick].n)} est à toi</div><div class="jt-d">${esc(RELICS[E.myPick].d)}</div>`;
+  else if (w >= 0) body = `<div class="jt-n">${palName(w)} ${E.botRelic ? 'prend : ' + esc(RELICS[E.botRelic].n) : 'choisit une relique'}</div>${E.botRelic ? `<div class="jt-d">${esc(RELICS[E.botRelic].d)}</div>` : ''}`;
+  else body = '<div class="jt-n">Pas de relique cette fois</div>';
+  const go = NET.mode === 'client' ? '<div class="jt-d">L’hôte reprend la joute dans un instant…</div>' : '<button class="go" id="jtPalGo" type="button">Reprendre la joute</button>';
+  const say = w === G.me ? (me.jt.relicPick ? '« Bravo ! La relique est à toi : choisis ! »' : '« À toi la relique ! »') : w >= 0 ? `« ${palName(w)} gagne la relique ! »` : '« Personne ? Hé hé ! »';
+  res.innerHTML = `<div class="jt-pres-h"><span class="jt-k">${w >= 0 ? '1ER · ' + palName(w).toUpperCase() : 'PERSONNE'}</span><span>${s2 !== undefined && G.b[s2] ? `2e ${palName(s2)} · un sac de ${E.sack} or` : ''}</span></div>${body}${go}`;
+  res.hidden = false;
+  const jr = $('jtJRes'); jr.innerHTML = `<img class="px" src="${jestImg()}" alt="Le fou"><div class="jt-jbub l">${say}</div>`;
+  const host = res.parentElement.getBoundingClientRect(), rr = res.getBoundingClientRect();
+  jr.style.bottom = (host.bottom - rr.top - 2) + 'px'; jr.style.left = (rr.left - host.left + 8) + 'px'; jr.hidden = false;
+  $('jtJBub').hidden = true;
+}
+// the screen's head and the field's name follow the game; back to the palet's when it is over
+function fgHead() {
+  const E = G && G.entr, g = E && E.game ? FG[E.game] : null, h = document.querySelector('#jtEntr .jt-entr-k'), el = $('jtEntr'), cv = $('jtPalCv');
+  if (h) h.textContent = g ? g.k : 'ENTRACTE · LE PALET';
+  if (cv) cv.setAttribute('aria-label', g ? g.cv : 'L\'allée du palet');
+  if (el) { el.classList.toggle('fg-on', !!g); el.dataset.fg = g ? E.game : ''; }
+}
+function fgCleanup() {
+  fgReset(); fgHead();
+  const cd = $('fgCd'); if (cd) cd.hidden = true;
+  const bub = $('jtJBub'); if (bub) { bub.hidden = true; bub.dataset.t = ''; }
+}
+
+/* ---------------------------------------------------------------- the game's own functions, wrapped */
+// the game of this joust's Entracte, drawn when the joust starts (the guests learn it from the host)
+{ const base = jtNewGame; jtNewGame = function () { const r = base.apply(this, arguments); if (G && G.jt && auth()) G.jt.fgGame = fgPick(); return r; }; }
+// the Entracte comes: the palet as before, or the fou's game
+{ const base = jtEntracteDue; jtEntracteDue = function () {
+    if (!G || !G.jt || G.quiet) return base.apply(this, arguments);
+    const e = progAt(G.wave + 1);
+    if (!e || e.k !== 'entracte' || G.jt.entrDone || G.entr) return base.apply(this, arguments);
+    const g = fgPlan() || fgPick();
+    fgRemember(g);
+    if (!FG[g]) return base.apply(this, arguments);
+    if (G.b.filter(b => b.alive).length < 2) return base.apply(this, arguments);
+    G.jt.entrDone = true;
+    fgStart(g);
+    return !!G.entr;
+}; }
+{ const base = jtEntrStep; jtEntrStep = function (dt) {
+    const E = G.entr; if (!E || !E.game) return base.apply(this, arguments);
+    if (E.phase === 'intro' && fouTrBusy()) { fgDraw(); fgText(); return; }
+    fgStep(dt / (G.speed || 1));
+}; }
+{ const base = jtEntrClientFrame; jtEntrClientFrame = function () { const E = G.entr; if (E && E.game) { fgLocal(); fgDraw(); fgText(); return; } return base.apply(this, arguments); }; }
+{ const base = palDraw; palDraw = function () { const E = G && G.entr; if (E && E.game) return fgDraw(); return base.apply(this, arguments); }; }
+{ const base = palText; palText = function () { const E = G && G.entr; if (E && E.game) { fgText(); fouPalHead(); return; } return base.apply(this, arguments); }; }
+{ const base = palOpen; palOpen = function () { fgHead(); FGX.txt = {}; return base.apply(this, arguments); }; }
+{ const base = palClose; palClose = function () { const was = !!(G && G.entr && G.entr.game); const r = base.apply(this, arguments); if (was) fgCleanup(); return r; }; }
+{ const base = jtAction; jtAction = function (k, a) { if (Array.isArray(a) && a[1] === 'fg') return fgGesture(k, a); return base.apply(this, arguments); }; }
+{ const base = jtSnap; jtSnap = function () {
+    const E = G && G.entr;
+    if (E && E.game) { let s; G.entr = null; try { s = base.apply(this, arguments); } finally { G.entr = E; } return s ? s + '|' + fgEnc(E) : s; }
+    const s = base.apply(this, arguments), g = fgPlan();
+    return s && g ? s + '|P' + (g === 'palet' ? 'p' : FG[g].c) : s;
+}; }
+{ const base = jtApplySnap; jtApplySnap = function (s) {
+    if (typeof s !== 'string' || !s || !G) return base.apply(this, arguments);
+    const f = s.split('|')[6] || '';
+    if (f[0] === 'F') {
+      const keep = G.entr; G.entr = null;
+      try { base.call(this, s.split('|').slice(0, 6).join('|')); } finally { if (keep && keep.game) G.entr = keep; }
+      if (G.jt) G.jt.fgGame = FG_DEC[f[1]] || G.jt.fgGame;
+      fgApply(f); return;
+    }
+    const was = !!(G.entr && G.entr.game && G.entr.client);
+    if (was) fgClientClose();
+    const r = base.apply(this, arguments);
+    if (f[0] === 'P' && G.jt) G.jt.fgGame = FG_DEC[f[1]] || '';
+    return r;
+}; }
+// the top bar: « Entracte · la course des sangliers »
+{ const base = jtWaveHud; jtWaveHud = function () {
+    const r = base.apply(this, arguments), E = G && G.entr;
+    if (E && E.game) { const sp = document.querySelector('#anChip .an-tx span'); if (sp && sp.textContent !== FG[E.game].short) sp.textContent = FG[E.game].short; }
+    return r;
+}; }
+// his cry a wave before names the game
+{ const base = l2Cry; l2Cry = function (html, o) { const g = fgPlan(); if (FG[g] && typeof html === 'string') html = html.replace('<b>l’Entracte</b> : le palet !', `<b>l’Entracte</b> : ${FG[g].short} !`); return base.call(this, html, o); }; }
+// a finger anywhere on the field plays (the cabbages want a window)
+(function fgInput() {
+  const cv = $('jtPalCv'), box = cv && cv.parentElement; if (!box) return;
+  box.addEventListener('pointerdown', e => {
+    const E = G && G.entr; if (!E || !E.game) return;
+    e.preventDefault();
+    if (E.phase !== 'play') return;
+    const r = cv.getBoundingClientRect(), ax = (e.clientX - r.left) / r.width * FG_W, ay = (e.clientY - r.top) / r.height * FG_H;
+    fgTap(ax, ay, e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom);
+  });
+})();
+/* ================================================================ /version 77 · the fou's games */
 
 useTerrain(TERKEY);
 demo();
