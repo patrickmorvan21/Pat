@@ -19892,11 +19892,18 @@ fgText = function fgText2() {
   function go(g) {
     hide(); on = true;
     try { audioInit(); } catch (e) {}
+    try { if (typeof TBX !== 'undefined' && TBX) TBX.quick = false; } catch (e) {}      // the joust as in the tests: not « Rapide » (5 min)
     try { soloN = 4; soloSeat = 0; startSolo(); } catch (e) { console.error(e); }
     setTimeout(() => { try { if (g === 'palet') jtEntrStart(); else fgStart(g); } catch (e) { console.error(e); } }, 450);
   }
+  // 05/11, 22 h 01 (Patrick, on his iPhone: the room before the joust, the bands and « Prêt », under the Entracte, the taps lost): a real
+  // phone shows that room (a test browser skips it); here it is skipped too, the list opens the Entracte at once
+  { const base = lrSkip; lrSkip = function () { return on || base.apply(this, arguments); }; }
   $l('foulabList').addEventListener('click', e => { const b = e.target.closest('[data-g]'); if (b) go(b.dataset.g); });
-  $l('foulabLv').addEventListener('click', e => { const b = e.target.closest('[data-lv]'); if (!b) return; diffKey = b.dataset.lv; lvs(); });
+  // the bots' level: the one picked here (kept), Normal at first (a phone's first visit would have made them Facile: the tests and the
+  // simulated races are with Normal)
+  try { const v = localStorage.getItem('ddl-lab-lv'); diffKey = v === 'easy' || v === 'normal' || v === 'hard' ? v : 'normal'; } catch (e) { diffKey = 'normal'; }
+  $l('foulabLv').addEventListener('click', e => { const b = e.target.closest('[data-lv]'); if (!b) return; diffKey = b.dataset.lv; try { localStorage.setItem('ddl-lab-lv', diffKey); } catch (err) {} lvs(); });
   $l('foulabClose').addEventListener('click', hide);
   btn.addEventListener('click', home);
   // « Reprendre la joute »: back to the list
