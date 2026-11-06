@@ -24,6 +24,90 @@
 <meta name="apple-mobile-web-app-title" content="Domus TD">
 <title>Domus TD</title>
 <style>
+/* version 88 · les jeux du fou: the timer, the buttons, the points */
+.fg-time{position:absolute;z-index:2;pointer-events:none;background:#2e2a30}
+.fg-time i{display:block;height:100%;width:100%;background:#e6c35a}
+.fg-time.hurry i{background:#d9776a;animation:fgHurry .5s steps(2) infinite}
+@keyframes fgHurry{50%{opacity:.4}}
+.fg-btn{position:absolute;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;margin:0;padding:0;border:0;border-radius:0;cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;font-family:var(--ft);font-size:21px;line-height:.9;color:#1b2b34;background:#4a5a60;box-shadow:inset 0 -5px 0 rgba(27,43,52,.28),inset 0 3px 0 rgba(255,255,255,.25)}
+.fg-btn[hidden]{display:none!important}
+.fg-btn b{font-weight:400;letter-spacing:.04em;white-space:nowrap}
+.fg-btn canvas{display:block;image-rendering:pixelated;pointer-events:none}
+.fg-btn.dn{transform:translateY(3px);box-shadow:inset 0 -2px 0 rgba(27,43,52,.28),inset 0 3px 0 rgba(255,255,255,.18)}
+.fg-btn.wait{background:#3c4c53;color:#9fb0b5}
+.fg-btn.green{background:#8fc28a}
+.fg-btn.yellow{background:#e6c35a}
+.fg-btn.red{background:#d9776a}
+.fg-btn.gold{background:#e6c35a}
+.fg-btn.go{animation:fgGo .9s steps(2) infinite}
+@keyframes fgGo{50%{outline:4px solid rgba(143,194,138,.55);outline-offset:3px}}
+.fg-btn.seen{animation:fgSeen .3s steps(2) infinite}
+@keyframes fgSeen{50%{background:#b5655b}}
+.fg-btn.hand{background:#2e3b42;color:#e0e5e6;font-size:17px}
+.fg-btn.hand.lit{background:#e6c35a;color:#1b2b34;animation:fgLit .5s steps(2) infinite}
+@keyframes fgLit{50%{outline:4px solid rgba(230,195,90,.55);outline-offset:3px}}
+.fg-hint{position:absolute;z-index:4;pointer-events:none;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--ft);font-size:17px;line-height:1;color:#f4d97f;letter-spacing:.05em;white-space:nowrap;animation:fgHint .7s steps(2) infinite}
+.fg-hint[hidden]{display:none!important}
+.fg-hint i{display:block;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:9px solid #f4d97f}
+@keyframes fgHint{50%{transform:translate(-50%,5px)}}
+.fg-pops{position:absolute;inset:0;z-index:5;pointer-events:none}
+.fg-pop{position:absolute;display:flex;flex-direction:column;align-items:center;transform:translate(-50%,-50%);font-family:var(--ft);font-size:32px;line-height:.9;white-space:nowrap;text-shadow:0 3px 0 rgba(46,42,48,.85);opacity:0;animation:fgPop .95s steps(10) both}
+.fg-pop small{font-size:15px;letter-spacing:.08em}
+.fg-pop.gold{color:#f4d97f}.fg-pop.red{color:#f08f84}.fg-pop.cream{color:#fff6dc}
+.fg-pop.big{font-size:40px}
+.fg-pop.btn{font-size:21px;transform:translate(-50%,-100%)}
+.fg-pop.btn.r{transform:translate(-78%,-100%)}
+.fg-pop.btn.l{transform:translate(-22%,-100%)}
+@keyframes fgPop{0%{opacity:0;margin-top:8px}14%{opacity:1;margin-top:0}70%{opacity:1}100%{opacity:0;margin-top:-30px}}
+@media (prefers-reduced-motion:reduce){.fg-btn.go,.fg-btn.seen,.fg-btn.hand.lit,.fg-hint,.fg-time.hurry i{animation:none}.fg-pop{animation:fgPopR .9s steps(1) both}@keyframes fgPopR{0%,90%{opacity:1}100%{opacity:0}}}
+/* version 88 · la danse des étendards: its lanes, the word of each hit, the series */
+.et-lane{position:absolute;z-index:2;pointer-events:none;image-rendering:pixelated}
+.et-lane[hidden]{display:none!important}
+.et-j{position:absolute;z-index:5;pointer-events:none;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;font-family:var(--ft);font-size:25px;line-height:.9;white-space:nowrap;text-shadow:0 3px 0 rgba(46,42,48,.85);opacity:0}
+.et-j small{font-size:14px;letter-spacing:.08em}
+.et-j.on{animation:etJ .62s steps(8) both}
+.et-j.gold{color:#f4d97f}.et-j.cream{color:#fff6dc}.et-j.red{color:#f08f84}
+@keyframes etJ{0%{opacity:0;margin-top:6px}15%{opacity:1;margin-top:0}75%{opacity:1}100%{opacity:0;margin-top:-10px}}
+.et-combo{position:absolute;z-index:4;pointer-events:none;transform:translate(-50%,-50%);font-family:var(--ft);font-size:24px;line-height:1;color:#f4d97f;letter-spacing:.05em;white-space:nowrap;text-shadow:0 3px 0 rgba(46,42,48,.85)}
+.et-combo[hidden]{display:none!important}
+.et-combo.bump{animation:etBump .25s steps(3)}
+@keyframes etBump{0%{transform:translate(-50%,-50%) scale(1.25)}100%{transform:translate(-50%,-50%) scale(1)}}
+@media (prefers-reduced-motion:reduce){.et-j.on{animation:etJR .62s steps(1) both}@keyframes etJR{0%,85%{opacity:1}100%{opacity:0}}.et-combo.bump{animation:none}}
+/* version 88 · the end of a game, P1 « le tableau »: the ranking in the result panel */
+.fr-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:calc(var(--u)*2)}
+.fr-row{display:flex;align-items:center;gap:calc(var(--u)*3);padding:calc(var(--u)*2.5) calc(var(--u)*4);background:#e6dfd1;box-shadow:inset 0 0 0 calc(var(--u)*1.34) #b8ab92;animation:frIn .3s steps(4) both;animation-delay:var(--d,0s)}
+.fr-row .ico{flex:none}
+.fr-rk{font-family:var(--fb);font-weight:400;font-size:calc(var(--t)*1.25);line-height:1;color:#6b5f55;width:calc(var(--u)*6);text-align:center;flex:none}
+.fr-nm{font-weight:700;font-size:var(--t);color:#2e2924;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:calc(var(--u)*2)}
+.fr-sc{margin-left:auto;font-family:var(--fb);font-weight:400;font-size:calc(var(--t)*1.4);line-height:1;color:#2e2924;white-space:nowrap;display:flex;align-items:baseline;gap:calc(var(--u)*1.5)}
+.fr-sc small{font-family:'Barlow Semi Condensed',system-ui,sans-serif;font-weight:700;font-size:calc(var(--t)*.6);letter-spacing:.06em;color:#6b5f55}
+.fr-pz{font-style:normal;font-size:calc(var(--t)*.62);font-weight:700;letter-spacing:.08em;padding:calc(var(--u)*1.2) calc(var(--u)*2);line-height:1;white-space:nowrap;flex:none}
+.fr-pz.r{background:#8a6a2a;color:#fff2b4}
+.fr-pz.g{background:#e6c35a;color:#4a3a1a}
+.fr-row.win{padding:calc(var(--u)*4) calc(var(--u)*4);background:#efe2b8;box-shadow:inset 0 0 0 calc(var(--u)*1.34) #8a6a2a,inset 0 0 0 calc(var(--u)*2.7) #e6c35a}
+.fr-row.win .fr-rk{color:#8a6a2a;font-size:calc(var(--t)*1.6)}
+.fr-row.win .fr-nm{font-size:calc(var(--t)*1.2)}
+.fr-row.win .fr-sc{font-size:calc(var(--t)*2.1)}
+.fr-row.me:not(.win){box-shadow:inset 0 0 0 calc(var(--u)*1.34) #2e2924;background:#f1ece2}
+.fr-cr{width:calc(var(--u)*9*1.6);height:calc(var(--u)*5*1.6);image-rendering:pixelated;flex:none}
+@keyframes frIn{from{opacity:0;transform:translateX(calc(var(--u)*-6))}}
+.fr-list.still .fr-row{animation:none}
+.fr-list.tight{gap:calc(var(--u)*1)}
+.fr-list.tight .fr-row{padding:calc(var(--u)*1.2) calc(var(--u)*3)}
+.fr-list.tight .fr-row.win{padding:calc(var(--u)*1.8) calc(var(--u)*3)}
+.fr-list.tight .fr-rk{font-size:calc(var(--t)*1.1)}
+.fr-list.tight .fr-sc{font-size:calc(var(--t)*1.2)}
+.fr-list.tight .fr-row.win .fr-rk{font-size:calc(var(--t)*1.3)}
+.fr-list.tight .fr-row.win .fr-nm{font-size:calc(var(--t)*1.05)}
+.fr-list.tight .fr-row.win .fr-sc{font-size:calc(var(--t)*1.45)}
+.fr-list.tight .fr-row .ico{width:12px;height:12px}
+.fr-list.tight2{gap:calc(var(--u)*.6)}
+.fr-list.tight2 .fr-row{padding:calc(var(--u)*.7) calc(var(--u)*3)}
+.fr-list.tight2 .fr-row.win{padding:calc(var(--u)*1.2) calc(var(--u)*3)}
+.fr-list.tight2 .fr-row .ico{display:none}
+@media (prefers-reduced-motion:reduce){.fr-row{animation:none}}
+</style>
+<style>
 /* version 87 · les tenues légendaires: their colour (the board's), their cards, the next one under the mastery */
 .rr84.l{background:#e5a3d6}
 .sh84.l87{margin-top:18px}
@@ -19890,6 +19974,7 @@ const CHF_XB_FLASH = [[20, 8, '#ffffff'], [21, 8, '#ffffff'], [22, 8, '#ffffff']
 }; }
 /* ================================================================ /version 79 · Line Towers */
 
+
 /* ================================================================ version 80 · Farm TD, l'œuf doré (in Farm TD's page)
    Patrick, 05/11, 17 h 37, on the golden egg of the planche: « J'adore l'animation. Par contre, je trouve l'œuf un peu trop gros par
    rapport à la carte » : one draw in twelve, a champion beaten, a smaller egg. Nothing changes in Domus itself. */
@@ -21492,6 +21577,1390 @@ profHomeSync();
     legPaint(legOver(cv), cv, d, strip, i, RV.S || 2, PADX);
 }; }
 /* ================================================================ /version 87 */
+/* ================================================================ version 88 · les jeux du fou, validés, et la fin « le tableau »
+   Patrick, 06/11, 14 h 20 : « je trouve les mini-jeux vraiment pas mal, on les valide » ; 14 h 46 : « on peut partir sur le P1 ».
+   The fou's games as the test page's 3rd round had them (the race's button and boars, the cabbages' points, rhythm and castelet, the
+   pole's two hands, the new « danse des étendards »), now in the draw, between friends too; the end panel's ranking (P1). */
+/* ---------------------------------------------------------------- la course des sangliers : « Un, deux, trois… soleil ! » (the test build of 05/11)
+   Patrick, 05/11, 17 h 37: « j'ai fait les mini-jeux où tu as un espèce d'hamster, là, il veut retenir le souffle. Je trouve ça pas si
+   fun… à voir comment tu peux l'améliorer ». No more breath: the fou turns his back and counts, everyone taps to run; at « Soleil ! »
+   he turns round, and a boar still pushed on is seen: 9 steps back and still for a second. His turns come from the seed (the same for
+   all); a tap in the first 0.22 s of his look is forgiven (nobody stops at once). */
+const SOL = { LEN: 72, DV: 1.7, VMAX: 9, DEC: 0.972, GRACE: 0.22, BACK: 9, STUN: 1.0 };
+const SOL_BOT = { easy: { r: 5.2, rj: 0.3, lead: -0.12, jit: 0.3, slip: 0.2, react: 0.55 }, normal: { r: 6.4, rj: 0.25, lead: 0.02, jit: 0.2, slip: 0.1, react: 0.4 },
+                  hard: { r: 7.6, rj: 0.18, lead: 0.1, jit: 0.12, slip: 0.04, react: 0.28 } };
+// the fou from behind (17 x 18): his hood where his face was, the ruff closed
+JEST_ROWS.back = ['............QR...', '...ZZ......QQRR..', '..YYZY.....RR.rR.', '.Yy..YY...RR...rR', '.y...ZYYBRRr....r', 'y....YYYBRRR....r',
+  'B....yYYyRRr....B', 'b....yYyyRrr....b', '......yyRrr......', '.....CcCcCcC.....', '....CcCcCcCcC....', '....RQRRYYYyY....', '...R.QRRRYYy.Y...',
+  '...C.RRRYYYy.C...', '..W..rrRRYyy.....', '.W....Rr.Yy......', 'QR..L.Rr.Yy.L....', 'RB...LLL.LLL.....'];
+FG.course.say = '« Oyez ! Un, deux, trois… soleil ! Tape quand j’ai le dos tourné, plus un geste quand je regarde ! »';
+// his turns: his back 1.8 to 4.4 s, the count in its last 0.7 to 1.6 s, then he looks 1.1 to 2.4 s
+function solCond(seed) {
+  const R = prng(seed + 7), ph = []; let t = 0, look = false, i = 0;
+  while (t < FG.course.dur + 1) {
+    if (!look) { const d = 1.8 + R() * 2.6, cnt = 0.7 + R() * 0.9; ph.push({ i: i++, t0: t, t1: t + d, look: false, c: Math.max(t, t + d - cnt) }); t += d; }
+    else { const d = 1.1 + R() * 1.3; ph.push({ i: i++, t0: t, t1: t + d, look: true }); t += d; }
+    look = !look;
+  }
+  return { ph };
+}
+const solPh = (cond, t) => { const L = cond && cond.ph; if (!L) return { i: -1, t0: 0, t1: 99, look: false, c: 99 }; for (const p of L) if (t >= p.t0 && t < p.t1) return p; return L[L.length - 1]; };
+const solStun = (E, st, t) => !!st && (st.stunF || (st.stun !== undefined && t < st.stun));
+function solTap(st, cond, tp) {
+  if (st.fin >= 0 || tp.t < st.stun) { st.lost++; return; }
+  const p = solPh(cond, tp.t);
+  if (p.look && tp.t - p.t0 > SOL.GRACE) { st.seen++; st.seenT = tp.t; st.x = Math.max(0, st.x - SOL.BACK); st.v = 0; st.stun = tp.t + SOL.STUN; return; }
+  st.ok++; st.lt = tp.t; st.v = Math.min(SOL.VMAX, st.v + SOL.DV);
+}
+function solTick(st, t1) {
+  if (t1 < st.stun) { st.v = 0; return; }
+  if (st.fin < 0) { st.x += st.v * FG_DT; if (st.x >= SOL.LEN) { st.x = SOL.LEN; st.fin = Math.round(t1 * 1000) / 1000; } }
+  st.v *= SOL.DEC;
+}
+{ const base = fgCond; fgCond = function (game, seed) { return game === 'course' ? solCond(seed) : base.apply(this, arguments); }; }
+{ const base = fgInit; fgInit = function (game) { return game === 'course' ? { n: 0, t: 0, i: 0, x: 0, v: 0, fin: -1, stun: 0, seen: 0, seenT: -9, ok: 0, lost: 0, lt: -9 } : base.apply(this, arguments); }; }
+{ const base = fgAdvance; fgAdvance = function (game, cond, st, taps, tTo) {
+    if (game !== 'course') return base.apply(this, arguments);
+    tTo = Math.min(tTo, FG.course.dur);
+    while ((st.n + 1) * FG_DT <= tTo + 1e-9) {
+      const t1 = (st.n + 1) * FG_DT;
+      while (st.i < taps.length && taps[st.i].t < t1) solTap(st, cond, taps[st.i++]);
+      solTick(st, t1);
+      st.n++; st.t = t1;
+    }
+    return st;
+}; }
+// the bots run while his back is turned, stop near « Soleil ! » (sooner or later by level), sometimes move when he looks
+{ const base = fgBots; fgBots = function (E) {
+    if (E.game !== 'course') return base.apply(this, arguments);
+    const SS = SOL_BOT[(NET.mode === 'host' && NET.diff) || diffKey] || SOL_BOT.normal, D = FG.course.dur;
+    for (const k of E.order) {
+      const b = G.b[k]; if (!b || !b.bot) continue;
+      const taps = E.taps[k], st = E.st[k];
+      const B = E.bot[k] || (E.bot[k] = { next: E.t + 0.2 + Math.random() * 0.3, ph: -1, stop: 0, slip: 0 });
+      while (B.next <= E.t && B.next <= D && st.fin < 0) {
+        const t = fgR2(B.next), p = solPh(E.cond, t);
+        if (p.i !== B.ph) { B.ph = p.i; if (!p.look) B.stop = p.t1 - SS.lead + (Math.random() - 0.5) * 2 * SS.jit; else B.slip = Math.random() < SS.slip ? 1 : 0; }
+        if (p.look) {
+          if (B.slip) { B.slip = 0; const ts = fgR2(Math.max(t, p.t0 + SOL.GRACE + 0.05 + Math.random() * 0.3)); if (!taps.length || ts >= taps[taps.length - 1].t) taps.push({ t: ts }); }
+          B.next = Math.max(B.next + 0.05, p.t1 + SS.react * (0.6 + Math.random() * 0.8)); continue;
+        }
+        if (t >= B.stop) { B.next = p.t1 + 0.02; continue; }
+        if (!taps.length || t >= taps[taps.length - 1].t) taps.push({ t });
+        B.next += (1 / SS.r) * (1 + (Math.random() - 0.5) * 2 * SS.rj);
+      }
+    }
+}; }
+// over the network, 5 characters a House as before: where it is, how often it was seen, finished or seen now
+{ const be = fgEncSt, bd = fgDecSt;
+  fgEncSt = function (game, st) {
+    if (game !== 'course') return be.apply(this, arguments);
+    const E = G.entr, t = E && E.phase === 'play' ? E.t : 99;
+    return b36(st.x * 10, 3) + b36(Math.min(35, st.seen | 0), 1) + (st.fin >= 0 ? 'f' : t < st.stun ? 'c' : '.');
+  };
+  fgDecSt = function (game, s) {
+    if (game !== 'course') return bd.apply(this, arguments);
+    return { x: parseInt(s.slice(0, 3), 36) / 10, seen: parseInt(s[3], 36) || 0, stunF: s[4] === 'c', fin: s[4] === 'f' ? 1 : -1 };
+  };
+}
+// a tap: the hoof's knock while he does not look
+{ const base = fgTapFx; fgTapFx = function (E, tp, st) {
+    if (E.game !== 'course') return base.apply(this, arguments);
+    if (!st || st.fin >= 0 || tp.t < (st.stun || 0) || solPh(E.cond, tp.t).look) return;
+    sfx((st.ok % 4) === 1 ? 'thunk' : 'tick');
+}; }
+// his count and his « Soleil ! », in his bubble; « Vu ! » when he sees mine
+{ const base = fgLocal; fgLocal = function () {
+    const E = G && G.entr;
+    if (E && E.game === 'course' && E.phase === 'play') {
+      const t = fgT(E), p = solPh(E.cond, t);
+      if (p.look || t >= p.c - 0.4) FGX.sayT = Math.max(FGX.sayT, performance.now() - 4000);   // no « Allez ! » over his count
+    }
+    const r = base.apply(this, arguments);
+    if (E && E.game === 'course' && E.phase === 'play') {
+      const t = fgT(E), p = solPh(E.cond, t);
+      let key = '';
+      if (p.look) key = p.i + 's';
+      else if (t >= p.c) { const u = (t - p.c) / Math.max(0.01, p.t1 - p.c); key = p.i + (u < 1 / 3 ? 'a' : u < 2 / 3 ? 'b' : 'c'); }
+      if (key && FGX.solK !== key) {
+        FGX.solK = key; const w = key.slice(-1);
+        if (w === 's') { sfx('ding'); fgSay('Soleil !', Math.min(1.4, p.t1 - t)); }
+        else { sfx('tick'); fgSay(w === 'a' ? 'Un…' : w === 'b' ? 'Un, deux…' : 'Un, deux, trois…', 0.9); }
+      }
+      const st = fgMine();
+      if (st && fgIn(G.me)) { if ((st.seen | 0) > (FGX.solSeen | 0)) { sfx('error'); fgSay('Vu ! Recule !', 1.3); } FGX.solSeen = st.seen | 0; }
+    }
+    return r;
+}; }
+{ const base = fgReset; fgReset = function () { const r = base.apply(this, arguments); FGX.solK = ''; FGX.solSeen = 0; return r; }; }
+fgText = function fgText4() {
+  const E = G && G.entr; if (!E || !E.game) return;
+  const g = FG[E.game], me = G.b[G.me], plays = fgIn(G.me), st = fgMine(), end = E.phase === 'end' && E.res;
+  const mine = st || fgInit(E.game);
+  // who plays: the Houses' chips (the cabbages each one has, a gold mark at the end of the race or the pole)
+  const val = k => { const s = fgStOf(E, k); return E.game === 'choux' || E.game === 'etend' ? String(s.score | 0) : s.fin >= 0 ? '<i></i>' : ''; };
+  const who = $('jtPalWho'), wh = E.order.map(k => `<span class="pw${k === G.me ? ' on' : ''}">${palIcon(k)}<span>${palName(k)}</span><em class="fg-v">${val(k)}</em></span>`).join('');
+  if (FGX.txt.who !== wh) { FGX.txt.who = wh; who.style.setProperty('--n', Math.min(4, E.order.length)); who.innerHTML = wh; }
+  // what to do now
+  let kick = '', msg = '';
+  const t = fgT(E), left = Math.max(0, g.dur - t);
+  if (E.phase === 'intro') { kick = 'LE FOU'; msg = FG_INTRO - E.t > FG_CDN ? g.say : '« ' + Math.min(3, Math.max(1, Math.ceil((FG_INTRO - E.t) / (FG_CDN / 3)))) + '… »'; }
+  else if (E.phase === 'play' && !plays) { kick = 'TU REGARDES'; msg = 'Les Maisons encore debout jouent'; }
+  else if (E.phase === 'play' && E.game === 'course') {
+    const p = solPh(E.cond, t);
+    if (mine.fin >= 0) { kick = 'ARRIVÉ'; msg = 'Ton sanglier a passé la ligne'; }
+    else if (solStun(E, mine, t)) { kick = 'VU !'; msg = 'Il t’a vu : ton sanglier recule'; }
+    else if (p.look) { kick = 'STOP · IL REGARDE'; msg = 'Bouton rouge : ne touche plus'; }
+    else if (t >= p.c) { kick = 'ATTENTION · IL COMPTE'; msg = 'Arrête-toi à « Soleil ! »'; }
+    else { kick = 'À TOI · COURS'; msg = 'Tape le bouton vert : il a le dos tourné'; }
+  }
+  else if (E.phase === 'play' && E.game === 'choux') { const n = mine.score | 0; kick = `À TOI · ${n} POINT${Math.abs(n) > 1 ? 'S' : ''}`; msg = 'Sa tête : +10, vite : +15 · sa marotte : −5'; }
+  else if (E.phase === 'play' && E.game === 'etend') { const n = mine.score | 0, c = mine.combo | 0; kick = `À TOI · ${n} POINT${Math.abs(n) > 1 ? 'S' : ''}` + (c >= 4 ? ` · SÉRIE ${c}` : ''); msg = 'Pile dans le cadre : +2 · presque : +1'; }
+  else if (E.phase === 'play') { if (mine.fin >= 0) { kick = 'EN HAUT'; msg = 'Tu as décroché la relique… on attend les autres'; } else { kick = `À TOI · GRIMPE · ${mine.h | 0}/${MAT.H}`; msg = 'Tape la main qui brille, puis l’autre'; } }
+  else if (E.phase === 'count') { kick = 'LE FOU'; msg = g.cnt; }
+  const mh = `<span class="jt-k">${kick}</span><b>${msg}</b>`;
+  if (!end && FGX.txt.msg !== mh) { FGX.txt.msg = mh; $('jtPalMsg').innerHTML = mh; }
+  // the time left
+  const ring = $('jtPalRing'), on = E.phase === 'play';
+  ring.hidden = !on;
+  if (on) { $('jtPalArc').style.strokeDashoffset = (113.1 * (1 - left / g.dur)).toFixed(1); setTxt('jtPalSec', Math.ceil(left)); ring.classList.toggle('hurry', left < 5); }
+  $('jtPalFoot').hidden = !!end;
+  const res = $('jtPalRes');
+  if (!end) { res.hidden = true; $('jtJRes').hidden = true; setTxt('jtPalSub', g.d); return; }
+  // the result and the prize, in the palet's panel, the fou big over it
+  const w = E.win !== undefined && G.b[E.win] ? E.win : -1, s2 = E.second;
+  const sub = w < 0 ? 'Personne ne gagne la relique cette fois'
+    : E.game === 'course' ? (w === G.me ? 'Ton sanglier arrive le premier' : `Le sanglier de ${G.b[w].name} arrive le premier`)
+    : E.game === 'choux' || E.game === 'etend' ? (w === G.me ? 'Tu as le plus de points' : `${G.b[w].name} a le plus de points`)
+    : (fgStOf(E, w).fin >= 0 ? (w === G.me ? 'Tu es le premier en haut du mât' : `${G.b[w].name} est le premier en haut du mât`) : (w === G.me ? 'Tu es le plus haut sur le mât' : `${G.b[w].name} est le plus haut sur le mât`));
+  setTxt('jtPalSub', sub);
+  const key = [w, s2, E.sack, E.botRelic, (me && me.jt.relicPick || []).join(','), E.myPick || '', NET.mode].join('|');
+  if (FGX.txt.res === key && !res.hidden) return;
+  FGX.txt.res = key;
+  let body = '';
+  if (w === G.me && me.jt.relicPick) body = `<div class="jt-n">Choisis ta relique</div><div class="jt-offers">` + me.jt.relicPick.map(r => `<button type="button" class="jt-offer" data-relic="${r}">${relicIcon(r)}<span class="jt-n">${esc(RELICS[r].n)}</span><span class="jt-d">${esc(RELICS[r].d)}</span></button>`).join('') + '</div>';
+  else if (w === G.me && E.myPick) body = `<div class="jt-n">${esc(RELICS[E.myPick].n)} est à toi</div><div class="jt-d">${esc(RELICS[E.myPick].d)}</div>`;
+  else if (w >= 0) body = `<div class="jt-n">${palName(w)} ${E.botRelic ? 'prend : ' + esc(RELICS[E.botRelic].n) : 'choisit une relique'}</div>${E.botRelic ? `<div class="jt-d">${esc(RELICS[E.botRelic].d)}</div>` : ''}`;
+  else body = '<div class="jt-n">Pas de relique cette fois</div>';
+  const go = NET.mode === 'client' ? '<div class="jt-d">L’hôte reprend la joute dans un instant…</div>' : '<button class="go" id="jtPalGo" type="button">Reprendre la joute</button>';
+  const say = w === G.me ? (me.jt.relicPick ? '« Bravo ! La relique est à toi : choisis ! »' : '« À toi la relique ! »') : w >= 0 ? `« ${palName(w)} gagne la relique ! »` : '« Personne ? Hé hé ! »';
+  res.innerHTML = `<div class="jt-pres-h"><span class="jt-k">${w >= 0 ? '1ER · ' + palName(w).toUpperCase() : 'PERSONNE'}</span><span>${s2 !== undefined && G.b[s2] ? `2e ${palName(s2)} · un sac de ${E.sack} or` : ''}</span></div>${body}${go}`;
+  res.hidden = false;
+  const jr = $('jtJRes'); jr.innerHTML = `<img class="px" src="${jestImg()}" alt="Le fou"><div class="jt-jbub l">${say}</div>`;
+  const host = res.parentElement.getBoundingClientRect(), rr = res.getBoundingClientRect();
+  jr.style.bottom = (host.bottom - rr.top - 2) + 'px'; jr.style.left = (rr.left - host.left + 8) + 'px'; jr.hidden = false;
+  $('jtJBub').hidden = true;
+};;
+fgDrawChoux = function fgDrawChoux2(x, E) {
+  x.drawImage(fgBg(E, 'booth', () => {
+    fgFrame(); fgSky(6, 230, 14); fgGrass(230, 264, 15);
+    const bx0 = 14, bx1 = 106, by0 = 30, by1 = 214;
+    P.rect(bx0 - 2, by0 - 12, bx1 - bx0 + 4, 14, '#8a5a32'); for (let i = 0; i < 12; i++) P.hl(bx0 + 30 - i, by0 - 24 + i, bx1 - bx0 - 60 + 2 * i, i % 3 ? '#c9a04a' : '#e6c35a');
+    P.ell(60, by0 - 14, 5, 5, '#b5655b'); P.ell(60, by0 - 15, 3, 3, '#e6c35a');
+    for (let y = by0; y < by1; y++) for (let i = bx0; i < bx1; i++) P.px(i, y, (Math.floor((i - bx0) / 7) % 2) ? '#8a6a48' : '#7d6040');
+    for (const [cx0, w] of [[7, 8], [FG_W - 15, 8]]) for (let y = by0 - 2; y < by1 + 4; y++) for (let i = 0; i < w; i++) P.px(cx0 + i, y, (i % 3 === 0) ? '#8a4a43' : '#b5655b');
+    for (const wy of FG_WY) for (const wx of FG_WX) { P.rect(wx - 2, wy - 2, FG_WW + 4, FG_WH + 4, '#5a4436'); P.rect(wx - 3, wy + FG_WH + 2, FG_WW + 6, 3, '#6b5238'); }
+    P.rect(42, 240, 36, 14, '#a8703e'); for (let i = 42; i < 78; i += 3) P.vl(i, 240, 14, '#8a5a32'); P.hl(42, 240, 36, '#c9a87a');
+    for (const [cx, cy] of [[50, 236], [62, 233], [72, 237]]) fgSpr2(FG_CAB, FG_CABP, cx - 7, cy - 6);
+  }), 0, 0);
+  const t = fgT(E), st = fgMine(), now = performance.now(), rm = fgRM(), mine = fgIn(G.me);
+  // which windows are open, and for whom: the fou or his marotte (my hits send him down at once)
+  for (let w = 0; w < 6; w++) {
+    const wx = FG_WX[w % 2], wy = FG_WY[w >> 1];
+    let pop = null; if (E.phase === 'play') for (const p of E.cond.pops) if (p.w === w && t >= p.t - 0.02 && t <= p.t + p.d + 0.12) { pop = p; break; }
+    let u = 0;
+    if (pop) {
+      const end = mine && st && st.hit && st.hit[pop.i] ? Math.min(pop.t + pop.d, (st.ev.find(e => e.p === pop.i) || { t: pop.t + pop.d }).t + 0.05) : pop.t + pop.d;
+      u = rm ? (t >= pop.t && t <= end ? 1 : 0) : Math.max(0, Math.min(1, (t - pop.t) / 0.1, (end + 0.1 - t) / 0.1));
+    }
+    if (u <= 0) {
+      P.rect(wx, wy, FG_WW, FG_WH, '#a8875c'); P.vl(wx + (FG_WW >> 1), wy, FG_WH, '#6b5238');
+      for (let y = wy + 6; y < wy + FG_WH; y += 8) P.hl(wx, y, FG_WW, '#8a6a48');
+      P.px(wx + (FG_WW >> 1) - 2, wy + (FG_WH >> 1), '#e6c35a'); P.px(wx + (FG_WW >> 1) + 2, wy + (FG_WH >> 1), '#e6c35a');
+      continue;
+    }
+    P.rect(wx, wy, FG_WW, FG_WH, '#2e2a30');
+    x.save(); x.beginPath(); x.rect(wx, wy, FG_WW, FG_WH); x.clip();
+    const lift = Math.round((1 - u) * 34);
+    if (pop.kind === 'f') fgSpr2(st && st.hit && st.hit[pop.i] ? JEST_ROWS.front : JEST_ROWS.ann, JEST_PAL, wx + 3, wy + 6 + lift);
+    else { P.rect(wx + 17, wy + 24 + lift, 3, 24, '#8a6a48'); fgSpr2(FG_MAROT, FG_MAROTP, wx + 13, wy + 10 + lift); }
+    x.restore();
+    P.rect(wx, wy + 36, FG_WW, 10, '#a24a40'); P.hl(wx, wy + 36, FG_WW, '#c96a5a'); P.hl(wx, wy + 45, FG_WW, '#7a3530');
+  }
+  // my cabbages: a flight from the basket, then a splash on the window
+  FGX.fx = FGX.fx.filter(f => now - f.at < 900);
+  for (const f of FGX.fx) {
+    if (f.k !== 'cab') continue;
+    const wx = FG_WX[f.w % 2] + 19, wy = FG_WY[f.w >> 1] + 20, u = rm ? 1 : Math.min(1, (now - f.at) / 220);
+    if (u < 1) { const cx = Math.round(60 + (wx - 60) * u), cy = Math.round(232 + (wy - 232) * u - Math.sin(u * Math.PI) * 18); fgSpr2(FG_CAB, FG_CABP, cx - 7, cy - 6); continue; }
+    if (f.r === 'hit' || f.r === 'fast' || f.r === 'miss') { const sx = wx + (f.r === 'miss' ? 6 : 0), sy = wy + (f.r === 'miss' ? 8 : 4); P.ell(sx, sy, 5, 3, '#8fb07a'); P.rect(sx - 7, sy - 3, 2, 2, '#8fb07a'); P.rect(sx + 6, sy + 2, 2, 2, '#6c8f62'); P.rect(sx + 3, sy - 5, 2, 2, '#d6e4c2'); P.rect(sx - 2, sy + 4, 2, 2, '#6c8f62'); }
+    { const fl = now - f.at - 220; if (fl >= 0 && fl < 150 && f.r !== 'miss') { x.globalAlpha = f.r === 'mar' ? 0.55 : 0.5; P.rect(FG_WX[f.w % 2], FG_WY[f.w >> 1], FG_WW, FG_WH, f.r === 'mar' ? '#d9776a' : '#ffffff'); x.globalAlpha = 1; } }
+    if (!f.said) { f.said = true; if (f.r === 'hit' || f.r === 'fast') fgSay(rndOf(['Aïe !', 'Ouille !', 'Pas la tête !']), 0.9, wx, wy - 18); else if (f.r === 'mar') fgSay('Raté, hé hé !', 1.1, wx, wy - 18); }
+  }
+};
+fgDrawMat = function fgDrawMat2(x, E) {
+  const X = fgPoles(E.order.length), cols = E.order.map(k => pcol(k)).join('');
+  x.drawImage(fgBg(E, X.length + '|' + cols, () => {
+    fgFrame(); fgSky(6, 206, 2); fgTents(204); fgGrass(206, 264, 3);
+    const top = FG_TOP;
+    for (let i = 0; i < X.length - 1; i++) { const w = X[i + 1] - X[i]; for (let s = 0; s <= w; s++) { const yy = top - 6 + Math.round(Math.sin(s / w * Math.PI) * 4); P.px(X[i] + s, yy, '#8a6a48'); if (s % 6 === 3) { P.rect(X[i] + s - 1, yy + 1, 3, 3, (i * 4 + s) % 2 ? '#ece6d6' : fgCol(E.order[(i + (s >> 2)) % E.order.length])); P.px(X[i] + s, yy + 4, '#ece6d6'); } } }
+    for (const cx of X) P.ell(cx, top - 6, 2, 2, '#e6c35a');
+    for (const cx of X) {
+      P.rect(cx - 1, top - 4, 3, 250 - top + 4, '#a8875c'); P.vl(cx - 1, top - 4, 250 - top + 4, '#c9a87a'); P.vl(cx + 1, top - 4, 250 - top + 4, '#7d6040');
+      for (let y = top; y < 250; y += 9) { P.px(cx - 1, y, '#efe3c0'); P.px(cx, y + 1, '#efe3c0'); }
+      fgShadow(x, cx, 251, 5, 1); P.rect(cx - 3, 249, 7, 2, '#6b5238');
+    }
+    const mid = X.length > 1 ? Math.round((X[0] + X[X.length - 1]) / 2) : 58;
+    P.vl(mid, top - 2, 6, '#8a6a48');
+    const cy = top + 9; P.rect(mid - 5, cy - 3, 11, 7, '#8a5a32'); P.rect(mid - 5, cy - 4, 11, 2, '#a8703e'); P.hl(mid - 5, cy - 1, 11, '#e6c35a'); P.vl(mid, cy - 4, 8, '#e6c35a'); P.px(mid, cy, '#fff2b4');
+    // the beat's plank, the fou's drum
+    P.ell(29, 233, 4, 3, '#b5655b'); P.ell(29, 232, 4, 2, '#ece6d6'); P.hl(25, 234, 9, '#c9a04a');
+  }), 0, 0);
+  const t = fgT(E), now = performance.now(), rm = fgRM(), step = (FG_FOOT - 50) / MAT.H;
+  E.order.forEach((k, i) => {
+    const st = fgStOf(E, k), cx = X[i], tgt = FG_FOOT - st.h * step;
+    const d = FGX.disp[k] ?? tgt, y = rm ? tgt : d + Math.max(-2.2, Math.min(3.5, tgt - d)); FGX.disp[k] = y;
+    const mine = k === G.me && fgIn(G.me), slip = st.slip !== undefined ? !!st.slip : (st.slipT !== undefined && t - st.slipT < 0.4 && t >= st.slipT);
+    const climbing = Math.abs(tgt - y) > 0.5 || (st.upT !== undefined && t - st.upT < 0.25 && t >= st.upT);
+    const pal = { h: '#6b4a32', s: '#e2b48c', c: fgCol(k), d: fgDark(k), a: '#e2b48c', l: '#4a3c40' };
+    fgSpr2(climbing && ((now / 120) | 0) % 2 ? FG_CLIMB2 : FG_CLIMB, pal, cx - 6, Math.round(y) - 22);
+    if (slip && !rm) for (let j = 0; j < 3; j++) { P.vl(cx - 9, Math.round(y) - 36 + j * 6, 3, '#f2f4ec'); P.vl(cx + 9, Math.round(y) - 34 + j * 6, 3, '#f2f4ec'); }
+    if (mine) P.ring(cx + 1, Math.round(y) - 29, 3, 1, '#e6c35a', 1);
+    if (mine && st.fin < 0 && E.phase === 'play') { const nx = st.nx || 'l', hx = cx + (nx === 'l' ? -10 : 8), hy = Math.round(y) - 25 - (((now / 180) | 0) % 2); P.rect(hx, hy, 3, 3, '#e6c35a'); P.px(hx + 1, hy - 1, '#fff2b4'); }
+    if (st.fin >= 0) { P.px(cx - 4, Math.round(y) - 30, '#fff2b4'); P.px(cx + 5, Math.round(y) - 32, '#fff2b4'); }
+  });
+  // the beats, coming to the gold ring; the fou knocks his drum on each
+  const rx = 43, bs = E.cond.beats, sp = 40;
+  let flash = 0; for (const f of FGX.fx) if (f.k === 'ring' && now - f.at < 180) flash = 1;
+  FGX.fx = FGX.fx.filter(f => now - f.at < 900);
+  const knock = E.phase === 'play' && FGX.beat >= 0 && t - bs[FGX.beat] < 0.13;
+  fgFou(x, 9, 220, knock ? 'ann' : 'front');
+  if (knock) P.ell(29, 232, 4, 2, '#fff2b4');
+};
+/* ================================================================ version 88 · les jeux du fou, validés (Patrick, 06/11, 14 h 20 : « je trouve
+   les mini-jeux vraiment pas mal, on les valide »). From the test page's 2nd round (lab 88, after Patrick's 8 h 04):
+   - la course : a button on the right, low in the field box (where the thumb is), green while the fou's back is turned, yellow when he
+     counts, red when he looks; « TAPE ICI » until the first taps;
+   - les choux : 20 s instead of 30, a timer across the top of the field, +10 on his head (+15 within 0.4 s), −5 on his marotte, the
+     points rising from the window, the window flashing;
+   - le mât : B only, « Une main, puis l'autre » (9 h 29 : « j'adore celui où on doit faire avec les deux mains… c'est parfait ») : two
+     buttons, the two hands: the lit one, then the other; 56 steps to the top.
+   Everything reassigns or wraps the game's own functions (version 77, version 80's race). Between friends, a hand travels with its tap
+   (fgSend, fgGesture below, in version 88's own part). */
+const FGB = { built: false, cl: 0, cr: 0, ct: 0, cw: 0, ch: 0, bw: 0, bh: 0, bsz: 80, taps: 0, err: 0 };
+const MAT_B = { H: 56, GAP: 0.11 };
+const CHOU2 = { HIT: 10, FAST: 15, FAST_T: 0.4, MAR: -5 };
+FG.choux.dur = 20;
+FG.choux.d = 'Le plus de points choisit une relique';
+FG.choux.say = '« Oyez ! Des choux pour le fou ! Ma tête : dix points… ma marotte : moins cinq ! »';
+FG.mat.dur = 25;
+FG.mat.say = '« Oyez ! Le mât de cocagne ! Une main, puis l’autre : grimpe ! »';
+FG.course.say = '« Oyez ! Un, deux, trois… soleil ! Tape le bouton quand j’ai le dos tourné, plus un geste quand je regarde ! »';
+MAT.H = MAT_B.H;
+
+/* ---------------------------------------------------------------- the rules */
+// the cabbages: +10 on his head, +15 within 0.4 s of his coming out, −5 on his marotte (the score can go below zero)
+fgChouTap = function (st, cond, tp) {
+  if (tp.t - st.last < CHOU.RELOAD - 1e-9) return;
+  st.last = tp.t; st.thr++;
+  const p = fgPopAt(cond, tp.w, tp.t); let r = 'miss', pts = 0;
+  if (p && !st.hit[p.i]) {
+    st.hit[p.i] = 1;
+    if (p.kind === 'f') { const fast = tp.t - p.t <= CHOU2.FAST_T + 1e-9; pts = fast ? CHOU2.FAST : CHOU2.HIT; r = fast ? 'fast' : 'hit'; }
+    else { pts = CHOU2.MAR; st.mar++; r = 'mar'; }
+    st.score += pts; st.tS = tp.t;
+  }
+  st.ev.push({ t: tp.t, w: tp.w, r, p: p ? p.i : -1, pts });
+};
+// the pole: no more beats, the two hands: the one that shines, then the other
+{ const base = fgCond; fgCond = function (game, seed) { const c = base.apply(this, arguments); if (game === 'mat' && c) c.beats = []; return c; }; }
+{ const base = fgInit; fgInit = function (game) { const s = base.apply(this, arguments); if (game === 'mat') Object.assign(s, { nx: 'l', lt: -9, miss: 0 }); return s; }; }
+fgMatTap = function (st, cond, tp) {
+  if (st.fin >= 0) return;
+  if (tp.t - st.lt < MAT_B.GAP - 1e-9) return;                 // the hand is still on its way
+  st.lt = tp.t;
+  if (tp.s === st.nx) { st.h++; st.tH = tp.t; st.upT = tp.t; st.nx = st.nx === 'l' ? 'r' : 'l'; st.ev.push({ t: tp.t, r: 'up', s: tp.s }); }
+  else { if (st.h > 0) { st.h--; st.tH = tp.t; } st.slipT = tp.t; st.miss++; st.ev.push({ t: tp.t, r: 'wrong', s: tp.s }); }
+  if (st.h >= MAT_B.H) { st.h = MAT_B.H; st.fin = tp.t; }
+};
+{ const base = fgStart; fgStart = function (game) { FGB.taps = 0; fgPopsClear(); return base.apply(this, arguments); }; }
+// a tap with its hand on the pole: only the buttons give one; elsewhere on the field, nothing
+{ const base = fgTap; fgTap = function (ax, ay, inCv, side) {
+    const E = G && G.entr;
+    if (E && E.game === 'mat') { if (side) fgTapSide(side); return; }
+    return base.apply(this, arguments);
+}; }
+// a tap with a side (the pole's hands, the flags' drums): mine at once; a guest sends it to the host
+function fgTapSide(side) {
+  const E = G.entr; if (!E || !E.game || E.phase !== 'play' || !fgIn(G.me)) return;
+  const t = fgNow(), D = FG[E.game].dur; if (t < 0 || t > D) return;
+  const tp = { t, s: side === 'l' ? 'l' : 'r' }; let st;
+  if (auth()) { const L = E.taps[G.me]; if (L.length && tp.t < L[L.length - 1].t) tp.t = L[L.length - 1].t; L.push(tp); st = fgSync(E, G.me, E.t); }
+  else {
+    const M = FGX.mine; if (!M) return;
+    const L = M.taps; if (L.length && tp.t < L[L.length - 1].t) tp.t = L[L.length - 1].t; L.push(tp);
+    st = fgAdvance(E.game, E.cond, M.st, L, t); fgSend(true);
+  }
+  fgTapFx(E, tp, st);
+}
+// the bots on the pole: the hands at their pace, now and then the wrong one
+const MAT_BOT = { easy: { r: 4.5, w: 0.14, j: 0.3 }, normal: { r: 5.5, w: 0.08, j: 0.22 }, hard: { r: 6.5, w: 0.04, j: 0.15 } };
+{ const base = fgBotPlan; fgBotPlan = function (E) {
+    if (E.game !== 'mat') return base.apply(this, arguments);
+    const B = MAT_BOT[(NET.mode === 'host' && NET.diff) || diffKey] || MAT_BOT.normal, out = [];
+    let t = 0.3 + Math.random() * 0.25, nx = 'l';
+    while (t < FG.mat.dur) {
+      const wrong = Math.random() < B.w; out.push({ t: fgR2(t), s: wrong ? (nx === 'l' ? 'r' : 'l') : nx }); if (!wrong) nx = nx === 'l' ? 'r' : 'l';
+      t += Math.max(MAT_B.GAP + 0.02, (1 / B.r) * (1 + (Math.random() - 0.5) * 2 * B.j));
+    }
+    return out;
+}; }
+
+/* ---------------------------------------------------------------- what a tap shows at once */
+{ const base = fgTapFx; fgTapFx = function (E, tp, st) {
+    if (E.game === 'course') { FGB.taps++; fgBtnPress('r'); return base.apply(this, arguments); }
+    if (E.game === 'choux') {
+      const r0 = base.apply(this, arguments);
+      const ev = st && st.ev[st.ev.length - 1]; if (!ev || ev.t !== tp.t) return r0;
+      const wx = FG_WX[ev.w % 2] + 19, wy = FG_WY[ev.w >> 1] + 34;
+      if (ev.r === 'hit' || ev.r === 'fast') { fgPop(ev.r === 'fast' ? '+15' : '+10', ev.r === 'fast' ? 'gold big' : 'gold', wx, wy, 200, ev.r === 'fast' ? 'VITE !' : ''); setTimeout(() => buzz('palet'), 200); }
+      else if (ev.r === 'mar') { fgPop('−5', 'red', wx, wy, 200); setTimeout(() => buzz('error'), 200); sfx('error'); }
+      return r0;
+    }
+    if (E.game !== 'mat' || !st) return base.apply(this, arguments);
+    const ev = st.ev[st.ev.length - 1]; if (!ev || ev.t !== tp.t) return;
+    const side = ev.s || 'r';
+    fgBtnPress(side);
+    if (ev.r === 'up') { sfx('tick'); buzz('build'); }
+    else { sfx('reel'); buzz('error'); fgPopBtn('L’autre main !', 'red', side); fgSay('Glisse !', 0.8); }
+}; }
+
+/* ---------------------------------------------------------------- the buttons, the timer, the popups (over the field box) */
+const fgCtlMode = () => { const E = G && G.entr; if (!E || !E.game || !fgIn(G.me) || E.phase === 'end' || E.phase === 'count') return ''; return E.game === 'course' || E.game === 'mat' ? E.game : ''; };
+function fgCtlBuild() {
+  if (FGB.built) return true;
+  const cv = $('jtPalCv'), box = cv && cv.parentElement; if (!box) return false;
+  FGB.built = true;
+  box.insertAdjacentHTML('beforeend',
+    '<div class="fg-time" id="fgTime" hidden><i></i></div>' +
+    '<button type="button" class="fg-btn" id="fgBtnR" data-s="r" hidden><canvas aria-hidden="true"></canvas><b></b></button>' +
+    '<button type="button" class="fg-btn" id="fgBtnL" data-s="l" hidden><canvas aria-hidden="true"></canvas><b></b></button>' +
+    '<div class="fg-hint" id="fgHint" hidden aria-hidden="true"><span>TAPE ICI</span><i></i></div><div class="fg-pops" id="fgPops" aria-hidden="true"></div>');
+  for (const id of ['fgBtnR', 'fgBtnL']) {
+    const b = $(id);
+    b.addEventListener('pointerdown', e => {
+      const E = G && G.entr; if (!E || !E.game) return;
+      // the race: the box's own listener plays the tap (a finger anywhere on the field still counts); the pole: this hand
+      if (E.game === 'mat') { e.preventDefault(); e.stopPropagation(); if (E.phase === 'play') fgTapSide(b.dataset.s); }
+    });
+    b.addEventListener('click', e => e.preventDefault());
+  }
+  return true;
+}
+function fgCtlHide() { for (const id of ['fgTime', 'fgBtnR', 'fgBtnL', 'fgHint']) { const el = $(id); if (el && !el.hidden) el.hidden = true; } }
+// the field moves left to leave the thumb a column on the right (the race), or makes room for a hand at each edge (the pole)
+function fgColLayout() {
+  const cv = PAL.cv; if (!cv || !fgCtlBuild()) return;
+  const box = cv.parentElement, bw = box.clientWidth, bh = box.clientHeight, E = G && G.entr, mode = E && E.game ? fgCtlMode() || ('show' + E.game) : '';
+  if (!E || !E.game) { cv.style.left = ''; fgCtlHide(); return; }
+  const vb = E.game === 'mat', one = E.game === 'course';
+  const d = Math.min(3, window.devicePixelRatio || 1), size = sc => { const W = (PAL_W + 20) * sc, Hh = (PAL_H + 20) * sc; cv.style.width = W + 'px'; cv.style.height = Hh + 'px'; cv.width = Math.round(W * d); cv.height = Math.round(Hh * d); PAL.sc = sc; return [W, Hh]; };
+  let w = cv.getBoundingClientRect().width, h = cv.getBoundingClientRect().height, cx = bw / 2, ct = (bh - h) / 2, bsz, top;
+  if (vb) {
+    // the two hands, at the box's two edges (the thumbs): beside the field's foot when there is room for them, else under the field
+    const side = Math.floor((bw - w) / 2) - 8;
+    if (side >= 72) { bsz = Math.min(96, side); ct = (bh - h) / 2; top = Math.round(ct + h - bsz); cv.style.top = ''; }
+    else {
+      bsz = Math.round(Math.max(64, Math.min(96, (bw - 24) / 3))); const band = bsz + 16;
+      [w, h] = size(Math.max(1, Math.floor(Math.min((bw - 12) / (PAL_W + 20), (bh - band) / (PAL_H + 20)) * d)) / d);
+      ct = Math.max(0, (bh - band - h) / 2); top = Math.round(Math.min(bh - bsz - 4, ct + h + 10));
+      cv.style.top = Math.round(ct + h / 2) + 'px';
+    }
+  } else {
+    const col = one ? 104 : 0, need = one ? col + 6 : 0;
+    if (need && bw - w < need) [w, h] = size(Math.max(1, Math.floor(Math.min((bw - need) / (PAL_W + 20), bh / (PAL_H + 20)) * d)) / d);
+    cx = one ? Math.min(bw / 2, bw - col - w / 2) : bw / 2; ct = (bh - h) / 2; cv.style.top = '';
+    const room = bw - (cx + w / 2);
+    bsz = Math.round(Math.max(56, Math.min(92, room - 10)));
+    top = Math.round(Math.max(ct, Math.min(bh - bsz - 8, ct + h - bsz)));
+  }
+  cv.style.left = Math.round(cx) + 'px';
+  Object.assign(FGB, { cl: cx - w / 2, cr: cx + w / 2, ct, cw: w, ch: h, bw, bh, bsz, btnTop: top });
+  const place = (el, x) => { el.style.left = Math.round(x - bsz / 2) + 'px'; el.style.top = top + 'px'; el.style.width = el.style.height = bsz + 'px'; };
+  if (vb) { place($('fgBtnL'), 4 + bsz / 2); place($('fgBtnR'), bw - 4 - bsz / 2); }
+  else { place($('fgBtnR'), (bw + FGB.cr) / 2); place($('fgBtnL'), FGB.cl / 2); }
+  const hint = $('fgHint'); hint.style.left = Math.round((bw + FGB.cr) / 2) + 'px'; hint.style.top = Math.max(0, top - 30) + 'px';
+  // the timer: across the field's top board
+  const tm = $('fgTime'), sc = FGB.cw / FG_W;
+  tm.style.left = Math.round(FGB.cl + 8 * sc) + 'px'; tm.style.top = Math.round(FGB.ct + 1 * sc) + 'px'; tm.style.width = Math.round(FGB.cw - 16 * sc) + 'px'; tm.style.height = Math.max(5, Math.round(4 * sc)) + 'px';
+  FGB.mode = mode;
+}
+{ const base = palLayout; palLayout = function () { const r = base.apply(this, arguments); try { fgColLayout(); } catch (e) { if (!FGB.err) { FGB.err = 1; console.warn('fou:', e); } } return r; }; }
+
+// the pixels of the buttons: a hand, a hoof (and the drum, for the flags' lanes)
+const FGI_HAND = ['..x.x...', '.xx.xx..', '.xx.xx.x', '.xxxxxxx', 'xxxxxxxx', 'xxxxxxxx', '.xxxxxx.', '..xxxxx.', '..xxxx..', '..xxxx..'];
+const FGI_DRUM = ['..rrrrrrrr..', '.hhhhhhhhhh.', 'hhhhhhhhhhhh', '.hhhhhhhhhh.', '..rrrrrrrr..', '.bBbBbBbBbB.', '.bBbBbBbBbB.', '.bBbBbBbBbB.', '.bBbBbBbBbB.', '..rrrrrrrr..'];
+const FGI_HOOF = ['...xx....', '...xx....', '...xx....', '...xx....', '...xxxxx.', '...xxxxxx', 'xx.xxxxxx', 'xxxxxxxxx', '.xxxxxxxx', '..xxxxxxx', '...xxxxx.', '...xxxxx.'];
+function fgIco(cv, rows, pal, flip, px) {
+  const d = Math.min(3, window.devicePixelRatio || 1), w = rows[0].length, h = rows.length, s = Math.max(1, Math.round(px * d));
+  if (cv.width !== w * s || cv.height !== h * s) { cv.width = w * s; cv.height = h * s; }
+  cv.style.width = (w * s / d) + 'px'; cv.style.height = (h * s / d) + 'px';
+  const x = cv.getContext('2d'); x.clearRect(0, 0, cv.width, cv.height);
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const c = pal[rows[j][flip ? w - 1 - i : i]]; if (c) { x.fillStyle = c; x.fillRect(i * s, j * s, s, s); } }
+}
+function fgBtnSet(id, cls, label, rows, pal, flip) {
+  const b = $(id), key = cls + '|' + label + '|' + (rows ? rows.length : 0) + '|' + (pal ? Object.values(pal).join('') : '') + '|' + FGB.bsz + (flip ? 'f' : '');
+  if (b.dataset.k === key) return;
+  b.dataset.k = key; b.className = 'fg-btn ' + cls; const lb = b.querySelector('b'); lb.textContent = label; lb.hidden = FGB.bsz < 76; b.setAttribute('aria-label', label);
+  const cv = b.querySelector('canvas');
+  if (rows) { cv.hidden = false; fgIco(cv, rows, pal, flip, Math.max(2, Math.floor(FGB.bsz * 0.46 / rows[0].length))); } else cv.hidden = true;
+}
+function fgBtnPress(side) { const b = $(side === 'l' ? 'fgBtnL' : 'fgBtnR'); if (!b || b.hidden) return; b.classList.add('dn'); clearTimeout(b._dn); b._dn = setTimeout(() => b.classList.remove('dn'), 90); }
+// a word that rises and fades: over a window of the castelet (art coordinates), or over a button
+function fgPop(txt, cls, ax, ay, delay, sub) {
+  const host = $('fgPops'); if (!host || !PAL.cv) return;
+  const sc = FGB.cw / FG_W, el = document.createElement('div');
+  el.className = 'fg-pop ' + cls; el.innerHTML = (sub ? `<small>${sub}</small>` : '') + txt;
+  el.style.left = Math.round(FGB.cl + ax * sc) + 'px'; el.style.top = Math.round(FGB.ct + ay * sc) + 'px';
+  if (delay) el.style.animationDelay = delay + 'ms';
+  host.appendChild(el); setTimeout(() => el.remove(), 1100 + (delay || 0));
+}
+function fgPopBtn(txt, cls, side) {
+  const host = $('fgPops'), b = $(side === 'l' ? 'fgBtnL' : 'fgBtnR'); if (!host || !b || b.hidden) return;
+  const el = document.createElement('div'); el.className = 'fg-pop btn ' + cls + (side === 'l' ? ' l' : ' r'); el.textContent = txt;
+  el.style.left = Math.round(b.offsetLeft + b.offsetWidth / 2) + 'px'; el.style.top = Math.round(b.offsetTop - 6) + 'px';
+  host.appendChild(el); setTimeout(() => el.remove(), 1000);
+}
+function fgPopsClear() { const host = $('fgPops'); if (host) host.textContent = ''; }
+
+// every frame: the timer, the buttons' state
+function fgCtlFrame() {
+  const E = G && G.entr; if (!E || !E.game || !PAL.cv) { fgCtlHide(); return; }
+  if (!fgCtlBuild()) return;
+  const want = E.game + '|' + PAL.cv.parentElement.clientWidth + 'x' + PAL.cv.parentElement.clientHeight;
+  if (FGB.lay !== want) { FGB.lay = want; palLayout(); }
+  const cd = $('fgCd'); if (cd && FGB.cw) cd.style.left = Math.round(FGB.cl + FGB.cw / 2) + 'px';
+  const t = fgT(E), g = FG[E.game], left = Math.max(0, g.dur - t), plays = fgIn(G.me), st = fgMine() || fgInit(E.game);
+  // the timer, while it plays
+  const tm = $('fgTime'), on = E.phase === 'play';
+  tm.hidden = !on;
+  if (on) { tm.firstChild.style.width = (100 * left / g.dur).toFixed(2) + '%'; tm.classList.toggle('hurry', left < 5); }
+  const btnR = $('fgBtnR'), btnL = $('fgBtnL'), hint = $('fgHint');
+  const live = plays && (E.phase === 'intro' || E.phase === 'play');
+  btnR.hidden = !(live && (E.game === 'course' || E.game === 'mat')); btnL.hidden = !(live && E.game === 'mat');
+  const soon = E.phase === 'intro' && FG_INTRO - E.t < FG_CDN + 0.4;
+  hint.hidden = !(live && E.game === 'course' && FGB.taps < 3 && (E.phase === 'play' || soon));
+  if (!live) return;
+  // the race's button: the fou's back (tap), his count (careful), his look (stop), seen, there
+  if (E.game === 'course') {
+    if (E.phase === 'intro') fgBtnSet('fgBtnR', 'wait', 'PRÊT', FGI_HOOF, { x: '#3a4a50' });
+    else if (st.fin >= 0) fgBtnSet('fgBtnR', 'gold', 'ARRIVÉ', FGI_HOOF, { x: '#5a4436' });
+    else if (solStun(E, st, t)) fgBtnSet('fgBtnR', 'red seen', 'VU !', FGI_HOOF, { x: '#7a3530' });
+    else { const p = solPh(E.cond, t); if (p.look) fgBtnSet('fgBtnR', 'red', 'STOP', FGI_HOOF, { x: '#7a3530' }); else if (t >= p.c) fgBtnSet('fgBtnR', 'yellow', 'ATTENTION', FGI_HOOF, { x: '#6b5238' }); else fgBtnSet('fgBtnR', 'green go', 'TAPE !', FGI_HOOF, { x: '#2f5a37' }); }
+    return;
+  }
+  if (E.game !== 'mat') return;
+  const fin = st.fin >= 0, nx = st.nx || 'l', hand = { x: '#e2b48c' };
+  fgBtnSet('fgBtnL', 'hand' + (!fin && E.phase === 'play' && nx === 'l' ? ' lit' : ''), 'GAUCHE', FGI_HAND, hand, true);
+  fgBtnSet('fgBtnR', 'hand' + (!fin && E.phase === 'play' && nx === 'r' ? ' lit' : ''), 'DROITE', FGI_HAND, hand, false);
+}
+{ const base = fgDraw; fgDraw = function () { const r = base.apply(this, arguments); try { fgCtlFrame(); } catch (e) { if (!FGB.err) { FGB.err = 1; console.warn('fou:', e); } } return r; }; }
+{ const base = fgCleanup; fgCleanup = function () { const r = base.apply(this, arguments); try { fgCtlHide(); fgPopsClear(); FGB.lay = ''; if (PAL.cv) { PAL.cv.style.left = ''; PAL.cv.style.top = ''; } } catch (e) {} return r; }; }
+// the old ring in the corner: the timer is now across the field's top
+{ const base = fgText; fgText = function () { const r = base.apply(this, arguments); const E = G && G.entr; if (E && E.game) { const ring = $('jtPalRing'); if (ring && !ring.hidden) ring.hidden = true; } return r; }; }
+fgDrawCourse = function fgDrawCourse3(x, E) {
+  const L = fgLanes(E), cols = E.order.map(k => pcol(k)).join('');
+  x.drawImage(fgBg(E, L.n + '|' + cols + '|' + (fgIn(G.me) ? 1 : 0), () => {
+    fgFrame(); fgSky(6, 58, 11); fgTents(56);
+    P.rect(7, 56, FG_W - 14, 6, '#8a6a48'); for (let i = 9; i < FG_W - 7; i += 6) P.rect(i, 52, 2, 10, '#6b5238'); P.hl(7, 56, FG_W - 14, '#a8875c');
+    fgGrass(62, 264, 12);
+    E.order.forEach((k, l) => {
+      const y0 = L.top + l * L.LH;
+      for (let y = y0; y < y0 + L.LH; y++) for (let i = 7; i < FG_W - 7; i++) { const nn = phash(i >> 1, y >> 1, 20 + l); P.px(i, y, l % 2 ? (nn > 0.85 ? '#86a876' : '#7ea06f') : (nn > 0.85 ? '#8fb07a' : '#87a977')); }
+      for (let i = 9; i < FG_W - 9; i += 4) P.hl(i, y0, 2, '#e8ecdf');
+      const fy = y0 + Math.max(3, Math.floor(L.LH / 2) - 8);
+      P.vl(10, fy, Math.min(16, L.LH - 4), '#6b5238'); P.rect(11, fy, 6, 5, fgCol(k)); P.px(17, fy + 1, fgCol(k)); P.hl(11, fy + 4, 5, fgDark(k));
+    });
+    P.hl(9, L.top + L.n * L.LH, FG_W - 18, '#e8ecdf');
+    for (let y = L.top; y < L.top + L.n * L.LH; y++) for (let i = 0; i < 4; i++) P.px(100 + i, y, ((i >> 1) + (y >> 1)) % 2 ? '#ece6d6' : '#5a4436');
+    if (fgIn(G.me)) { P.rect(16, 236, 88, 12, '#5a4436'); P.rect(17, 237, 86, 10, '#2e2a30'); }
+  }), 0, 0);
+  const t = fgT(E), now = performance.now(), sc = L.LH >= 34 ? 2 : 1, rm = fgRM(), geo = fgBoarGeo(sc);
+  E.order.forEach((k, l) => {
+    const st = fgStOf(E, k), y = L.top + l * L.LH + Math.min(L.LH - 6, sc === 2 ? 30 : Math.floor(L.LH * 0.75));
+    // the guest's view of the others comes in steps: it eases towards them
+    const d = FGX.disp[k] ?? st.x, xs = rm ? st.x : d + (st.x - d) * 0.35; FGX.disp[k] = xs;
+    const ax = Math.round(geo.a0 + (geo.a1 - geo.a0) * xs / RACE.LEN);
+    const running = st.fin < 0 && (st.v === undefined ? xs !== d : st.v > 1.2) && E.phase === 'play';
+    fgShadow(x, ax, y + 2, sc === 2 ? 15 : 8, sc === 2 ? 3 : 2);
+    if (running && !rm) for (let dd = 1; dd <= 3; dd++) { const ph = ((now / 90) | 0) + dd; P.rect(ax - (sc === 2 ? 18 : 10) - dd * 5, y - 3 - (ph % 2) * 2, 2, 2, '#d8cfbd'); }
+    fgBoar3(ax, y, sc === 2, running && !rm ? ((now / 85) | 0) % 4 : 0, k);
+    const by = y - (sc === 2 ? 15 : 8);
+    if (solStun(E, st, t) && st.fin < 0) { const bx2 = ax + (sc === 2 ? 6 : 3), by2 = by - 9; P.rect(bx2, by2, 3, 6, '#d9776a'); P.rect(bx2, by2 + 7, 3, 2, '#d9776a'); P.px(bx2 + 1, by2 + 1, '#f6c9c0');
+      for (let j = 0; j < 3; j++) { const a = now / 160 + j * 2.1, px = ax - 2 + Math.round(Math.cos(a) * 6), py = by - 4 + Math.round(Math.sin(a) * 2); P.rect(px, py, 2, 2, '#f2d063'); } }
+    if (k === G.me && fgIn(G.me)) P.ring(ax - 2, by - 7, 3, 1, '#e6c35a', 1);
+    if (st.fin >= 0 && FGX.seenF[k]) { const m = FGX.seenF[k], c = m === 1 ? '#e6c35a' : m === 2 ? '#c9ced6' : '#c78a4c'; P.ell(110, y - 8, 3, 3, c); P.px(109, y - 10, '#fff2b4'); }
+  });
+  // the fou's count, in place of the breath: green while his back is turned, three dots for « un, deux, trois », red when he looks
+  if (fgIn(G.me)) {
+    const p = E.phase === 'play' ? solPh(E.cond, t) : null, cnt = p && !p.look && t >= p.c;
+    P.rect(17, 237, 86, 10, !p ? '#4a4448' : p.look ? '#d9776a' : cnt ? '#e6c35a' : '#8fc28a');
+    if (p && !p.look) for (let i = 0; i < 3; i++) { const lit = cnt && (t - p.c) / Math.max(0.01, p.t1 - p.c) * 3 > i; P.rect(47 + i * 10, 240, 5, 4, lit ? '#fff6dc' : cnt ? '#c99a3a' : '#a9d3a2'); }
+    if (p && p.look) { P.ell(60, 242, 9, 3, '#fff6dc'); P.ell(60, 242, 2, 2, '#6c2b39'); P.px(59, 241, '#ffffff'); }
+    // the eye at the left: shut while his back is turned, open when he looks
+    if (p && p.look) { P.ell(11, 242, 3, 2, '#fff6dc'); P.px(11, 242, '#6c2b39'); } else { P.hl(9, 242, 5, '#e6c35a'); P.px(9, 243, '#e6c35a'); P.px(13, 243, '#e6c35a'); }
+  }
+  fgFou(x, 98, 20, E.phase === 'intro' && E.t < FG_INTRO - FG_CDN ? 'ann' : E.phase === 'intro' || (E.phase === 'play' && !solPh(E.cond, t).look) ? 'back' : 'front', true);
+  if (E.phase === 'play' && solPh(E.cond, t).look) { P.rect(104, 10, 2, 5, '#d9776a'); P.rect(104, 16, 2, 2, '#d9776a'); }
+};;
+/* ================================================================ version 88 · les jeux du fou, validés (Patrick, 06/11, 14 h 20), from the
+   test page's 3rd round (lab 89, after Patrick's 9 h 27 and 9 h 29):
+   - la course : a wild boar, long and low, its snout and its tusk, its bristly mane, thin legs at the gallop (four frames), its House's
+     cloth on its back;
+   - les choux : his rhythm changes (a flash, his head and his marotte at once, three windows in a row, a pause before a surprise), and
+     a richer castelet (harlequin front, shutters that open as he comes up, gilded frames, his portrait on the crest, cobbles, the crowd);
+   - a new game, « La danse des étendards » : two drums, two thumbs, the fou's tune; the Houses' flag-bearers dance on their hits.
+   Everything reassigns or wraps the game's own functions and lab 88's (fou88g.js, just before). */
+const FG3 = { stepAt: 0 };
+
+/* ================================================================ la course : the new boar */
+// side view, facing right: the body (rows), then four legs drawn from the belly to the ground, four frames of a gallop
+const BOAR3 = {
+  big: { W: 32, H: 18, thigh: true, rows: [
+    '..............m.m.m.m.e.........',
+    '............mmmmmmmmmmee........',
+    '..........llllllmmmmmmeeh.......',
+    '.......hhlccccccbbbbbbbhhh......',
+    '.....hbbcccccccchbbbbbbbbobh....',
+    '....tbbbggggggggbbbbbbbbbbbbh...',
+    '...t.bbbccccccccbbbbbbbbbbbbbh..',
+    '...t.bbbCCCCCCCCbbbbbbbbbbbbbbn.',
+    '..tt.bbbbCbCbCbCbbbbbbbbbbbbbbNn',
+    '.....bbbbbbbbbbbbbbbbbbbbbbbbwbn',
+    '.....BbbbbbbbbbbbbbbbbbbkkBBBwB.',
+    '......BBbbbbbbbbbbbbbbbbBB......',
+    '........BBBBBBBBbbbbbbbB........',
+    '..................BBBB..........'],
+    legs: [[8, 12, 'B'], [11, 12, 'b'], [19, 13, 'B'], [22, 13, 'b']],
+    fr: [[[0, 0], [0, 0], [0, 0], [0, 0]], [[-3, 0], [-2, 1], [3, 1], [3, 0]], [[2, 1], [3, 1], [-2, 1], [-3, 1]], [[-1, 0], [1, 1], [1, 0], [-1, 1]]] },
+  small: { W: 18, H: 11, thigh: false, rows: [
+    '.........m.m.e....',
+    '.......mmmmmmee...',
+    '.....lllllmmmmbh..',
+    '...hbcccccbbbbbobh',
+    '..tbbgggggbbbbbbbn',
+    '.t.bbCCCCCbbbbbbwN',
+    '...BbbbbbbbbbbbBw.',
+    '....BBBBBbbbbbB...'],
+    legs: [[5, 7, 'B'], [7, 7, 'b'], [11, 7, 'B'], [13, 7, 'b']],
+    fr: [[[0, 0], [0, 0], [0, 0], [0, 0]], [[-2, 0], [-1, 0], [1, 0], [2, 0]], [[1, 1], [1, 1], [-1, 1], [-1, 1]], [[-1, 0], [1, 0], [1, 0], [-1, 0]]] },
+};
+const BOAR3_BOB = [0, 0, -1, 0];
+// ax: the boar's middle; y: the ground under its hooves
+function fgBoar3(ax, y, big, fi, k) {
+  const D = big ? BOAR3.big : BOAR3.small, c = fgCol(k);
+  const pal = { b: '#7a5f4b', B: '#5a4436', h: '#94765e', m: '#4a3a30', e: '#4a3a30', o: '#2b2632', n: '#c49a8a', N: '#9a6e62', w: '#e6dcc6', f: '#3f3430',
+    t: '#4a3a30', k: '#6b5240', c, C: fgDark(k), l: fgLt(c, 0.35), g: '#e6c35a' };
+  const x0 = ax - (D.W >> 1), oy = y - (D.H - 1) + 1 + BOAR3_BOB[fi];
+  P.spr(D.rows, pal, x0, oy);
+  const F = D.fr[fi];
+  for (let j = 0; j < 4; j++) {
+    const [lx, ly, col] = D.legs[j], dx = F[j][0], y0 = oy + ly, n = y - F[j][1] - y0;
+    for (let s = 0; s <= n; s++) {
+      const px = x0 + lx + Math.round(dx * s / Math.max(1, n));
+      P.px(px, y0 + s, s === n ? pal.f : pal[col]);
+      if (D.thigh && s < 2) P.px(px + (dx >= 0 ? 1 : -1), y0 + s, pal[col]);
+    }
+  }
+}
+// the start (its rump just past the pennants) and the end (its snout on the line)
+fgBoarGeo = sc => sc === 2 ? { a0: 19 + 16, a1: 100 - 16 } : { a0: 19 + 9, a1: 100 - 9 };
+
+/* ================================================================ des choux pour le fou : his rhythm, his castelet */
+// his rhythm: phrases drawn from the seed: his head (as before), a flash, his head and his marotte at once, three windows in a row,
+// his marotte alone, nobody for a moment. One window never holds two of them; a flash is +15 if you get it (it is always quick).
+function chouCond3(seed) {
+  const R = prng(seed + 5), D = FG.choux.dur, pops = [], free = [0, 0, 0, 0, 0, 0], r2 = v => Math.round(v * 100) / 100;
+  let t = 0.8, last = -1, n = 0;
+  const pick = no => { let w = 0; for (let k = 0; k < 40; k++) { w = (R() * 6) | 0; if (w !== last && w !== no && free[w] <= t) break; } return w; };
+  const add = (t0, w, kind, d, fl) => { pops.push({ i: 0, t: r2(t0), w, kind, d: r2(d), fl: fl ? 1 : 0 }); free[w] = t0 + d + 0.2; };
+  while (t < D - 0.9) {
+    const u = t / D, x = R();
+    if (n < 2 || x < 0.34) { const d = 1.05 - 0.35 * u + R() * 0.1, w = pick(-1); add(t, w, 'f', d); last = w; t += 0.45 + R() * 0.55; }
+    else if (x < 0.5) { const w = pick(-1); add(t, w, 'f', 0.36 + R() * 0.1, 1); last = w; t += 0.5 + R() * 0.55; }
+    else if (x < 0.63) { const d = 0.95 - 0.25 * u, w1 = pick(-1), w2 = pick(w1); add(t, w1, 'f', d); add(t + (R() < 0.5 ? 0 : 0.15), w2, 'm', d); last = w1; t += d * 0.8 + 0.3 + R() * 0.4; }
+    else if (x < 0.75) { for (let j = 0; j < 3; j++) { const w = pick(-1), d = 0.52 - 0.04 * j; add(t, w, 'f', d); last = w; t += d + 0.05; } t += 0.35 + R() * 0.4; }
+    else if (x < 0.88) { const w = pick(-1); add(t, w, 'm', 0.9 + R() * 0.25); last = w; t += 0.5 + R() * 0.45; }
+    else t += 0.8 + R() * 0.7;
+    n++;
+  }
+  pops.sort((a, c) => a.t - c.t); pops.forEach((p, i) => { p.i = i; });
+  return { pops };
+}
+{ const base = fgCond; fgCond = function (game, seed) { return game === 'choux' ? chouCond3(seed) : game === 'etend' ? etCond(seed) : base.apply(this, arguments); }; }
+// a flash hit says so (its +15 comes from the quick rule)
+{ const base = fgTapFx; fgTapFx = function (E, tp, st) {
+    const r = base.apply(this, arguments);
+    if (E && E.game === 'choux' && st) {
+      const ev = st.ev[st.ev.length - 1], p = ev && ev.t === tp.t && ev.r === 'fast' && ev.p >= 0 ? E.cond.pops[ev.p] : null;
+      if (p && p.fl) { const host = $('fgPops'), el = host && host.lastElementChild, sm = el && el.querySelector('small'); if (sm) sm.textContent = 'ÉCLAIR !'; }
+    }
+    return r;
+}; }
+
+// his castelet: a crest with his portrait, a velvet valance, a harlequin front between twisted columns, six gilded windows whose
+// curtains open as he comes up, big drapes at the sides, the stage's skirt, the cobbles, the basket and the crowd
+const CAS = { red: '#a24a40', redL: '#c0584c', redD: '#7a3530', gold: '#e6c35a', goldD: '#c9a04a', goldL: '#fff2b4', wood: '#8a6a48', woodL: '#a8875c', woodD: '#6b5238',
+  hA: '#5f8a7e', hB: '#6f9b8c', hL: '#527a6f', in: '#2e2a30', in2: '#3a3438' };
+function casFolds(x0, y0, w, h, side) {
+  for (let i = 0; i < w; i++) { const f = (side > 0 ? i : w - 1 - i) % 4; P.vl(x0 + i, y0, h, f === 0 ? CAS.redD : f === 2 ? CAS.redL : CAS.red); }
+}
+// a shutter: harlequin diamonds, teal and cream, gilded lines, a darker edge where the two meet
+function casShutter(x0, y0, w, h, right) {
+  for (let y = 0; y < h; y++) for (let i = 0; i < w; i++) {
+    const ii = right ? i + (FG_WW - w) - FG_WW / 2 : i, p = ii / 9.5 + y / 12, q = ii / 9.5 - y / 12, fp = p - Math.floor(p), fq = q - Math.floor(q);
+    P.px(x0 + i, y0 + y, fp < 0.09 || fq < 0.09 ? CAS.goldD : ((Math.floor(p) + Math.floor(q)) & 1) ? '#6f9b8c' : '#e6dcc6');
+  }
+  P.vl(right ? x0 : x0 + w - 1, y0, h, '#4f7569'); P.hl(x0, y0, w, '#4f7569');
+}
+function casBg() {
+  fgFrame(); fgSky(6, 44, 14);
+  // the garlands of pennants, from the castelet to the posts
+  for (const [x0, x1] of [[7, 32], [88, 113]]) for (let i = x0; i <= x1; i++) {
+    const u = (i - x0) / (x1 - x0), yy = 9 + Math.round(Math.sin(u * Math.PI) * 6); P.px(i, yy, '#8a6a48');
+    if ((i - x0) % 5 === 2) { const c = ['#b5655b', '#e6c35a', '#7192b6', '#ece6d6', '#9a87bf'][((i - x0) / 5 | 0) % 5]; P.rect(i - 1, yy + 1, 3, 2, c); P.px(i, yy + 3, c); }
+  }
+  // the cobbles
+  for (let y = 214; y < 264; y++) for (let i = 7; i < FG_W - 7; i++) {
+    const row = y >> 2, off = row % 2 ? 3 : 0, gap = ((i + off) % 6 === 0) || (y % 4 === 0), nn = phash(((i + off) / 6) | 0, row, 31);
+    P.px(i, y, gap ? '#a89a80' : nn > 0.66 ? '#cbbfa6' : nn > 0.33 ? '#c2b59b' : '#b9ad94');
+  }
+  // the crest: his portrait in a gilded medallion, gold finials at the corners
+  P.ell(60, 25, 30, 18, CAS.goldD); P.ell(60, 26, 28, 16, CAS.wood); P.ell(60, 27, 23, 13, CAS.red); P.ell(60, 27, 21, 11, CAS.redL); P.ell(60, 28, 20, 10, CAS.red);
+  P.ell(60, 16, 9, 9, CAS.gold); P.ell(60, 16, 8, 8, '#efe4c4'); P.spr(JEST_ROWS.front.slice(0, 9), JEST_PAL, 53, 10);
+  for (const fx of [13, 107]) { P.vl(fx, 12, 12, CAS.woodD); P.ell(fx, 11, 2, 2, CAS.gold); P.px(fx - 1, 10, CAS.goldL); P.rect(fx + 1, 13, 5, 3, fx < 60 ? '#7192b6' : '#b5655b'); P.px(fx + 6, 14, fx < 60 ? '#7192b6' : '#b5655b'); }
+  // the cornice and the valance (scalloped velvet, a gold fringe)
+  P.rect(11, 25, 98, 6, CAS.wood); P.hl(11, 25, 98, CAS.gold); P.hl(11, 26, 98, CAS.woodL); P.hl(11, 30, 98, CAS.woodD);
+  // the harlequin front
+  for (let y = 31; y < 206; y++) for (let i = 14; i < 106; i++) {
+    const p = (i - 14) / 11.5 + (y - 31) / 15, q = (i - 14) / 11.5 - (y - 31) / 15, fp = p - Math.floor(p), fq = q - Math.floor(q);
+    P.px(i, y, fp < 0.07 && fq < 0.07 ? CAS.goldD : fp < 0.07 || fq < 0.07 ? CAS.hL : ((Math.floor(p) + Math.floor(q)) & 1) ? CAS.hA : CAS.hB);
+  }
+  P.rect(14, 31, 92, 3, CAS.red); P.hl(14, 31, 92, CAS.redL);
+  for (let sx = 17; sx < 106; sx += 7) { P.ell(sx, 34, 3, 2, CAS.red); P.hl(sx - 1, 33, 3, CAS.redL); P.px(sx, 37, CAS.gold); P.px(sx - 2, 36, CAS.goldD); P.px(sx + 2, 36, CAS.goldD); }
+  // twisted columns
+  for (const x0 of [12, 104]) for (let y = 31; y < 207; y++) for (let i = 0; i < 4; i++) P.px(x0 + i, y, ((y + i * 2) % 6) < 3 ? CAS.goldD : CAS.wood);
+  // the big drapes at the sides, tied with a gold cord
+  casFolds(7, 20, 6, 196, 1); casFolds(FG_W - 13, 20, 6, 196, -1);
+  for (const cx of [10, FG_W - 10]) { P.rect(cx - 3, 118, 7, 3, CAS.gold); P.hl(cx - 3, 118, 7, CAS.goldL); P.rect(cx - 1, 121, 3, 5, CAS.goldD); P.px(cx, 126, CAS.gold); }
+  // the windows' gilded frames, their little crests, their ledges
+  for (const wy of FG_WY) for (const wx of FG_WX) {
+    P.rect(wx - 3, wy - 3, FG_WW + 6, FG_WH + 6, CAS.wood); P.rect(wx - 1, wy - 1, FG_WW + 2, FG_WH + 2, CAS.gold);
+    P.hl(wx - 3, wy - 3, FG_WW + 6, CAS.woodL); P.hl(wx + 6, wy - 5, FG_WW - 12, CAS.gold); P.hl(wx + 10, wy - 6, FG_WW - 20, CAS.gold); P.px(wx + (FG_WW >> 1), wy - 7, CAS.goldL);
+    P.rect(wx - 5, wy + FG_WH + 2, FG_WW + 10, 3, CAS.wood); P.hl(wx - 5, wy + FG_WH + 2, FG_WW + 10, CAS.woodL); P.hl(wx - 5, wy + FG_WH + 4, FG_WW + 10, CAS.woodD);
+  }
+  // the stage's base: a gilded board, a velvet skirt with a fringe
+  P.rect(11, 206, 98, 4, CAS.wood); P.hl(11, 206, 98, CAS.gold); P.hl(11, 209, 98, CAS.woodD);
+  casFolds(13, 210, 94, 8, 1); for (let sx = 15; sx < 106; sx += 4) P.px(sx, 218, CAS.gold);
+  // the basket of cabbages
+  P.rect(42, 240, 36, 14, '#b98a52'); for (let yy = 242; yy < 254; yy += 3) for (let i = 42; i < 78; i++) if ((i + yy) % 4 < 2) P.px(i, yy, '#a8763e');
+  P.hl(42, 240, 36, '#d6ad74'); P.hl(41, 239, 38, '#8a5a32'); P.hl(42, 253, 36, '#8a5a32');
+  for (const [cx, cy] of [[50, 236], [62, 233], [72, 237]]) fgSpr2(FG_CAB, FG_CABP, cx - 7, cy - 6);
+  fgSpr2(FG_CAB, FG_CABP, 82, 250);
+  // the crowd, from behind, at the bottom corners
+  const hair = ['#5a4436', '#c9a04a', '#3f3b44', '#8a6a48', '#b5655b', '#6b4a32'], cloth = ['#7192b6', '#9a87bf', '#c78a4c', '#b5655b', '#5d5862', '#c4809f'];
+  [[13, 252], [24, 255], [35, 251], [87, 252], [98, 255], [108, 251]].forEach(([hx, hy], i) => {
+    P.rect(hx - 5, hy + 3, 11, 264 - hy - 3, cloth[i % cloth.length]); P.hl(hx - 5, hy + 3, 11, fgLt(cloth[i % cloth.length], 0.25));
+    P.ell(hx, hy, 3, 3, hair[i % hair.length]); if (i % 3 === 1) { P.rect(hx - 4, hy - 4, 9, 3, '#b5655b'); P.px(hx + 4, hy - 5, '#e6c35a'); }
+  });
+}
+fgDrawChoux = function fgDrawChoux3(x, E) {
+  x.drawImage(fgBg(E, 'booth3', casBg), 0, 0);
+  const t = fgT(E), st = fgMine(), now = performance.now(), rm = fgRM(), mine = fgIn(G.me);
+  for (let w = 0; w < 6; w++) {
+    const wx = FG_WX[w % 2], wy = FG_WY[w >> 1];
+    let pop = null; if (E.phase === 'play') for (const p of E.cond.pops) if (p.w === w && t >= p.t - 0.02 && t <= p.t + p.d + 0.12) { pop = p; break; }
+    let u = 0;
+    if (pop) {
+      const end = mine && st && st.hit && st.hit[pop.i] ? Math.min(pop.t + pop.d, (st.ev.find(e => e.p === pop.i) || { t: pop.t + pop.d }).t + 0.05) : pop.t + pop.d;
+      const rt = pop.fl ? 0.05 : 0.1;
+      u = rm ? (t >= pop.t && t <= end ? 1 : 0) : Math.max(0, Math.min(1, (t - pop.t) / rt, (end + rt - t) / rt));
+    }
+    // the inside: dark, a little lighter at the back
+    P.rect(wx, wy, FG_WW, FG_WH, CAS.in); P.rect(wx + 3, wy + 5, FG_WW - 6, 18, CAS.in2);
+    if (u > 0) {
+      x.save(); x.beginPath(); x.rect(wx, wy, FG_WW, FG_WH); x.clip();
+      const lift = Math.round((1 - u) * 34);
+      if (pop.kind === 'f') fgSpr2(st && st.hit && st.hit[pop.i] ? JEST_ROWS.front : JEST_ROWS.ann, JEST_PAL, wx + 3, wy + 6 + lift);
+      else { P.rect(wx + 17, wy + 24 + lift, 3, 24, '#8a6a48'); fgSpr2(FG_MAROT, FG_MAROTP, wx + 13, wy + 10 + lift); }
+      x.restore();
+    }
+    // two little velvet drapes tied at the top corners, inside
+    P.rect(wx, wy + 4, 4, 14, CAS.red); P.vl(wx + 1, wy + 4, 12, CAS.redL); P.rect(wx + FG_WW - 4, wy + 4, 4, 14, CAS.red); P.vl(wx + FG_WW - 2, wy + 4, 12, CAS.redL);
+    // the shutters: closed, or slid aside while he is up
+    const cw = Math.round((FG_WW / 2) * (1 - 0.86 * u));
+    if (cw > 0) { casShutter(wx, wy + 4, cw, 32, 0); casShutter(wx + FG_WW - cw, wy + 4, cw, 32, 1); }
+    if (u < 0.1) { P.vl(wx + (FG_WW >> 1), wy + 4, 32, '#4f7569'); P.rect(wx + (FG_WW >> 1) - 3, wy + 19, 2, 3, CAS.gold); P.rect(wx + (FG_WW >> 1) + 2, wy + 19, 2, 3, CAS.gold); }
+    // the pelmet, and the carved ledge he leans on
+    P.rect(wx, wy, FG_WW, 4, CAS.red); P.hl(wx, wy, FG_WW, CAS.goldD); for (let sx = wx + 2; sx < wx + FG_WW; sx += 4) P.px(sx, wy + 4, CAS.gold);
+    P.rect(wx, wy + 36, FG_WW, 10, CAS.wood); P.hl(wx, wy + 36, FG_WW, CAS.gold); P.hl(wx, wy + 37, FG_WW, CAS.woodL); P.hl(wx, wy + 45, FG_WW, CAS.woodD);
+    for (let sx = wx + 4; sx < wx + FG_WW - 2; sx += 6) { P.rect(sx, wy + 40, 3, 3, CAS.woodD); P.px(sx + 1, wy + 41, CAS.goldD); }
+  }
+  // my cabbages: a flight from the basket, then a splash on the window
+  FGX.fx = FGX.fx.filter(f => now - f.at < 900);
+  for (const f of FGX.fx) {
+    if (f.k !== 'cab') continue;
+    const wx = FG_WX[f.w % 2] + 19, wy = FG_WY[f.w >> 1] + 20, u = rm ? 1 : Math.min(1, (now - f.at) / 220);
+    if (u < 1) { const cx = Math.round(60 + (wx - 60) * u), cy = Math.round(232 + (wy - 232) * u - Math.sin(u * Math.PI) * 18); fgSpr2(FG_CAB, FG_CABP, cx - 7, cy - 6); continue; }
+    if (f.r === 'hit' || f.r === 'fast' || f.r === 'miss') { const sx = wx + (f.r === 'miss' ? 6 : 0), sy = wy + (f.r === 'miss' ? 8 : 4); P.ell(sx, sy, 5, 3, '#8fb07a'); P.rect(sx - 7, sy - 3, 2, 2, '#8fb07a'); P.rect(sx + 6, sy + 2, 2, 2, '#6c8f62'); P.rect(sx + 3, sy - 5, 2, 2, '#d6e4c2'); P.rect(sx - 2, sy + 4, 2, 2, '#6c8f62'); }
+    { const fl = now - f.at - 220; if (fl >= 0 && fl < 150 && f.r !== 'miss') { x.globalAlpha = f.r === 'mar' ? 0.55 : 0.5; P.rect(FG_WX[f.w % 2], FG_WY[f.w >> 1], FG_WW, FG_WH, f.r === 'mar' ? '#d9776a' : '#ffffff'); x.globalAlpha = 1; } }
+    if (!f.said) { f.said = true; if (f.r === 'hit' || f.r === 'fast') fgSay(rndOf(['Aïe !', 'Ouille !', 'Pas la tête !']), 0.9, wx, wy - 18); else if (f.r === 'mar') fgSay('Raté, hé hé !', 1.1, wx, wy - 18); }
+  }
+};
+
+/* ================================================================ la danse des étendards (a new game, from the 2nd round's C)
+   Two drums, the two thumbs: the notes fall down the lanes on each side of the field and land in the circle at their foot, on the
+   beat of the fou's tune. Tap the drum when a note lies right in the circle: « Parfait » +2, a little early or late « Bien » +1, too
+   far « Raté » (no point, the series stops), a tap with no note −1; ten in a row: +5. Each House's flag-bearer swings its banner on
+   its hits (to the side of the drum), throws it up on a series of ten, and lets it droop on a miss. The chart comes from the seed (the
+   same for all): twelve bars, from plain beats to eighths, syncopations, both drums at once and a finale. The tune is the browser's
+   own (a fife, a drone, a shaker, a tambourine), in time with the notes; the player's taps are the drums. */
+FG.etend = { c: 'e', n: 'La danse des étendards', k: 'ENTRACTE · LA DANSE DES ÉTENDARDS', short: 'la danse des étendards', dur: 28,
+  d: 'Le plus de points choisit une relique', say: '« Oyez ! La danse des étendards ! Tape quand le tambour qui tombe est pile dans le cadre d’or ! »',
+  cnt: '« On compte les points… »', cv: 'La place du tournoi et les porte-étendards des Maisons' };
+FG_DEC.e = 'etend';
+// windows (s): ±0.08 Parfait, ±0.16 Bien, ±0.24 Raté (the note is used); OFF: a touch reaches the page a little after the finger
+const ETD = { BPM: 112, PER: 0.08, GOOD: 0.16, BAD: 0.24, OFF: 0.04, SER: 10, SERB: 5, STRAY: -1, LEAD: 1.3 };
+const ET_BEAT = 60 / ETD.BPM, ET_BAR = 4 * ET_BEAT, ET_SLOT = ET_BEAT / 2;
+// the drum's patterns, bar by bar, on eighths (L left, R right, B both), from the easiest
+const ET_PAT = [
+  ['L.R.L.R.', 'L.L.R.R.', 'L...R.L.', 'R.L.R.L.'],
+  ['L.R.L.RR', 'L.RRL.R.', 'B...L.R.', 'L.R.B...', 'LL..R.R.'],
+  ['LRLRL.R.', 'L.RLR.L.', 'LRL.RLR.', 'L.R.LRLR'],
+  ['L..R..L.', 'R..L..RL', '.L.R.L.R', 'L..RL.R.', 'L.LR.RL.'],
+  ['B.LRB.RL', 'LLRRLLRR', 'B.B.LRLR', 'L.RRL.B.', 'LR.BLR.B'],
+  ['LRLRLRLR', 'RRR.LLL.', 'LRRLLRRL', 'B.LRLRB.'],
+];
+const ET_PLAN = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 0], ET_LAST = 'L.R.B...';
+function etCond(seed) {
+  const R = prng(seed + 11), notes = [], bars = [], used = {};
+  for (let b = 1; b <= 12; b++) {
+    const lv = ET_PLAN[b - 1]; let pat = ET_LAST;
+    if (lv) { const L = ET_PAT[lv - 1]; let j = (R() * L.length) | 0; if (used[lv] === j) j = (j + 1) % L.length; used[lv] = j; pat = L[j]; }
+    if (R() < 0.5) pat = pat.replace(/[LR]/g, c => (c === 'L' ? 'R' : 'L'));
+    bars.push(pat);
+    for (let j = 0; j < 8; j++) {
+      const c = pat[j]; if (c === '.') continue;
+      const t = Math.round((b * ET_BAR + j * ET_SLOT) * 1000) / 1000;
+      if (c === 'L' || c === 'B') notes.push({ t, s: 'l', b, j });
+      if (c === 'R' || c === 'B') notes.push({ t, s: 'r', b, j });
+    }
+  }
+  notes.forEach((n, i) => { n.i = i; });
+  return { notes, bars };
+}
+// the rules: pure, from the taps (each with its side); the notes left behind are missed when their window closes
+const etH = st => { st.h = st.score > 0 ? 1 : 0; };          // the game's « valid » test reads h
+function etScan(st, cond, T) {
+  const N = cond.notes;
+  while (st.nm < N.length && N[st.nm].t + ETD.GOOD < T - 1e-9) {
+    const n = N[st.nm++];
+    if (!st.hit[n.i]) { st.hit[n.i] = 'miss'; st.miss++; st.combo = 0; st.ev.push({ t: Math.round((n.t + ETD.GOOD) * 100) / 100, s: n.s, r: 'miss', n: n.i, pts: 0 }); }
+  }
+}
+function etTap(st, cond, tp) {
+  const T = tp.t - ETD.OFF, N = cond.notes;
+  etScan(st, cond, T);
+  let b = null, bd = 9;
+  for (let j = Math.max(0, st.nm - 8); j < N.length; j++) {
+    const n = N[j]; if (n.t - T > ETD.BAD) break;
+    if (n.s !== tp.s || st.tp[n.i]) continue;
+    const d = Math.abs(T - n.t); if (d <= ETD.BAD + 1e-9 && d < bd) { bd = d; b = n; }
+  }
+  if (!b) { st.score += ETD.STRAY; st.stray++; st.combo = 0; st.ev.push({ t: tp.t, s: tp.s, r: 'stray', n: -1, pts: ETD.STRAY }); etH(st); return; }
+  st.tp[b.i] = 1;
+  const dt = Math.round((T - b.t) * 1000) / 1000;
+  if (st.hit[b.i] === 'miss') { st.ev.push({ t: tp.t, s: tp.s, r: 'late', n: b.i, dt, pts: 0 }); return; }
+  let r = 'bad', pts = 0, bonus = 0;
+  if (bd <= ETD.PER + 1e-9) { r = 'per'; pts = 2; st.per++; } else if (bd <= ETD.GOOD + 1e-9) { r = 'ok'; pts = 1; st.ok++; } else st.miss++;
+  st.hit[b.i] = r;
+  if (pts) { st.combo++; if (st.combo > st.best) st.best = st.combo; if (st.combo % ETD.SER === 0) bonus = ETD.SERB; } else st.combo = 0;
+  st.score += pts + bonus; if (pts) st.tS = tp.t;
+  st.ev.push({ t: tp.t, s: tp.s, r, n: b.i, dt, pts, bonus, c: st.combo });
+  etH(st);
+}
+{ const base = fgInit; fgInit = function (game) { return game === 'etend' ? { t: 0, i: 0, score: 0, combo: 0, best: 0, per: 0, ok: 0, miss: 0, stray: 0, nm: 0, hit: {}, tp: {}, ev: [], tS: 0, h: 0 } : base.apply(this, arguments); }; }
+{ const base = fgAdvance; fgAdvance = function (game, cond, st, taps, tTo) {
+    if (game !== 'etend') return base.apply(this, arguments);
+    tTo = Math.min(tTo, FG.etend.dur);
+    while (st.i < taps.length && taps[st.i].t <= tTo + 1e-9) etTap(st, cond, taps[st.i++]);
+    etScan(st, cond, tTo - ETD.OFF); etH(st);
+    if (tTo > st.t) st.t = tTo;
+    return st;
+}; }
+// the ranking: the most points, then the most « Parfait », then the longest series
+{ const base = fgRank; fgRank = function (E) {
+    if (E.game !== 'etend') return base.apply(this, arguments);
+    const R = E.order.map(k => ({ k, st: E.st[k] }));
+    R.sort((a, c) => (c.st.score - a.st.score) || (c.st.per - a.st.per) || (c.st.best - a.st.best) || (a.k - c.k));
+    return R.map(r => ({ k: r.k }));
+}; }
+// the bots: each note hit or not by their level, a little off the beat, now and then a tap for nothing
+const ET_BOT = { easy: { p: 0.74, sd: 0.07, wild: 0.3, st: 0.25 }, normal: { p: 0.86, sd: 0.052, wild: 0.25, st: 0.15 }, hard: { p: 0.94, sd: 0.038, wild: 0.2, st: 0.06 } };
+{ const base = fgBotPlan; fgBotPlan = function (E) {
+    if (E.game !== 'etend') return base.apply(this, arguments);
+    const B = ET_BOT[(NET.mode === 'host' && NET.diff) || diffKey] || ET_BOT.normal, out = [];
+    const gauss = () => { let s = 0; for (let i = 0; i < 4; i++) s += Math.random(); return (s - 2) * 1.732; };
+    for (const n of E.cond.notes) {
+      if (Math.random() < B.p) out.push({ t: fgR2(n.t + ETD.OFF + Math.max(-0.2, Math.min(0.2, gauss() * B.sd))), s: n.s });
+      else if (Math.random() < B.wild) out.push({ t: fgR2(n.t + ETD.OFF + (Math.random() < 0.5 ? -1 : 1) * (0.17 + Math.random() * 0.06)), s: n.s });
+    }
+    for (let j = Math.round(B.st * FG.etend.dur / 4); j > 0; j--) out.push({ t: fgR2(2.2 + Math.random() * (FG.etend.dur - 3)), s: Math.random() < 0.5 ? 'l' : 'r' });
+    out.sort((a, c) => a.t - c.t);
+    return out;
+}; }
+// my taps: the left half of the field (and its lane) is the left drum, the right half the right one; both thumbs at once is fine.
+// The game's clock moves at each frame: a tap between two frames gets its own time
+{ const base = fgStep; fgStep = function () { FG3.stepAt = performance.now(); return base.apply(this, arguments); }; }
+// (a guest's clock is his own from « Partez ! »; one who only watches hears the tune on the host's time, from its first sight of the play)
+const etClock = E => auth() ? E.t + Math.min(0.04, Math.max(0, (performance.now() - FG3.stepAt) / 1000)) : FGX.mine ? (performance.now() - FGX.mine.t0) / 1000 : ET.wt0 ? (performance.now() - ET.wt0) / 1000 : -1;
+{ const base = fgNow; fgNow = function () {
+    const E = G.entr, t = base.apply(this, arguments);
+    if (!E || E.game !== 'etend' || t < 0) return t;
+    return Math.round(etClock(E) * 100) / 100;
+}; }
+{ const base = fgTap; fgTap = function (ax, ay, inCv, side) {
+    const E = G && G.entr;
+    if (E && E.game === 'etend') { fgTapSide(side || (ax < FG_W / 2 ? 'l' : 'r')); return; }
+    return base.apply(this, arguments);
+}; }
+// at once on my screen: the drum's sound, the lane's circle pressed (the rest comes from the rules, at the next frame)
+{ const base = fgTapFx; fgTapFx = function (E, tp, st) {
+    if (!E || E.game !== 'etend') return base.apply(this, arguments);
+    ET.press[tp.s] = performance.now();
+    etDrum(tp.s);
+}; }
+{ const base = fgStart; fgStart = function (game) { if (game === 'etend') etReset(); return base.apply(this, arguments); }; }
+
+/* ---------------------------------------------------------------- the tune: a fife, a drone, a shaker, a tambourine (the browser's own) */
+const ET = { bgs: {}, spr: {}, EH: 0, evI: 0, fx: [], press: { l: 0, r: 0 }, plan: null, seed: -1, pi: 0, drone: null, bus: null, built: false, err: 0, combo: 0, cheer: 0, jt: { l: 0, r: 0 } };
+function etReset() { ET.evI = 0; ET.fx = []; ET.press = { l: 0, r: 0 }; ET.plan = null; ET.seed = -1; ET.pi = 0; ET.combo = 0; ET.cheer = 0; etDroneStop(0.1); }
+// the melody, bar by bar: [eighth where it starts, MIDI note, length in eighths] (D mixolydian, a dance)
+const ET_TUNE = [
+  [[0, 74, 2], [2, 69, 1], [3, 71, 1], [4, 69, 2], [6, 66, 2]],
+  [[0, 67, 1], [1, 69, 1], [2, 71, 1], [3, 72, 1], [4, 74, 2], [6, 69, 2]],
+  [[0, 74, 2], [2, 76, 1], [3, 78, 1], [4, 76, 2], [6, 72, 2]],
+  [[0, 71, 1], [1, 72, 1], [2, 74, 1], [3, 71, 1], [4, 69, 4]],
+  [[0, 78, 2], [2, 76, 1], [3, 74, 1], [4, 76, 1], [5, 78, 1], [6, 79, 2]],
+  [[0, 78, 1], [1, 76, 1], [2, 74, 1], [3, 72, 1], [4, 71, 2], [6, 69, 2]],
+  [[0, 74, 1], [1, 76, 1], [2, 78, 2], [4, 76, 1], [5, 74, 1], [6, 72, 2]],
+  [[0, 71, 2], [2, 69, 2], [4, 67, 1], [5, 66, 1], [6, 64, 2]],
+  [[0, 62, 2], [2, 66, 1], [3, 69, 1], [4, 74, 2], [6, 69, 2]],
+  [[0, 71, 1], [1, 72, 1], [2, 74, 1], [3, 76, 1], [4, 74, 2], [6, 71, 2]],
+  [[0, 72, 2], [2, 71, 1], [3, 69, 1], [4, 67, 2], [6, 66, 2]],
+  [[0, 64, 1], [1, 66, 1], [2, 67, 1], [3, 69, 1], [4, 62, 4]],
+];
+function etMusicPlan() {
+  const L = [];
+  for (let j = 0; j < 4; j++) L.push({ t: j * ET_BEAT, k: 'stick', a: j === 0 });
+  for (let b = 1; b <= 12; b++) for (let j = 0; j < 8; j++) { L.push({ t: b * ET_BAR + j * ET_SLOT, k: 'shk', a: j % 2 === 0 }); if (j === 2 || j === 6) L.push({ t: b * ET_BAR + j * ET_SLOT, k: 'tamb' }); }
+  ET_TUNE.forEach((bar, bi) => bar.forEach(([j, m, len]) => L.push({ t: (bi + 1) * ET_BAR + j * ET_SLOT, k: 'fife', m, d: len * ET_SLOT })));
+  L.push({ t: 12 * ET_BAR + 4 * ET_SLOT, k: 'chord' });
+  L.sort((a, c) => a.t - c.t);
+  return L;
+}
+const etSnd = () => !!(SFX.on && SFX.ctx && SFX.ctx.state !== 'closed' && sxReady());
+function etBus() {
+  const a = SFX.ctx;
+  if (!ET.bus || ET.bus.context !== a) { ET.bus = a.createGain(); ET.bus.gain.value = 1; ET.bus.connect(sxBus.in); }
+  return ET.bus;
+}
+function etOsc(type, f, t, d, v, to, dest, att = 0.004) {
+  const a = SFX.ctx, o = a.createOscillator(), g = a.createGain(); g.gain.value = 0.0001;
+  o.type = type; o.frequency.setValueAtTime(f, t); if (to) o.frequency.exponentialRampToValueAtTime(to, t + d);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + att); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+  o.connect(g); g.connect(dest || etBus()); o.start(t); o.stop(t + d + 0.03);
+}
+function etNoise(kind, f, q, t, d, v, f2) {
+  const a = SFX.ctx, s = a.createBufferSource(), fl = a.createBiquadFilter(), g = a.createGain(); g.gain.value = 0.0001;
+  s.buffer = sxNB; fl.type = kind; fl.frequency.setValueAtTime(f, t); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, t + d); fl.Q.value = q;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+  s.connect(fl); fl.connect(g); g.connect(etBus()); s.start(t, Math.random()); s.stop(t + d + 0.03);
+}
+// a fife: a soft square and its octave, a light vibrato, a lowpass
+function etFife(t, m, d, v) {
+  const a = SFX.ctx, f = sxN(m), lp = a.createBiquadFilter(), g = a.createGain(), lfo = a.createOscillator(), lg = a.createGain(); g.gain.value = 0.0001;
+  lp.type = 'lowpass'; lp.frequency.value = 2400; lfo.frequency.value = 5.6; lg.gain.value = f * 0.007; lfo.connect(lg);
+  const dd = Math.max(0.09, d * 0.9), os = [['square', f, 1], ['triangle', f * 2, 0.4]].map(([ty, fr, gv]) => {
+    const o = a.createOscillator(), og = a.createGain(); o.type = ty; o.frequency.setValueAtTime(fr, t); lg.connect(o.frequency); og.gain.value = gv; o.connect(og); og.connect(lp); o.start(t); o.stop(t + dd + 0.05); return o;
+  });
+  lp.connect(g); g.connect(etBus());
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.02); g.gain.setValueAtTime(v * 0.85, t + dd * 0.55); g.gain.exponentialRampToValueAtTime(0.0001, t + dd);
+  lfo.start(t); lfo.stop(t + dd + 0.05);
+  return os;
+}
+function etDroneStart() {
+  const a = SFX.ctx, t = a.currentTime, lp = a.createBiquadFilter(), g = a.createGain(); g.gain.value = 0.0001;
+  lp.type = 'lowpass'; lp.frequency.value = 650; lp.Q.value = 0.6;
+  const os = [[sxN(50), 'sawtooth', 0, 1], [sxN(57), 'sawtooth', 5, 0.8], [sxN(38), 'triangle', 0, 1.2]].map(([f, ty, det, gv]) => {
+    const o = a.createOscillator(), og = a.createGain(); o.type = ty; o.frequency.value = f; o.detune.value = det; og.gain.value = gv; o.connect(og); og.connect(lp); o.start(t); return o;
+  });
+  lp.connect(g); g.connect(etBus());
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.036, t + 0.5);
+  ET.drone = { os, g };
+}
+function etDroneStop(fade) {
+  const D = ET.drone; if (!D) return; ET.drone = null;
+  try { const t = SFX.ctx.currentTime; D.g.gain.cancelScheduledValues(t); D.g.gain.setValueAtTime(Math.max(0.0001, D.g.gain.value), t); D.g.gain.exponentialRampToValueAtTime(0.0001, t + fade); D.os.forEach(o => o.stop(t + fade + 0.05)); } catch (e) {}
+}
+function etPlay(ev, when) {
+  const t = SFX.ctx.currentTime + when, mu = MUS.on;
+  if (ev.k === 'stick') { etOsc('triangle', ev.a ? 2100 : 1700, t, 0.035, 0.16); etNoise('bandpass', 2600, 2, t, 0.03, 0.12); return; }
+  if (!mu) return;
+  if (ev.k === 'shk') etNoise('highpass', 7200, 0.8, t, ev.a ? 0.05 : 0.035, ev.a ? 0.05 : 0.03);
+  else if (ev.k === 'tamb') { etNoise('bandpass', 6200, 3, t, 0.16, 0.07); etNoise('highpass', 9000, 0.7, t, 0.09, 0.04); }
+  else if (ev.k === 'fife') etFife(t, ev.m, ev.d, 0.075);
+  else if (ev.k === 'chord') { [62, 66, 69, 74].forEach(m => etFife(t, m, 1.3, 0.04)); etOsc('sine', sxN(38), t, 1.3, 0.12, 0, null, 0.02); }
+}
+// the player's drums: the left a deep « boum », the right a dry « tac »; « Parfait » rings a little bell
+function etDrum(side) {
+  if (!etSnd()) return;
+  try {
+    const t = SFX.ctx.currentTime;
+    if (side === 'l') { etOsc('sine', 150, t, 0.22, 0.5, 58); etNoise('lowpass', 700, 0.7, t, 0.07, 0.22, 200); }
+    else { etOsc('triangle', 330, t, 0.1, 0.34, 190); etNoise('bandpass', 2300, 1.2, t, 0.07, 0.28); }
+  } catch (e) {}
+}
+function etBell() { if (!etSnd()) return; try { const t = SFX.ctx.currentTime; etOsc('triangle', 1568, t, 0.14, 0.05); etOsc('triangle', 2349, t + 0.03, 0.16, 0.035); } catch (e) {} }
+// each frame while it plays: what is due in the next instant goes to the sound card, in step with the game's clock
+function etAudioFrame(E) {
+  if (E.phase !== 'play') { if (ET.drone) etDroneStop(0.6); return; }
+  const t = etClock(E); if (t < 0 || !etSnd()) { if (ET.drone) etDroneStop(0.2); return; }
+  if (!ET.plan || ET.seed !== E.seed) { ET.plan = etMusicPlan(); ET.seed = E.seed; ET.pi = 0; }
+  const a = SFX.ctx, lat = Math.min(0.1, Math.max(0, a.outputLatency || a.baseLatency || 0));
+  if (MUS.on && !ET.drone && t < FG.etend.dur - 0.6) etDroneStart();
+  if ((!MUS.on || t >= FG.etend.dur - 0.05) && ET.drone) etDroneStop(MUS.on ? 0.9 : 0.2);
+  while (ET.pi < ET.plan.length && ET.plan[ET.pi].t < t + 0.12) { const ev = ET.plan[ET.pi++], w = ev.t - t - lat; if (w >= -0.04) etPlay(ev, Math.max(0, w)); }
+}
+{ const base = fgLocal; fgLocal = function () {
+    const r = base.apply(this, arguments), E = G && G.entr;
+    try { if (E && E.game === 'etend') etAudioFrame(E); else if (ET.drone) etDroneStop(0.2); } catch (e) { if (!ET.err) { ET.err = 1; console.warn('fou:', e); } }
+    return r;
+}; }
+
+/* ---------------------------------------------------------------- the square: the rampart and the fou, the banners, the flag-bearers, the crowd */
+const ET_MAN = ['..hhhh..', '.hhhhhh.', '..ssss..', '..kssk..', '..ssss..', '.cccccc.', 'ccccdccc', 'ccccdccc', '.cggggc.', '.cc..cc.', '.ll..ll.', '.ff..ff.'];
+function etXs(n) {
+  const span = n > 1 ? Math.min(84, 26 * (n - 1)) : 0, s0 = 60 - span / 2;
+  return Array.from({ length: n }, (_, i) => Math.round(n > 1 ? s0 + i * span / (n - 1) : 60));
+}
+const etFy = (n, i) => { const H = ET.EH || FG_H; return n > 4 ? (i % 2 ? H - 58 : H - 78) : H - 68; };
+function etBg(E, X, H) {
+  P.rect(0, 0, 3, H, '#2b2a2a'); P.rect(FG_W - 3, 0, 3, H, '#2b2a2a'); P.rect(0, 0, FG_W, 3, '#2b2a2a'); P.rect(0, H - 3, FG_W, 3, '#2b2a2a');
+  for (const bx of [3, FG_W - 7]) { P.rect(bx, 3, 4, H - 6, '#6b5238'); P.vl(bx + (bx < 10 ? 3 : 0), 3, H - 6, '#8a6a48'); for (let j = 10; j < H; j += 26) P.hl(bx, j, 4, '#5a4436'); }
+  P.rect(3, 3, FG_W - 6, 3, '#5a4436'); P.rect(3, H - 6, FG_W - 6, 3, '#5a4436');
+  fgSky(6, 52, 21);
+  // the rampart: its stones, its crenellations
+  for (let y = 44; y < 82; y++) for (let i = 7; i < FG_W - 7; i++) { const row = (y - 44) >> 2, off = row % 2 ? 5 : 0, gap = (y - 44) % 4 === 3 || (i + off) % 10 === 0, nn = phash(((i + off) / 10) | 0, row, 41); P.px(i, y, gap ? '#a39c90' : nn > 0.6 ? '#c8c1b4' : '#bdb5a8'); }
+  for (let i = 7; i < FG_W - 7; i += 10) { P.rect(i, 38, 6, 6, '#c8c1b4'); P.hl(i, 38, 6, '#d8d2c6'); P.vl(i + 5, 38, 6, '#a39c90'); }
+  P.hl(7, 81, FG_W - 14, '#8f887d');
+  // each House's banner on the wall, over its bearer
+  E.order.forEach((k, i) => {
+    const bx = X[i], c = fgCol(k);
+    P.rect(bx - 6, 47, 13, 2, '#8a6a48'); P.px(bx - 7, 47, '#e6c35a'); P.px(bx + 7, 47, '#e6c35a');
+    for (let y = 49; y < 74; y++) { const hw = y < 68 ? 5 : 5 - (y - 67); if (hw >= 0) P.hl(bx - hw, y, 2 * hw + 1, y > 57 && y < 61 ? fgLt(c, 0.4) : c); }
+    P.vl(bx + 5, 49, 19, fgDark(k));
+  });
+  // the square: flagstones growing toward us, a lighter ring where they dance
+  const rows = []; for (let y = 82, h = 5; y < H - 6; y += h, h = Math.min(13, h + 0.5)) rows.push([Math.round(y), Math.round(h)]);
+  const ry0 = H - 68 - 2;
+  rows.forEach(([y0, rh], r) => { const w = 8 + rh, off = r % 2 ? (w >> 1) : 0; for (let y = y0; y < Math.min(H - 6, y0 + rh); y++) for (let i = 7; i < FG_W - 7; i++) {
+    const gap = y === y0 + rh - 1 || (i + off) % w === 0, nn = phash(((i + off) / w) | 0, r, 43), dx = (i - 60) / 54, dy = (y - ry0) / 20, ring = Math.abs(dx * dx + dy * dy - 1) < 0.15;
+    P.px(i, y, gap ? '#b8aa8e' : ring ? '#e3d9c4' : nn > 0.6 ? '#d4c9b2' : '#cdbfa4');
+  } });
+  // the carpet from the tents to the ring, wider as it comes; masts with long pennants along it
+  const cy0 = 104, cy1 = ry0 - 16;
+  for (let y = cy0; y <= cy1; y++) { const u = (y - cy0) / Math.max(1, cy1 - cy0), hw = Math.round(7 + 20 * u); P.hl(60 - hw, y, 2 * hw + 1, ((y - cy0) / (4 + 6 * u) | 0) % 2 ? '#6f9b8c' : '#77a394'); P.px(60 - hw, y, '#e6c35a'); P.px(60 + hw, y, '#e6c35a'); P.px(60 - hw + 2, y, '#c9a04a'); P.px(60 + hw - 2, y, '#c9a04a'); }
+  for (let y = cy1 + 1; y <= cy1 + 2; y++) P.hl(33, y, 55, y === cy1 + 2 ? '#c9a04a' : '#527a6f');
+  [[30, 112, 26, 0], [90, 112, 26, 1], [17, 150, 44, 2], [103, 150, 44, 3]].forEach(([mx, my, mh, j]) => {
+    const c = E.order.length ? fgCol(E.order[j % E.order.length]) : '#e6c35a', lr = mx < 60 ? 1 : -1, pl = Math.round(mh * 0.45);
+    P.vl(mx, my, mh, '#8a6a48'); P.px(mx, my - 1, '#e6c35a'); fgShadow(P.x, mx, my + mh, 3, 1);
+    for (let i = 0; i < pl; i++) { const hh = Math.max(1, Math.round((mh * 0.28) * (1 - i / pl))); P.vl(mx + lr * (i + 1), my + 1 + (i >> 2), hh, i % 6 < 3 ? c : fgLt(c, 0.3)); }
+  });
+  // the tents along the rampart's foot, the far side of the square
+  fgTents(98); P.hl(7, 102, FG_W - 14, '#a39c90');
+  // the garland across the top
+  for (let i = 7; i < FG_W - 7; i++) { const yy = 14 + Math.round(Math.sin((i - 7) / (FG_W - 14) * Math.PI) * 7); P.px(i, yy, '#8a6a48'); if ((i - 7) % 6 === 3) { const c = E.order.length ? fgCol(E.order[((i - 7) / 6 | 0) % E.order.length]) : '#e6c35a'; P.rect(i - 1, yy + 1, 3, 2, c); P.px(i, yy + 3, c); } }
+}
+// a House's pose from its latest moves: swing to the drum's side on a hit, a throw on a series, a droop on a miss
+function etPose(st, t) {
+  const L = st && st.ev, sway = Math.sin(t / ET_BEAT * Math.PI) * 0.1;
+  if (!L || !L.length) return { th: sway, toss: 0, droop: 0, arms: 0 };
+  for (let j = L.length - 1; j >= Math.max(0, L.length - 8); j--) { const e = L[j], u = t - e.t; if (u > 0.62) break; if (e.bonus && u >= 0) { const k = Math.min(1, u / 0.62); return { th: k * Math.PI * 2, toss: 4 * k * (1 - k), droop: 0, arms: 1 }; } }
+  const e = L[L.length - 1], u = t - e.t;
+  if (u < 0 || u > 0.5) return { th: sway, toss: 0, droop: 0, arms: 0 };
+  const sg = e.s === 'l' ? -1 : 1;
+  if (e.r === 'per' || e.r === 'ok') { const k = Math.min(1, u / 0.3); return { th: sway + sg * (e.r === 'per' ? 1.15 : 0.75) * Math.sin(Math.PI * k), toss: 0, droop: 0, arms: 0 }; }
+  if (e.r === 'late') return { th: sway, toss: 0, droop: 0, arms: 0 };
+  const k = Math.min(1, u / 0.5); return { th: sg * 1.7 * Math.sin(Math.PI * Math.min(1, k * 1.3)), toss: 0, droop: 1 - k, arms: 0 };
+}
+const ET_FL = new Map(), ET_FB = [[], [], [], [], []];
+function etFlag(hx, hy, th, k, phase, droop) {
+  const L = 34, Wd = 18, c = fgCol(k), cols = ['#e6c35a', fgDark(k), fgLt(c, 0.45), fgLt(c, 0.18), c], dx = Math.sin(th), dy = -Math.cos(th), px = Math.cos(th), py = Math.sin(th);
+  const M = ET_FL; M.clear();
+  for (let u = 0.42; u <= 1.0001; u += 0.55 / L) for (let v = 0; v <= 1.0001; v += 0.55 / Wd) {
+    if (v > 0.74 && Math.abs(u - 0.71) < (v - 0.74) * 0.62) continue;          // the swallowtail
+    const sw = Math.sin(v * 3.3 + phase), al = u * L + sw * 1.6 * v;
+    const X = Math.round(hx + dx * al + px * v * Wd), Y = Math.round(hy + dy * al + py * v * Wd + droop * v * v * 9);
+    M.set((Y + 1024) * 4096 + X + 1024, u < 0.46 ? 0 : v > 0.95 ? 1 : (u > 0.66 && u < 0.76) ? 2 : sw > 0.75 ? 3 : 4);
+  }
+  for (const b of ET_FB) b.length = 0;
+  for (const [key, ci] of M) ET_FB[ci].push(key);
+  const x = P.x;
+  for (let ci = 0; ci < 5; ci++) { const B = ET_FB[ci]; if (!B.length) continue; P.use(cols[ci]); for (const key of B) { const Y = Math.floor(key / 4096); x.fillRect(key - Y * 4096 - 1024, Y - 1024, 1, 1); } }
+  P.line(hx, hy, hx + dx * L, hy + dy * L, '#8a6a48');
+  P.rect(Math.round(hx + dx * (L + 1)) - 1, Math.round(hy + dy * (L + 1)) - 1, 2, 2, '#e6c35a');
+}
+function etBearer(E, k, i, X, t, now, rm) {
+  const n = E.order.length, cx = X[i], fy = etFy(n, i), st = fgStOf(E, k), pz = rm ? { th: 0, toss: 0, droop: 0, arms: 0 } : etPose(st, t), mine = k === G.me && fgIn(G.me);
+  fgShadow(P.x, cx, fy + 1, 7, 2);
+  if (mine) { P.hl(cx - 8, fy + 3, 17, '#e6c35a'); P.hl(cx - 6, fy + 4, 13, '#e6c35a'); }
+  const c = fgCol(k), bob = E.phase === 'play' && !rm && ((t / ET_BEAT) % 1) < 0.18 ? 1 : 0;
+  P.x.drawImage(etSprC('man' + c, 16, 24, () => fgSpr2(ET_MAN, { h: fgDark(k), s: '#e2b48c', k: '#2e2a30', c, d: fgDark(k), g: '#e6c35a', l: '#4a3c40', f: '#3f3430' }, 0, 0)), cx - 8, fy - 23 + bob);
+  // the hands on the pole (or up, empty, while the banner flies)
+  const hx = Math.round(cx + 5 + Math.sin(pz.th) * 2), hy = fy - 13 + bob;
+  if (pz.toss > 0) { P.rect(cx - 7, fy - 22, 2, 5, c); P.rect(cx + 5, fy - 22, 2, 5, c); P.px(cx - 7, fy - 23, '#e2b48c'); P.px(cx + 6, fy - 23, '#e2b48c'); }
+  else { P.line(cx - 6, fy - 12 + bob, hx - 1, hy + 1, c); P.line(cx + 6, fy - 12 + bob, hx + 1, hy, c); P.rect(hx - 1, hy - 1, 3, 3, '#e2b48c'); }
+  const ph = now / 130 + i * 1.7;
+  if (pz.toss > 0) { const cy = hy - 17 - pz.toss * 64, dx = Math.sin(pz.th), dy = -Math.cos(pz.th); etFlag(cx - dx * 17, cy - dy * 17, pz.th, k, ph, 0); }
+  else etFlag(hx, hy, pz.th, k, ph, pz.droop);
+}
+function etSprC(key, w, h, fn) {
+  let c = ET.spr[key];
+  if (!c) { const [cv, x] = mkCanvas(w, h), prev = P; P = mkPen(x); try { fn(x); } finally { P = prev; } c = ET.spr[key] = cv; }
+  return c;
+}
+function etBgC(E, key, H, fn) {
+  const id = key + '|' + H; let c = ET.bgs[id];
+  if (!c) { const [cv, x] = mkCanvas(FG_W, H), prev = P; P = mkPen(x); try { fn(x); } finally { P = prev; } c = ET.bgs[id] = cv; const ks = Object.keys(ET.bgs); if (ks.length > 6) delete ET.bgs[ks[0]]; }
+  return c;
+}
+function etDraw(x, E) {
+  const n = E.order.length, X = etXs(n), cols = E.order.map(k => pcol(k)).join(''), H = ET.EH || FG_H;
+  x.drawImage(etBgC(E, 'sq' + n + '|' + cols, H, () => etBg(E, X, H)), 0, 0);
+  const t = fgT(E), now = performance.now(), rm = fgRM();
+  // the fou on the rampart conducts the drums: his left arm on a left note, his right arm on a right one
+  let fl = 0, fr = 0;
+  if (E.phase === 'play') for (const nt of E.cond.notes) { const u = t - nt.t; if (u < 0) break; if (u < 0.13) { if (nt.s === 'l') fl = 1; else fr = 1; } }
+  const rows = fl && !fr ? 'throw' : fr ? 'ann' : 'front';
+  P.x.drawImage(etSprC('fou' + rows, 17, 17, () => P.spr(JEST_ROWS[rows], JEST_PAL, 0, 0)), rows === 'front' ? 53 : 51, 27);
+  for (let i = 47; i < 74; i += 10) { P.rect(i, 38, 6, 6, '#c8c1b4'); P.hl(i, 38, 6, '#d8d2c6'); P.vl(i + 5, 38, 6, '#a39c90'); }
+  // the bearers: the back row first
+  const idx = E.order.map((k, i) => i).sort((a, b) => etFy(n, a) - etFy(n, b));
+  for (const i of idx) etBearer(E, E.order[i], i, X, t, now, rm);
+  // the crowd at the bottom: it bobs on the beat, it cheers my series
+  const beat = E.phase === 'play' ? Math.floor(t / ET_BEAT) : 0, cheer = now - ET.cheer < 700;
+  const hair = ['#5a4436', '#c9a04a', '#3f3b44', '#8a6a48', '#b5655b', '#6b4a32', '#d8cfbd'], cloth = ['#7192b6', '#9a87bf', '#c78a4c', '#b5655b', '#5d5862', '#c4809f', '#8fb08a'];
+  for (let j = 0; j < 12; j++) {
+    const hx = 11 + j * 9 + (j % 2 ? 1 : 0), up = !rm && E.phase === 'play' && (j + beat) % 2 === 0 ? 1 : 0, hy = H - 22 + (j % 3 === 1 ? 3 : 0) - up;
+    P.rect(hx - 5, hy + 3, 10, H - 6 - hy - 3, cloth[j % 7]); P.hl(hx - 5, hy + 3, 10, fgLt(cloth[j % 7], 0.25));
+    P.ell(hx, hy, 3, 3, hair[(j * 3) % 7]); if (j % 4 === 2) { P.rect(hx - 4, hy - 4, 9, 3, '#b5655b'); P.px(hx + 4, hy - 5, '#e6c35a'); }
+    if (cheer && !rm) { P.rect(hx - 5, hy - 6, 2, 5, cloth[j % 7]); P.rect(hx + 4, hy - 6, 2, 5, cloth[j % 7]); P.px(hx - 5, hy - 7, '#e2b48c'); P.px(hx + 5, hy - 7, '#e2b48c'); }
+  }
+}
+{ const base = fgDrawMat; fgDrawMat = function (x, E) { if (E && E.game === 'etend') return etDraw(x, E); return base.apply(this, arguments); }; }
+{ const base = fgDraw; fgDraw = function () {
+    const E = G && G.entr; if (!E || E.game !== 'etend' || !PAL.cv) return base.apply(this, arguments);
+    const H = ET.EH || FG_H, cv = PAL.cv;
+    if (cv.width !== FG_W || cv.height !== H) { cv.width = FG_W; cv.height = H; }
+    const x = cv.getContext('2d'), prev = P; P = mkPen(x); x.imageSmoothingEnabled = false;
+    try { x.clearRect(0, 0, FG_W, H); etDraw(x, E); } catch (e) { if (!ET.err) { ET.err = 1; console.warn('fou:', e); } } finally { P = prev; }
+    fgBubble(E); fgCountdown(E);
+    try { fgCtlFrame(); } catch (e) { if (!ET.err) { ET.err = 1; console.warn('fou:', e); } }
+}; }
+
+/* ---------------------------------------------------------------- the lanes, their circles, the words of each hit */
+function etBuild() {
+  if (ET.built) return true;
+  const cv = $('jtPalCv'), box = cv && cv.parentElement; if (!box) return false;
+  ET.built = true;
+  box.insertAdjacentHTML('beforeend', '<canvas class="et-lane" id="etL" hidden aria-hidden="true"></canvas><canvas class="et-lane" id="etR" hidden aria-hidden="true"></canvas>' +
+    '<div class="et-j" id="etJL" aria-hidden="true"></div><div class="et-j" id="etJR" aria-hidden="true"></div><div class="et-combo" id="etCombo" hidden aria-hidden="true"></div>');
+  return true;
+}
+function etHide() { for (const id of ['etL', 'etR', 'etCombo']) { const el = $(id); if (el && !el.hidden) el.hidden = true; } for (const id of ['etJL', 'etJR']) { const el = $(id); if (el) el.classList.remove('on'); } }
+// the field in the middle, a lane each side (the thumbs), its circle low, by the field's foot
+function etLayout() {
+  const cv = PAL.cv; if (!cv || !fgCtlBuild() || !etBuild()) return;
+  const box = cv.parentElement, bw = box.clientWidth, bh = box.clientHeight, d = Math.min(3, window.devicePixelRatio || 1);
+  const size = sc => { const W = (PAL_W + 20) * sc, Hh = (PAL_H + 20) * sc; cv.style.width = W + 'px'; cv.style.height = Hh + 'px'; cv.width = Math.round(W * d); cv.height = Math.round(Hh * d); PAL.sc = sc; return [W, Hh]; };
+  const col = Math.round(Math.max(64, Math.min(100, bw * 0.21)));
+  const sc = Math.max(1, Math.floor(Math.min((bw - 2 * col - 6) / FG_W, (bh - 4) / FG_H) * d)) / d, EH = Math.max(FG_H, Math.floor((bh - 4) / sc));
+  ET.EH = EH;
+  const w = FG_W * sc, h = EH * sc; cv.style.width = w + 'px'; cv.style.height = h + 'px'; cv.width = FG_W; cv.height = EH; PAL.sc = sc;
+  const cx = bw / 2, ct = Math.max(0, Math.round((bh - h) / 2)), side = Math.floor((bw - w) / 2);
+  cv.style.left = Math.round(cx) + 'px'; cv.style.top = Math.round(ct + h / 2) + 'px';
+  const lw = Math.max(48, Math.min(92, side - 6)), lt = ct, lb = Math.round(Math.min(bh, ct + h)), ry = Math.round(lb - lw * 0.55);
+  Object.assign(FGB, { cl: cx - w / 2, cr: cx + w / 2, ct, cw: w, ch: h, bw, bh, bsz: lw, btnTop: ry - lw / 2, mode: 'etend' });
+  Object.assign(ET, { lw, lt, lb, ry, d, xl: side / 2, xr: bw - side / 2 });
+  for (const [id, xx] of [['etL', side / 2], ['etR', bw - side / 2]]) {
+    const el = $(id), lh = lb - lt;
+    el.style.left = Math.round(xx - lw / 2) + 'px'; el.style.top = lt + 'px'; el.style.width = lw + 'px'; el.style.height = lh + 'px';
+    el.width = Math.round(lw * d); el.height = Math.round(lh * d);
+  }
+  for (const [id, xx] of [['etJL', side / 2], ['etJR', bw - side / 2]]) { const el = $(id); el.style.left = Math.round(xx) + 'px'; el.style.top = Math.round(ry - lw * 0.42) + 'px'; }
+  const cb = $('etCombo'); cb.style.left = Math.round(cx) + 'px'; cb.style.top = Math.round(ct + (EH - 40) * sc) + 'px';
+  const tm = $('fgTime');
+  tm.style.left = Math.round(FGB.cl + 8 * sc) + 'px'; tm.style.top = Math.round(ct + 1 * sc) + 'px'; tm.style.width = Math.round(w - 16 * sc) + 'px'; tm.style.height = Math.max(5, Math.round(4 * sc)) + 'px';
+}
+{ const base = fgColLayout; fgColLayout = function () { const E = G && G.entr; if (E && E.game === 'etend') return etLayout(); return base.apply(this, arguments); }; }
+// the drum, cell by cell (lab 88's): rims r, head h, body b B
+const ET_NOTE = { r: '#c9a04a', h: '#ece6d6', b: '#b5655b', B: '#a24a40' }, ET_NOTE_NEAR = { r: '#e6c35a', h: '#fff6dc', b: '#c96a5a', B: '#b5574c' }, ET_NOTE_GONE = { r: '#6b5f55', h: '#8a7f74', b: '#5a4f48', B: '#4f453f' };
+function etDrumC(q, pal, edge) {
+  const key = 'd' + q + (edge ? 'e' : '') + pal.r + pal.h + pal.b + pal.B; let c = ET.spr[key];
+  if (!c) { c = document.createElement('canvas'); c.width = 12 * q; c.height = 10 * q; etCells(c.getContext('2d'), 0, 0, q, pal, edge ? etEdge : null); ET.spr[key] = c; }
+  return c;
+}
+function etCells(x, x0, y0, q, pal, only) {
+  for (let j = 0; j < 10; j++) for (let i = 0; i < 12; i++) { const ch = FGI_DRUM[j][i], c = pal[ch]; if (!c || (only && !only(i, j, ch))) continue; x.fillStyle = c; x.fillRect(x0 + i * q, y0 + j * q, q, q); }
+}
+const etEdge = (i, j) => { const at = (a, b) => a >= 0 && a < 12 && b >= 0 && b < 10 && FGI_DRUM[b][a] !== '.'; return !at(i - 1, j) || !at(i + 1, j) || !at(i, j - 1) || !at(i, j + 1); };
+function etLane(cv, side, E, st, t) {
+  const x = cv.getContext('2d'), W = cv.width, H = cv.height, d = ET.d, s = Math.max(1, Math.round(d * PAL.sc));
+  const q = Math.max(2, Math.floor(W * 0.8 / 12)), nw = 12 * q, nh = 10 * q, ry = Math.round((ET.ry - ET.lt) * d), x0 = Math.round(W / 2 - nw / 2), sp = (ry + nh / 2) / ETD.LEAD;
+  const col = (c, X, Y, w, h) => { x.fillStyle = c; x.fillRect(Math.round(X), Math.round(Y), Math.round(w), Math.round(h)); };
+  x.clearRect(0, 0, W, H);
+  col('#5a4436', 0, 0, W, H); col('#2b2730', s, 0, W - 2 * s, H);
+  const live = E.phase === 'play' || E.phase === 'intro', T = E.phase === 'play' ? t : -0.0001;
+  // the beats come down with the notes: a thin line on each beat, a gold one on each bar (a note on a line is on the beat)
+  if (live) for (let b = Math.ceil((T - (H - ry) / sp) / ET_BEAT); b * ET_BEAT < T + ETD.LEAD + 0.1; b++) {
+    if (b < 0) continue; const y = ry - (b * ET_BEAT - T) * sp; if (y < 0 || y > H) continue;
+    col(b % 4 === 0 ? '#6e5c3a' : '#3d3640', s, y - (b % 4 === 0 ? s : 0), W - 2 * s, b % 4 === 0 ? 2 * s : s);
+  }
+  // the circle where the notes land: the drum's outline in gold, a gold line through its middle; it lights up when a note is in it
+  let near = 0, pressed = performance.now() - ET.press[side] < 100;
+  if (E.phase === 'play') for (const n of E.cond.notes) { if (n.s !== side || st.hit[n.i]) continue; const dd = Math.abs(n.t - T); if (n.t - T > ETD.GOOD) break; if (dd <= ETD.PER) { near = 2; break; } if (dd <= ETD.GOOD) near = Math.max(near, 1); }
+  const fx = ET.fx.filter(f => f.s === side && performance.now() - f.at < 320), last = fx[fx.length - 1], ry0 = ry - nh / 2;
+  const lineC = near === 2 ? '#fff6dc' : near === 1 ? '#f4d97f' : '#c9a04a';
+  col(lineC, s, ry - s, W - 2 * s, 2 * s);
+  for (const k of [0, 1]) { const ax = k ? W - s : s; for (let j = 0; j < 3 * s; j++) col(lineC, k ? ax - j - s : ax + j, ry - 3 * s + j, s, 2 * (3 * s - j)); }
+  const hp = near === 2 ? { r: '#ffffff', h: '#fff2b4', b: '#5a4b4f', B: '#4f4246' } : near === 1 ? { r: '#f4d97f', h: '#5f5458', b: '#4a3f45', B: '#41383d' } : { r: '#c9a04a', h: '#4a4046', b: '#3d353b', B: '#373035' };
+  const bad = last && (last.r === 'bad' || last.r === 'miss' || last.r === 'stray');
+  if (bad) { hp.r = '#e07a6e'; }
+  const py = pressed ? Math.round(q / 2) : 0;
+  x.drawImage(etDrumC(q, hp, false), x0, ry0 + py);
+  // the notes: they fall onto the circle and cover it exactly on their beat; a missed one goes on, grey, and fades
+  if (live) for (const n of E.cond.notes) {
+    if (n.s !== side) continue;
+    const dt = n.t - T; if (dt > ETD.LEAD + 0.05) break; if (dt < -0.6) continue;
+    const h = st.hit[n.i]; if (h && h !== 'miss') continue;
+    const gone = h === 'miss' || dt < -ETD.GOOD - ETD.OFF; let a = 1;
+    if (gone) { a = Math.max(0, 1 - (-dt - ETD.GOOD) / 0.35); if (a <= 0) continue; }
+    const y = ry - dt * sp; x.globalAlpha = a;
+    x.drawImage(etDrumC(q, gone ? ET_NOTE_GONE : Math.abs(dt) <= ETD.GOOD ? ET_NOTE_NEAR : ET_NOTE, false), x0, Math.round(y - nh / 2));
+    x.globalAlpha = 1;
+  }
+  x.drawImage(etDrumC(q, { r: hp.r, h: hp.r, b: hp.r, B: hp.r }, true), x0, ry0 + py);
+  // a hit bursts on the circle: a ring and sparks (gold on « Parfait »)
+  for (const f of fx) {
+    if (f.r !== 'per' && f.r !== 'ok') continue;
+    const u = (performance.now() - f.at) / 320, rr = nw * (0.45 + 0.5 * u), c = f.r === 'per' ? '#f4d97f' : '#fff6dc';
+    x.globalAlpha = Math.max(0, 1 - u); x.strokeStyle = c; x.lineWidth = Math.max(2, s * 1.5);
+    x.beginPath(); x.ellipse(W / 2, ry, rr, rr * 0.75, 0, 0, Math.PI * 2); x.stroke();
+    for (let j = 0; j < 8; j++) { const a2 = j / 8 * Math.PI * 2 + 0.3, R = rr * 1.05; col(c, W / 2 + Math.cos(a2) * R - s, ry + Math.sin(a2) * R * 0.75 - s, 2 * s, 2 * s); }
+    x.globalAlpha = 1;
+  }
+}
+// a judgment over its circle: one word per lane, the next one replaces it
+function etJudge(side, txt, sub, cls) {
+  const el = $(side === 'l' ? 'etJL' : 'etJR'); if (!el) return;
+  el.className = 'et-j ' + cls; el.innerHTML = txt + (sub ? `<small>${sub}</small>` : '');
+  void el.offsetWidth; el.classList.add('on');
+}
+function etOnEv(ev, E) {
+  const now = performance.now();
+  if (ev.r === 'per' || ev.r === 'ok' || ev.r === 'bad' || ev.r === 'miss' || ev.r === 'stray') ET.fx.push({ s: ev.s, r: ev.r, at: now });
+  if (ET.fx.length > 24) ET.fx.splice(0, ET.fx.length - 24);
+  if (ev.r === 'per') { etJudge(ev.s, 'PARFAIT', '+2', 'gold'); etBell(); buzz('palet'); }
+  else if (ev.r === 'ok') { etJudge(ev.s, 'BIEN', (ev.dt < 0 ? 'TÔT' : 'TARD') + ' · +1', 'cream'); buzz('palet'); }
+  else if (ev.r === 'bad') etJudge(ev.s, 'RATÉ', ev.dt < 0 ? 'TROP TÔT' : 'TROP TARD', 'red');
+  else if (ev.r === 'miss') etJudge(ev.s, 'RATÉ', '', 'red');
+  else if (ev.r === 'stray') { etJudge(ev.s, '−1', 'PAS DE NOTE', 'red'); buzz('error'); }
+  if (ev.bonus) { fgPop('+' + ev.bonus, 'gold big', 60, Math.round((ET.EH || FG_H) * 0.42), 0, 'SÉRIE DE ' + ev.c); ET.cheer = now; sfx('payout'); fgSay(rndOf(['Bravo !', 'Superbe !', 'Quelle série !']), 1.2); }
+}
+function etFrame() {
+  const E = G && G.entr; if (!E || !E.game || !PAL.cv) return;
+  if (!fgCtlBuild() || !etBuild()) return;
+  const want = 'etend|' + PAL.cv.parentElement.clientWidth + 'x' + PAL.cv.parentElement.clientHeight;
+  if (FGB.lay !== want) { FGB.lay = want; palLayout(); }
+  for (const id of ['fgBtnR', 'fgBtnL', 'fgHint']) { const el = $(id); if (el && !el.hidden) el.hidden = true; }
+  const cd = $('fgCd'); if (cd && FGB.cw) cd.style.left = Math.round(FGB.cl + FGB.cw / 2) + 'px';
+  const t = fgT(E), g = FG.etend, left = Math.max(0, g.dur - t), plays = fgIn(G.me), st = fgMine() || fgInit('etend');
+  const tm = $('fgTime'), on = E.phase === 'play'; tm.hidden = !on;
+  if (on) { tm.firstChild.style.width = (100 * left / g.dur).toFixed(2) + '%'; tm.classList.toggle('hurry', left < 5); }
+  const live = plays && (E.phase === 'intro' || E.phase === 'play');
+  $('etL').hidden = !live; $('etR').hidden = !live;
+  // my moves since the last frame: the words, the bursts
+  if (st.ev) { if (ET.evI > st.ev.length) ET.evI = 0; while (ET.evI < st.ev.length) etOnEv(st.ev[ET.evI++], E); }
+  const cb = $('etCombo'), c = st.combo | 0, showC = live && E.phase === 'play' && c >= 3;
+  cb.hidden = !showC;
+  if (showC && ET.combo !== c) { cb.textContent = 'SÉRIE ' + c; if (c > ET.combo) { cb.classList.remove('bump'); void cb.offsetWidth; cb.classList.add('bump'); } }
+  ET.combo = c;
+  if (!live) return;
+  etLane($('etL'), 'l', E, st, t); etLane($('etR'), 'r', E, st, t);
+}
+{ const base = fgCtlFrame; fgCtlFrame = function () { const E = G && G.entr; if (E && E.game === 'etend') return etFrame(); etHide(); return base.apply(this, arguments); }; }
+{ const base = fgCleanup; fgCleanup = function () { const r = base.apply(this, arguments); try { etHide(); etDroneStop(0.25); if (ET.bus) { const b = ET.bus; ET.bus = null; try { b.gain.setTargetAtTime(0, SFX.ctx.currentTime, 0.08); setTimeout(() => { try { b.disconnect(); } catch (e) {} }, 600); } catch (e) {} } ET.plan = null; ET.evI = 0; ET.EH = 0; } catch (e) {} return r; }; }
+/* ================================================================ version 88 · the end of a game: who won, with what, and the others' scores
+   Patrick, 06/11, 14 h 20 : « Il manque un petit truc à la fin pour bien montrer que c'est tel joueur qui a gagné avec tel score et aussi
+   les autres scores des autres joueurs… On voit pas assez de feedback là-dessus » ; 14 h 46 : « on peut partir sur le P1 ».
+   P1 « Le tableau », for the fou's games and the palet: the ranking in the result panel, in place of its one line « 1er · … · 2e … » :
+   the winner's row in gold with a crown, his score big, the relic and the sack of gold on their rows, mine outlined; the rows come in
+   from the last to the first, the winner last. The score in each game's own words: points (the cabbages, the flags), a time or how far
+   (the race), a time or how high (the pole), how far from the master (the palet, 1 cm a pixel of the alley, edge to edge). */
+FG_POOL.push('etend');
+// each House's score in its game's words (the host's own numbers: a guest gets the times at the end, the palet from the alley)
+const palDistOf = (E, k) => { const ps = (E.pucks || []).filter(p => p.k === k && !p.out); return ps.length ? Math.min(...ps.map(p => Math.hypot(p.x - E.jack.x, p.y - E.jack.y))) : Infinity; };
+// (to the hundredth and the tenth of a step, as the host sends them: the same words on every page)
+function frVal(E, k) {
+  const g = E.game, f1 = v => (Math.round(v * 100) / 100).toFixed(1).replace('.', ',');
+  if (!g) { const d = palDistOf(E, k); return d < Infinity ? { big: String(Math.max(0, Math.round(d - PAL_R - JACK_R))), unit: 'CM' } : { big: '—', unit: 'SORTI' }; }
+  const st = E.st[k] || fgInit(g);
+  if (g === 'choux' || g === 'etend') { const n = st.score | 0; return { big: String(n).replace('-', '−'), unit: Math.abs(n) > 1 ? 'POINTS' : 'POINT' }; }
+  if (g === 'course') return st.fin >= 0 ? { big: f1(st.fin), unit: 'S' } : { big: String(Math.min(99, Math.round(100 * Math.round((st.x || 0) * 10) / 10 / SOL.LEN))), unit: '%' };
+  return st.fin >= 0 ? { big: f1(st.fin), unit: 'S · EN HAUT' } : { big: String(st.h | 0), unit: '/ ' + MAT.H };
+}
+function frRows(E) {
+  return (E.res || []).map(r => r.k).filter(k => G.b[k]).map((k, i) => ({ k, rank: i + 1, name: palName(k), me: k === G.me, val: frVal(E, k),
+    prize: E.win === k ? 'relic' : E.second === k ? 'gold' : '' }));
+}
+const frPrize = (r, E) => r.prize === 'relic' ? '<em class="fr-pz r">LA RELIQUE</em>' : r.prize === 'gold' ? `<em class="fr-pz g">+${E.sack} OR</em>` : '';
+const FR_CROWN = ['..y.y.y..', '..yYyYy..', '.yyyyyyy.', '.yryyyry.', '.yyyyyyy.'], FR_CROWNP = { y: '#e6c35a', Y: '#fff2b4', r: '#b5655b' };
+function frCrownURL() { return JT_IMG.frCrown || (JT_IMG.frCrown = pxURL(9, 5, p => p.spr(FR_CROWN, FR_CROWNP, 0, 0), 4)); }
+function frListHTML(E, still) {
+  const rows = frRows(E);
+  return `<ol class="fr-list${still ? ' still' : ''}" aria-label="Le classement">` + rows.map((r, i) => {
+    const w = r.rank === 1 && E.win === r.k;
+    return `<li class="fr-row${w ? ' win' : ''}${r.me ? ' me' : ''}" data-k="${r.k}" style="--d:${((rows.length - 1 - i) * 0.12).toFixed(2)}s">` +
+      `<b class="fr-rk">${r.rank}</b>${palIcon(r.k)}<span class="fr-nm">${w ? `<img class="fr-cr" src="${frCrownURL()}" alt="">` : ''}${r.name}</span>${frPrize(r, E)}` +
+      `<b class="fr-sc">${r.val.big}<small>${r.val.unit}</small></b></li>`;
+  }).join('') + '</ol>';
+}
+// the panel just drawn: its head line becomes the ranking, and the fou stands on the panel's new top (drawn again, the rows stay still).
+// A small screen: when the fou would cover the Houses' chips, the rows close up; still no room, he steps aside (the panel says it all);
+// the panel itself over the chips (six Houses, the relics to choose, on the smallest phone): the rows closer still, without their palets
+function frPanel(E) {
+  const res = $('jtPalRes'), hd = res && !res.hidden && res.querySelector('.jt-pres-h'); if (!hd) return;
+  hd.outerHTML = frListHTML(E, !!E.frSeen); E.frSeen = true;
+  const jr = $('jtJRes'), L = res.querySelector('.fr-list'), who = $('jtPalWho'); if (!jr || jr.hidden) return;
+  const host = res.parentElement.getBoundingClientRect(), top = who ? who.getBoundingClientRect().bottom : host.top, need = jr.offsetHeight + 4;
+  let rr = res.getBoundingClientRect();
+  if (L && rr.top - top < need) { L.classList.add('tight'); rr = res.getBoundingClientRect(); }
+  if (L && rr.top < top - 1) { L.classList.add('tight2'); rr = res.getBoundingClientRect(); }      // still over the chips: closer still, no palets
+  jr.style.bottom = (host.bottom - rr.top - 2) + 'px';
+  if (rr.top - top < need - 12) jr.hidden = true;
+}
+{ const base = fgText; fgText = function () { const r = base.apply(this, arguments), E = G && G.entr; try { if (E && E.game && E.phase === 'end' && E.res) frPanel(E); } catch (e) { console.warn('fou:', e); } return r; }; }
+{ const base = palText; palText = function () { const r = base.apply(this, arguments), E = G && G.entr; try { if (E && !E.game && E.phase === 'end' && E.res) frPanel(E); } catch (e) { console.warn('fou:', e); } return r; }; }
+
+/* ---------------------------------------------------------------- between friends: a tap's hand, the flags, the scores below zero, the times */
+// a guest's tap: its time in hundredths (3 characters), its window in front (the cabbages) or its hand (l, r: the pole, the flags)
+const FG_SIDE = { mat: 1, etend: 1 };
+const fgW = g => g === 'choux' || FG_SIDE[g] ? 4 : 3;
+fgSend = function (now) {
+  const E = G.entr, M = FGX.mine; if (!E || !M || auth() || !fgIn(G.me)) return;
+  const ack = Math.min((E.n && E.n[G.me]) | 0, M.taps.length); if (ack >= M.taps.length) return;
+  const T = performance.now(); if (!now && T - M.sentAt < FG_SEND * 1000) return;
+  if (now && T - M.sentAt < 60) return;
+  M.sentAt = T;
+  const W = fgW(E.game), per = Math.floor(10 / W), side = !!FG_SIDE[E.game];
+  const enc = tp => (W === 4 ? (side ? (tp.s === 'l' ? 'l' : 'r') : String(tp.w)) : '') + b36(Math.round(tp.t * 100), 3);
+  const chunk = M.taps.slice(ack, ack + 2 * per).map(enc);
+  act(['J', 'fg', ack, chunk.slice(0, per).join(''), chunk.slice(per).join('')]);
+};
+// the host takes a guest's taps: in order, inside the game's time, one at each place of the list
+fgGesture = function (k, a) {
+  const E = G.entr;
+  if (!E || !E.game) return 'x';
+  if (!auth()) return '';
+  if (E.phase !== 'play' && E.phase !== 'count') return 'x';
+  const list = E.taps[k]; if (!list || !G.b[k] || G.b[k].bot) return 'x';
+  const i0 = a[2], s = String(a[3] || '') + String(a[4] || '');
+  if (!Number.isInteger(i0) || i0 < 0 || i0 > list.length) return 'x';
+  const W = fgW(E.game), side = !!FG_SIDE[E.game], D = FG[E.game].dur, upTo = E.phase === 'play' ? E.t + 0.5 : D + 0.05;
+  for (let j = 0; (j + 1) * W <= s.length; j++) {
+    if (i0 + j < list.length) continue;
+    const p = s.substr(j * W, W), c = W === 4 ? p[0] : '', tt = p.slice(W - 3), t = parseInt(tt, 36) / 100;
+    if (!/^[0-9a-z]{3}$/.test(tt) || !(t >= 0 && t <= Math.min(D + 0.05, upTo)) || (list.length && t < list[list.length - 1].t) || list.length >= 400) return 'x';
+    if (W === 4 && !(side ? c === 'l' || c === 'r' : /^[0-5]$/.test(c))) return 'x';
+    list.push(W === 4 ? (side ? { t, s: c } : { t, w: +c }) : { t });
+  }
+  return '';
+};
+// a guest's tap that reaches the host after the flags' notes were judged: that House's dance is played again from its first tap
+{ const base = fgSync; fgSync = function (E, k, t) {
+    if (E.game === 'etend') { const st = E.st[k], taps = E.taps[k]; if (st && st.i < taps.length && taps[st.i].t < st.t - 1e-9) E.st[k] = fgInit('etend'); }
+    return base.apply(this, arguments);
+}; }
+// 5 characters a House: the cabbages' points can go below zero (+300); the flags: their points, their series, their latest move
+// (none, or its kind: a « Parfait », a « Bien », a miss, a series' throw; its side; a bit that flips at each move, two alike in a row show)
+const ET_MV = { per: 1, ok: 2, bad: 3, miss: 3, stray: 3 };
+function etMoveCode(st) {
+  const L = st.ev || [];
+  for (let j = L.length - 1; j >= 0; j--) { const e = L[j], m = ET_MV[e.r]; if (!m) continue; return ((((e.bonus ? 4 : m) - 1) * 2 + (e.s === 'l' ? 0 : 1)) * 2 + (j & 1) + 1).toString(36); }
+  return '0';
+}
+{ const be = fgEncSt, bd = fgDecSt;
+  fgEncSt = function (game, st) {
+    if (game === 'choux') return b36(st.score + 300, 2) + b36(st.thr, 2) + '.';
+    if (game === 'etend') return b36(st.score + 300, 2) + b36(st.combo, 2) + etMoveCode(st);
+    return be.apply(this, arguments);
+  };
+  fgDecSt = function (game, s) {
+    if (game === 'choux') return { score: parseInt(s.slice(0, 2), 36) - 300, thr: parseInt(s.slice(2, 4), 36) };
+    if (game === 'etend') return { score: parseInt(s.slice(0, 2), 36) - 300, combo: parseInt(s.slice(2, 4), 36), mv: parseInt(s[4], 36) || 0 };
+    return bd.apply(this, arguments);
+  };
+}
+// at the end, the host sends the times of the race and of the pole (hundredths, 3 characters a House in the ranking's order, --- for none)
+{ const base = fgEnc; fgEnc = function (E) {
+    const s = base.apply(this, arguments);
+    if (!E.res || (E.game !== 'course' && E.game !== 'mat')) return s;
+    return s + ',' + E.res.map(r => { const st = E.st[r.k]; return st && st.fin >= 0 ? b36(Math.round(st.fin * 100), 3) : '---'; }).join('');
+}; }
+// a guest: those times; the other Houses' flag-bearers move on their latest moves; the tune for a House that only watches
+ET.rx = {}; ET.wt0 = 0; ET.wSeed = -1;
+function etRemote(E) {
+  const t = fgT(E);
+  for (const k of E.order) {
+    if (k === G.me && FGX.mine) continue;
+    const st = E.st[k]; if (!st) continue;
+    let R = ET.rx[k]; if (!R || R.seed !== E.seed) R = ET.rx[k] = { seed: E.seed, mv: 0, ev: [] };
+    const c = st.mv | 0;
+    if (c && c !== R.mv) {
+      const q = c - 1, kind = (q >> 2) + 1;
+      R.ev.push({ t, s: (q >> 1) & 1 ? 'r' : 'l', r: kind === 2 ? 'ok' : kind === 3 ? 'miss' : 'per', bonus: kind === 4 ? ETD.SERB : 0 });
+      if (R.ev.length > 8) R.ev.shift();
+    }
+    R.mv = c; st.ev = R.ev;
+  }
+}
+{ const base = fgApply; fgApply = function (f) {
+    const r = base.apply(this, arguments), E = G && G.entr;
+    try {
+      if (E && E.client && E.game) {
+        const rs = String(f).slice(1).split(':')[2] || '', v = rs.split(',')[2] || '';
+        if (E.res && v) E.res.forEach((x, i) => { const p = v.substr(i * 3, 3), st = E.st[x.k]; if (st && /^[0-9a-z]{3}$/.test(p)) st.fin = parseInt(p, 36) / 100; });
+        if (E.game === 'etend') {
+          etRemote(E);
+          if (E.phase === 'play' && !FGX.mine && ET.wSeed !== E.seed) { ET.wSeed = E.seed; ET.wt0 = performance.now() - E.t * 1000; }
+        }
+      }
+    } catch (e) { console.warn('fou:', e); }
+    return r;
+}; }
+{ const base = fgCleanup; fgCleanup = function () { const r = base.apply(this, arguments); ET.rx = {}; ET.wt0 = 0; ET.wSeed = -1; return r; }; }
+/* ================================================================ /version 88 */
 
 useTerrain(TERKEY);
 demo();
