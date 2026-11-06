@@ -23003,6 +23003,120 @@ $('modes').addEventListener('click', e => {
   e.stopPropagation(); audioInit(); sfx('door'); PLAYMODE = 'lt'; startGuide();
 }, true);
 /* ================================================================ /version 90 */
+/* ================================================================ version 91 · l'écran « Prêt » dans Gem TD et Farm TD
+   Patrick, 06/11, 18 h 36: « j'aimais bien l'écran quand on sélectionne la carte, notre personnage, après, quand on fait confirmer, il y
+   a un petit écran, on attend tous les joueurs quand ils sont prêts, on voit vraiment les personnages de chacun, leur étendard, on
+   retrouve uniquement sur Line Tower, j'aimerais qu'on le retrouve sur aussi les autres modes. »
+   The launch room of Line Towers (each one's general and banner in his band, « Prêt », the bots that get ready by themselves, 3, 2, 1)
+   now comes before Gem TD and Farm TD too, as it is:
+   - alone or against bots: the table's « Jouer » opens it with the table's places (the player, then the bots in the free colours with
+     the other Houses, as the game gives them); the arrows change the player's House, and the bots' with it, as the game would; the back
+     arrow is the table again; after 3, 2, 1 the game's frame opens under the room's flash;
+   - between friends: the host's « Lancer » (and « Revanche ») opens it on every phone; the free places are the bots the race will give
+     them (the name of their colour, their colour, their House); a friend who comes now takes a bot's place; each one's « Prêt » goes to
+     the others; after 3, 2, 1 the race opens on every phone (a friend left out of it: the table, « tu joueras à la suivante »); the
+     host's back arrow brings everyone back to the table.
+   The défi du jour opens its game at once, as it does in Line Towers. */
+var LRGF = true;
+// the room's places, from the table's: who plays, in which colour, with which House (the bots' as the game gives them)
+function lrGfSeats(kind) {
+  return (kind === 'gem' ? gtSeats() : ftSeats()).map(t => ({ name: t.name, col: t.col, maison: t.house, cos: t.me ? lrMyCos(t.house) : null, bot: !t.me, ready: false }));
+}
+{ const base = lrOpen; lrOpen = function (o) {
+    LRM.gf = (o && o.gf) || '';
+    const r = base.apply(this, arguments);
+    if (LRM.el) LRM.el.style.zIndex = '';
+    return r;
+}; }
+// alone: the bots take the Houses the player leaves (gtSeats, ftSeats); after another House, theirs as the game will give them
+{ const base = lrBuild; lrBuild = function () {
+    if (LRM.on && LRM.mode === 'solo' && LRM.gf) { const L = lrGfSeats(LRM.gf); LRM.seats.forEach((s, k) => { if (s.bot && L[k]) s.maison = L[k].maison; }); }
+    return base.apply(this, arguments);
+}; }
+// alone at Gem TD or Farm TD (« Seul »): one band as tall as in a room of two, in the middle of the screen
+{ const base = lrGeom; lrGeom = function () {
+    const g = base.apply(this, arguments);
+    if (g && g.n === 1) { const hb = (g.bot - g.top - g.gap) / 2; g.top += (g.bot - g.top - hb) / 2; g.hb = hb; }
+    return g;
+}; }
+// the game's frame opens over the page: the room's flash stays above it while it fades
+{ const base = lrLaunchNow; lrLaunchNow = function () {
+    if (LRM.gf && LRM.el) LRM.el.style.zIndex = '61';
+    return base.apply(this, arguments);
+}; }
+
+/* ---------------------------------------------------------------- alone or against bots: the table's « Jouer » */
+function lrGfSolo(kind) {
+  const gem = kind === 'gem';
+  if (gem) gtEditDone(); else ftEditDone();
+  audioInit();
+  lrOpen({ mode: 'solo', gf: kind, id: (LRM.id | 0) + 1, seats: lrGfSeats(kind), me: 0,
+    start: () => { LRM.passing = true; try { if (gem) openGem(); else openFarm(); } finally { LRM.passing = false; } } });
+}
+[['gtCol', 'gtGo', 'gem'], ['ftCol', 'ftGo', 'farm']].forEach(([col, go, kind]) => $(col).addEventListener('click', e => {
+  if (NET.mode !== 'solo' || !e.target.closest('#' + go) || LRM.on || lrSkip() || GEMX.open || FARMX.open) return;
+  e.stopPropagation(); e.preventDefault();
+  lrGfSolo(kind);
+}, true));
+
+/* ---------------------------------------------------------------- between friends: the host's « Lancer » and « Revanche » */
+function lrGfHost(kind, launch) {
+  if (kind === 'gem') gtEditDone(); else ftEditDone();
+  audioInit();
+  // the free places: the bots the race gives them (gemHostLaunch, farmHostLaunch), now, so that the room shows them; a friend who comes takes one
+  const N = NET.N === 2 ? 2 : NET.N === 6 ? 6 : 4, used = new Set();
+  for (let k = 0; k < N; k++) { const st = NET.seats[k]; if (st && !st.bot && st.col >= 0) used.add(st.col); }
+  for (let k = 0; k < N; k++) {
+    const st = NET.seats[k]; if (k === NET.hostSeat || (st && !st.bot)) continue;
+    let c = 0; while (used.has(c)) c++; used.add(c);
+    NET.seats[k] = { name: PCOL_N[c], bot: true, col: c, maison: MAISONS[(k + 1) % MAISONS.length], filler: true, cos: null };
+  }
+  NET.seats[NET.hostSeat].maison = myMaison;
+  NET.phase = 'launch'; lrRoom();
+  const seats = NET.seats.slice(0, N).map((s, k) => ({ name: s.name, col: s.col, maison: k === NET.hostSeat ? myMaison : EMB[s.maison] ? s.maison : MAISONS[k % MAISONS.length],
+    cos: k === NET.hostSeat ? lrMyCos(myMaison, s.cos) : s.bot ? null : s.cos, bot: !!s.bot, ready: false }));
+  lrOpen({ mode: 'host', gf: kind, id: (LRM.id | 0) + 1, seats, me: NET.hostSeat, start: () => {
+    // the room's bots, and a friend gone meanwhile, leave their places empty: the race gives them the same bots
+    NET.seats = NET.seats.map((s, k) => (k === NET.hostSeat || (s && !s.bot) ? s : null));
+    LRM.passing = true; try { launch(); } finally { LRM.passing = false; }
+  } });
+  hostPresence();
+}
+{ const base = gemHostLaunch; gemHostLaunch = function () {
+    if (LRM.passing || lrSkip() || NET.mode !== 'host' || GEMX.open) return base.apply(this, arguments);
+    if (!LRM.on) lrGfHost('gem', base);
+}; }
+{ const base = farmHostLaunch; farmHostLaunch = function () {
+    if (LRM.passing || lrSkip() || NET.mode !== 'host' || FARMX.open) return base.apply(this, arguments);
+    if (!LRM.on) lrGfHost('farm', base);
+}; }
+
+/* ---------------------------------------------------------------- a friend's phone */
+// the race opens (gemOpenNet, farmOpenNet): the room closes on its flash, above the frame; « prêt » is said no more
+function lrGfIn() { LRM.rd = 0; if (LRM.el) LRM.el.style.zIndex = '61'; lrClose(true); sfx('door'); }
+{ const base = gemOpenNet; gemOpenNet = function () {
+    const r = base.apply(this, arguments);
+    if (LRM.on && LRM.mode === 'client' && GEMX.open) lrGfIn();
+    return r;
+}; }
+{ const base = farmOpenNet; farmOpenNet = function () {
+    const r = base.apply(this, arguments);
+    if (LRM.on && LRM.mode === 'client' && FARMX.open) lrGfIn();
+    return r;
+}; }
+// the host opens the room (« Revanche »): the last race's frame closes first, so that the room shows; once the race is on, a friend left
+// out of it (come too late, no place) is back at the table, « tu joueras à la suivante »
+{ const base = clientOnPeers; clientOnPeers = function (ch) {
+    const h = ch && ch.peers && ch.peers.find(p => !p.sameTab && p.presence && p.presence.role === 'host'), pr = h ? h.presence : null;
+    if (NET.mode === 'client' && pr && pr.ph === 'launch' && pr.lr && !lrSkip()) {
+      if (GEMX.open && GEMX.net) closeGem();
+      if (FARMX.open && FARMX.net) closeFarm();
+    }
+    const r = base.apply(this, arguments);
+    if (LRM.on && LRM.mode === 'client' && pr && (pr.ph === 'gem' || pr.ph === 'farm')) { LRM.rd = 0; lrClose(false); }
+    return r;
+}; }
+/* ================================================================ /version 91 */
 
 useTerrain(TERKEY);
 demo();
