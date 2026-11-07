@@ -1,0 +1,8 @@
+{
+  "name": "les-joutes-serveur",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Les Joutes : le serveur des records (un Worker Cloudflare et une base D1).",
+  "scripts": { "deploy": "wrangler deploy" },
+  "devDependencies": { "wrangler": "4.158.0" }
+}
