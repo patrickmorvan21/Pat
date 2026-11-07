@@ -1,7 +1,7 @@
 // Les Joutes · le serveur. Cloudflare le déploie à chaque envoi sur la branche « serveur » du dépôt (Workers Builds).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "les-joutes",
+  "name": "lesjoutes",
   "main": "src/index.js",
   "compatibility_date": "2026-08-01",
   "workers_dev": true,

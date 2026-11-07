@@ -1,6 +1,6 @@
 # Les Joutes · le serveur
 
-Le petit serveur du jeu de Patrick (https://patrickmorvan21.github.io/Pat/domus-td/) : un **Worker Cloudflare** (`les-joutes`) et sa base **D1** (`joutes`, gardée dans l'Union européenne), sur le compte Cloudflare de Patrick (offre gratuite).
+Le petit serveur du jeu de Patrick (https://patrickmorvan21.github.io/Pat/domus-td/) : un **Worker Cloudflare** (`lesjoutes`, à l’adresse https://lesjoutes.patrick-morvan21.workers.dev) et sa base **D1** (`joutes`, gardée dans l'Union européenne), sur le compte Cloudflare de Patrick (offre gratuite).
 
 Cloudflare le **déploie tout seul à chaque envoi sur cette branche** (`serveur`) : rien à faire à la main.
 
