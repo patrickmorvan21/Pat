@@ -23227,6 +23227,113 @@ function gemGuided() { if (GEMX.open) return; GEMX.guide = true; PLAYMODE = 'gem
 { const base = lrOpen; lrOpen = function () { if (RULX.host) rulesClose(); return base.apply(this, arguments); }; }
 
 /* ================================================================ /version 92 */
+/* ================================================================ version 93 · les records sur notre serveur
+   Patrick, 07/11, 11 h 06: « je viens de créer mon compte Cloudflare … Est-ce que tu peux, du coup, créer un serveur et le mettre dans mon
+   jeu ? » The records of all now come from our server (a Cloudflare Worker « les-joutes » and its D1 base « joutes », kept in the EU:
+   RK_SRV) instead of the public relays: GET /rec gives the best hundred of each board (Line Towers, Gem TD's four maps, Farm TD's four
+   farms, the défi of today and yesterday), POST /rec takes one's bests, all the boards in one post, under one's secret key (ddl-rkey, 32
+   letters and digits, never shown); one's public number is drawn from it (16 signs of SHA-256 of « lj| » and the key), so nobody can
+   write under another's number. The lines of all are read at the start, then again when a table or the board « Records » shows and
+   they are older than 45 s; one's own line still comes from one's own bests. The relays no longer carry the records (they still carry
+   the rooms). On claude.ai nothing changes: one's own records only. */
+var V93 = true;
+/* ---------------------------------------------------------------- the records on our server */
+var RK_SRV = 'https://lesjoutes.patrick-morvan21.workers.dev';
+const RK_BOARD = /^(lt\/all|gem\/[a-z]+|farm\/[a-z]+|defi\/\d{4}-\d{2}-\d{2})$/;
+Object.assign(RKX, { key: '', pidP: null, busy: false, got: 0, stried: 0, sent: '', pt: 0 });
+RKX.key = (() => {
+  let k = ''; try { k = localStorage.getItem('ddl-rkey') || ''; } catch (e) {}
+  if (!/^[A-Za-z0-9]{32}$/.test(k)) {
+    const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; k = '';
+    try { const u = new Uint8Array(32); crypto.getRandomValues(u); for (const x of u) k += A[x % 62]; } catch (e) { k = ''; for (let i = 0; i < 32; i++) k += A[(Math.random() * 62) | 0]; }
+    try { localStorage.setItem('ddl-rkey', k); } catch (e) {}
+  }
+  return k;
+})();
+// one's public number, drawn from the key as the server draws it (SHA-256 of « lj| » and the key, its first 16 signs)
+function rkPidReady() {
+  if (RKX.pidP) return RKX.pidP;
+  RKX.pidP = (async () => {
+    try {
+      const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('lj|' + RKX.key));
+      RKX.pid = [...new Uint8Array(d)].map(x => x.toString(16).padStart(2, '0')).join('').slice(0, 16);
+    } catch (e) { try { const p = localStorage.getItem('ddl-rpid') || ''; if (/^[0-9a-f]{16}$/.test(p)) RKX.pid = p; } catch (er) {} }
+  })();
+  return RKX.pidP;
+}
+// automatic tests (navigator.webdriver) never write on the real server, unless a test asks for it ('ddl-rk-test', with a server of its own)
+const rkOnline = () => { if (!WEB || !/^https?:\/\//.test(RK_SRV)) return false; try { if (navigator.webdriver && localStorage.getItem('ddl-rk-test') !== '1') return false; } catch (e) { return false; } return true; };
+function rkGet() {
+  const ac = typeof AbortController === 'function' ? new AbortController() : null, to = setTimeout(() => { try { if (ac) ac.abort(); } catch (e) {} }, 9000);
+  return fetch(RK_SRV + '/rec', { cache: 'no-store', mode: 'cors', credentials: 'omit', signal: ac ? ac.signal : undefined })
+    .then(r => { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .finally(() => clearTimeout(to));
+}
+// everyone's lines, board by board (one's own line comes from one's own bests, as before)
+function rkTake(data) {
+  const B = data && data.boards; if (!B || typeof B !== 'object') return false;
+  for (const key of Object.keys(B)) {
+    if (!RK_BOARD.test(key) || !Array.isArray(B[key])) continue;
+    const mode = key.split('/')[0], st = new Map();
+    for (const row of B[key].slice(0, RK_MAX * 2)) {
+      if (!Array.isArray(row) || row.length < 8) continue;
+      const pid = String(row[0]); if (!/^[0-9a-f]{16}$/.test(pid)) continue;
+      const o = rkClean({ n: row[1], h: row[2], c: row[3], u: row[4], s: row[5], w: row[6], t: row[7] }, mode); if (!o) continue;
+      o.pid = pid; st.set(pid, o);
+    }
+    RKX.store[key] = st;
+  }
+  return true;
+}
+rkStart = function () {
+  if (!rkOnline()) { RKX.state = 'off'; rkNote(); return; }
+  const now = Date.now();
+  if (RKX.busy || (RKX.got && now - RKX.got < 45000) || (RKX.stried && now - RKX.stried < 12000)) return;
+  RKX.stried = now; RKX.busy = true;
+  if (RKX.state !== 'ok') { RKX.state = 'wait'; rkNote(); }
+  rkPidReady().then(rkGet).then(d => {
+    RKX.busy = false;
+    if (!rkTake(d)) throw new Error('bad');
+    RKX.got = Date.now(); RKX.state = 'ok'; rkNote(); rkChanged(); rkPushSoon(true);
+  }).catch(() => { RKX.busy = false; if (!RKX.got) { RKX.state = 'down'; rkNote(); } });
+};
+rkState = function () { rkNote(); };
+// the relays no longer carry the records, nor bring any (version 75's start, at 1.2 s, still calls its own rkStart: it finds no link to make)
+rkLink = function () {};
+rkMsg = function () {};
+if (WEB) setTimeout(() => rkStart(), 1300);
+// one's bests, all the boards in one post (a défi only when the server has its board: today's and yesterday's in France)
+function rkPostBody() {
+  const h = rkHouse(), recs = [];
+  for (const key of RK_KEYS) {
+    const me = rkMe(key), mode = key.split('/')[0]; if (!me || !RK_BOARD.test(key)) continue;
+    if (!(me.s > 0 && me.s <= (RK_CAP[mode] || 0))) continue;
+    const r = { b: key, s: me.s, w: me.w | 0, t: me.t | 0 };
+    if (mode === 'defi') { if (!RKX.store[key]) continue; r.h = me.h; r.u = me.u; }
+    recs.push(r);
+  }
+  if (!recs.length) return null;
+  return { key: RKX.key, n: nick || 'Joueur', h, c: myCol, u: profCos(h).tenue, recs: recs.slice(0, 16) };
+}
+function rkPushSoon(first) { if (!rkOnline() || !RKX.got) return; clearTimeout(RKX.pt); RKX.pt = setTimeout(rkPush, first ? 300 : 1500); }
+function rkPush() {
+  const p = rkPostBody(); if (!p) return;
+  const body = JSON.stringify(p); if (body === RKX.sent) return;
+  fetch(RK_SRV + '/rec', { method: 'POST', mode: 'cors', credentials: 'omit', headers: { 'Content-Type': 'text/plain;charset=UTF-8' }, body, keepalive: true })
+    .then(r => r.json().catch(() => ({})).then(d => [r.status, d]))
+    .then(([st, d]) => {
+      if (st === 200 && d && d.ok) {
+        RKX.sent = body;
+        if (typeof d.pid === 'string' && /^[0-9a-f]{16}$/.test(d.pid) && d.pid !== RKX.pid) { RKX.pid = d.pid; try { localStorage.setItem('ddl-rpid', d.pid); } catch (e) {} rkChanged(); }
+      } else if (st === 429) { clearTimeout(RKX.pt); RKX.pt = setTimeout(rkPush, 30000); }
+    }).catch(() => {});
+}
+rkPubOne = function () { rkPushSoon(); };
+rkPubAll = function () { rkPushSoon(); };
+rkMaybeRepub = function () { const s = rkSig(); if (s === RKX.sig) return; RKX.sig = s; rkPushSoon(); };
+// a table or the board « Records » that shows: the lines of all again when they are older than 45 s
+{ const base = showPanel; showPanel = function (p) { const r = base.apply(this, arguments); if (RK_ROW_AT[p] || p === 'records') rkStart(); return r; }; }
+/* ================================================================ /version 93 */
 
 useTerrain(TERKEY);
 demo();
