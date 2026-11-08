@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b2b34">
 <meta name="description" content="Rejoins ma table ! Line Towers, Gem TD et Farm TD : jusqu'à 6 joueurs, dans le navigateur, sans compte.">
 <meta property="og:type" content="website">
@@ -23,6 +23,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Les Joutes">
 <title>Les Joutes</title>
+<style>
+/* version 94: while the browser has zoomed the page in, the page lets the browser's pinch and drag through, to come back out */
+html.vv-zoom,html.vv-zoom *{touch-action:manipulation!important}
+</style>
 <style>
 /* version 92 · « Comment jouer » dans chaque mode : le « ? » de chaque table (en haut à droite, doré, sans plaque : le pendant de la
    flèche retour ; entre amis, à côté de « Quitter ») et celui de chaque bannière des modes (en bas à droite, sur la plaque des boutons de
@@ -23334,6 +23338,38 @@ rkMaybeRepub = function () { const s = rkSig(); if (s === RKX.sig) return; RKX.s
 // a table or the board « Records » that shows: the lines of all again when they are older than 45 s
 { const base = showPanel; showPanel = function (p) { const r = base.apply(this, arguments); if (RK_ROW_AT[p] || p === 'records') rkStart(); return r; }; }
 /* ================================================================ /version 93 */
+// version 94 (Patrick, 08/11, 22 h 06: « J'ai un bug sur un navigateur des fois où c'est complètement zoomé et on peut plus dézoomer sur
+// la partie… vraiment au niveau de l'interface… ça bloque le jeu complètement »): the browser's own zoom of the page (Safari's pinch, its
+// zoom on a text field) never stays. The public page says maximum-scale=1 (no zoom on a field any more); if the page is zoomed in all the
+// same, it comes back to its size by itself (a new content for the viewport meta, once no field is being typed in), and while it is zoomed
+// in, a pinch on the page is the browser's, to come back out (the game's own pinch, its camera, is refused by the page otherwise).
+var V94 = true;
+const VVZ = { on: false, t: 0, flip: false, n: 0 };
+const VV_META = 'width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover';
+function vvZoomed() { const v = window.visualViewport; return !!(v && v.scale > 1.02); }
+function vvTyping() { const a = document.activeElement; return !!(a && /^(INPUT|TEXTAREA)$/.test(a.tagName) && !a.readOnly); }
+function vvBack() {
+  const m = document.querySelector('meta[name="viewport"]');
+  if (!m || !vvZoomed() || vvTyping()) return;
+  VVZ.n++; VVZ.flip = !VVZ.flip;
+  m.setAttribute('content', VVZ.flip ? VV_META.replace('initial-scale=1', 'initial-scale=1.0') : VV_META);
+}
+function vvCheck() {
+  const z = vvZoomed();
+  if (z !== VVZ.on) { VVZ.on = z; document.documentElement.classList.toggle('vv-zoom', z); }
+  clearTimeout(VVZ.t); if (z) VVZ.t = setTimeout(vvBack, 450);
+}
+(function vvGuard() {
+  const v = window.visualViewport; if (!v) return;
+  v.addEventListener('resize', vvCheck);
+  document.addEventListener('focusout', () => setTimeout(vvCheck, 80), true);
+  // Safari's pinch on the page: refused while the page is at its size, let through when it is zoomed in (to come back out)
+  const g = e => { if (!vvZoomed()) e.preventDefault(); };
+  document.addEventListener('gesturestart', g, { passive: false });
+  document.addEventListener('gesturechange', g, { passive: false });
+  vvCheck();
+})();
+/* ================================================================ /version 94 */
 
 useTerrain(TERKEY);
 demo();
