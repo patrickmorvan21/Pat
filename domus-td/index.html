@@ -24,6 +24,82 @@
 <meta name="apple-mobile-web-app-title" content="Les Joutes">
 <title>Les Joutes</title>
 <style>
+/* version 96 · l'accueil A, l'écran « Jouer », le profil aux onglets en bas. Everything under body.v96 (the test copies of the old
+   suites, « legacy », keep the home of version 95). */
+/* ---- the home A: the plate in the top left (the player, his general, the level in its gold square, the thread to the next level),
+   the settings in the top right; « Jouer », the challenge, the invitation under it when there is one */
+body.v96 .hm-two.one96{grid-template-columns:1fr}
+body.v96 .hm-cta .hm-two.one96 .go.big{height:64px;font-size:20px;letter-spacing:.16em}
+body.v96 #profBtn.chip96{position:absolute;left:12px;left:calc(12px - (min(100vw, max(440px, 56vh)) - 100%) / 2);left:calc(12px - (min(100vw, max(440px, 56dvh)) - 100%) / 2);top:calc(env(safe-area-inset-top,0px) + 12px);z-index:4;width:auto;max-width:calc(100% - 84px);height:46px;gap:10px;padding:0 16px 0 6px;background:rgba(11,19,23,.84)}
+body.v96 #profBtn.chip96 .hm-av{position:static;width:34px;height:34px}
+body.v96 #profBtn.chip96 .hm-av canvas{width:30px;height:30px}
+body.v96 #profBtn.chip96 .tx{gap:5px;flex:0 1 auto}
+body.v96 #profBtn.chip96 .hm-nm{font:700 15px/1 var(--f)}
+body.v96 #profBtn.chip96 .gn96{display:block;font:700 10px/1 var(--f);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.v96 #profBtn.chip96 #profTt,body.v96 #profBtn.chip96 .hm-rc,body.v96 #profBtn.chip96 .chev{display:none!important}
+body.v96 #profBtn.chip96 .pf81-lv{top:-7px;right:-7px;bottom:auto;min-width:22px;height:22px;padding:2px 4px 0;font-size:19px;z-index:2}
+body.v96 #profBtn.chip96 .pf81-fil{left:2px;right:2px;bottom:2px;height:3px}
+body.v96 #profBtn.chip96 .dot{left:-5px;right:auto}
+body.v96 .hm-cta #waitPlate{margin:0}
+/* ---- « Jouer »: the modes; the crown of the records at the top right; « Rejoindre avec un code » at the bottom */
+body.v96 #modes .tb-head #recBtn{justify-self:end}
+body.v96 #modes .ma-list{min-height:0}
+body.v96 #multiBtn.join96{flex:none;display:flex;align-items:center;justify-content:center;gap:12px;width:auto;height:52px;margin:12px 20px calc(env(safe-area-inset-bottom,0px) + 18px);padding:0 16px;border:0;border-radius:0;background:rgba(11,19,23,.84);box-shadow:inset 0 0 0 1px rgba(142,162,167,.3),0 0 0 2px rgba(8,14,18,.4);color:var(--ink);font:700 14px/1 var(--f);letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+body.v96 #multiBtn.join96::before{content:"";flex:none;width:46px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='14' shape-rendering='crispEdges'%3E%3Cg fill='none' stroke='%23d5bf7b' stroke-width='2'%3E%3Crect x='1' y='1' width='8' height='12'/%3E%3Crect x='13' y='1' width='8' height='12'/%3E%3Crect x='25' y='1' width='8' height='12'/%3E%3Crect x='37' y='1' width='8' height='12'/%3E%3C/g%3E%3C/svg%3E") no-repeat}
+body.v96 #multiBtn.join96:active{transform:translateY(2px)}
+body.v96 #multiBtn.join96:disabled{opacity:.55;cursor:default;transform:none}
+body.v96 #modes #multiNote{margin:-6px 20px 18px;text-align:center}
+/* ---- the settings: « Comment jouer » (the « ? » of the home) */
+.shw:not([data-kind=pref]) #helpRow{display:none}
+body.v96 #tutoBtn.help96{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:48px;background:#22323a;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);font:700 15px/1 var(--f)}
+body.v96 #tutoBtn.help96 [data-icon]{color:var(--gold)}
+/* ---- the profile: the level of the general in words; no figures, no path, no colours (the doors keep them) */
+body.v96 #pfStats,body.v96 #profil .pf-col,body.v96 #pfMs,body.v96 #pfRec,body.v96 #pfTitle{display:none!important}
+body.v96 #profil .pf-id{gap:9px}
+.lv96{display:flex;flex-direction:column;align-items:center;gap:7px}
+.lv96 b{font:700 12px/14px var(--f);letter-spacing:.16em;text-transform:uppercase;color:var(--gold);white-space:nowrap}
+.lv96 .rw{display:flex;align-items:center;gap:8px}
+.lv96 .br{position:relative;width:210px;height:6px;background:#0f1a1f;box-shadow:inset 0 0 0 1px #33474f}
+.lv96 .br i{position:absolute;left:0;top:0;bottom:0;background:var(--gold)}
+.lv96 em{min-width:16px;font:700 11px/1 var(--f);font-style:normal;color:var(--muted)}
+/* the three tabs, held at the bottom of the screen; the open one in gold, like a button */
+body.v96 #profil .sp-col{min-height:100%;padding-bottom:0}
+body.v96 #pfTabs{position:sticky;bottom:0;z-index:6;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:auto 0 0;padding:10px 16px calc(env(safe-area-inset-bottom,0px) + 14px);background:var(--bg,#0b1317);box-shadow:0 -1px 0 #33474f,0 -14px 18px rgba(11,19,23,.85)}
+body.v96 #pfTabs button{height:48px;background:#16232a;box-shadow:inset 0 0 0 1px #33474f;color:#8ea2a7;font:700 13px/1 var(--f);letter-spacing:.14em}
+body.v96 #pfTabs [aria-selected=true]{background:var(--gold);color:#1b2b34;box-shadow:inset 0 -4px 0 rgba(0,0,0,.22)}
+body.v96 #pfList{margin-bottom:18px}
+/* the tab « Tenues »: the legendaries in big cards that move, the common ones under them */
+body.v96 #pfList.v96{display:block;padding:14px 0 0 16px}
+.v96 .vh96{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:0 16px 8px 0}
+.v96 .vh96 .k,.vh96.g .k{font:600 12px/14px var(--f);color:var(--muted)}
+.vh96.g{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;padding:2px 0 0}
+.v96 .vr96{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:0 16px 2px 0;scrollbar-width:none;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.v96 .vr96::-webkit-scrollbar{display:none}
+.v96 .vr96.l{margin-bottom:16px}
+.v96 .vr96.c{gap:8px}
+.lc96{position:relative;flex:none;width:132px;height:206px;padding:0;border:0;border-radius:0;background:#16232a;box-shadow:inset 0 0 0 1px #4a3a4e;display:flex;flex-direction:column;align-items:center;color:var(--ink);font-family:var(--f);text-align:center;cursor:pointer;scroll-snap-align:start}
+.lc96 .gl{position:absolute;left:0;right:0;top:0;height:156px;background:radial-gradient(ellipse 60% 22% at 50% 92%,rgba(229,163,214,.22),transparent 70%);pointer-events:none}
+.lc96 canvas,.cc96 canvas{position:relative;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+.lc96 canvas{margin-top:2px}
+.lc96 .nm{position:relative;margin-top:2px;padding:0 8px;width:100%;box-sizing:border-box;font:700 13px/15px var(--f);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lc96 .sb{position:relative;margin-top:4px;padding:0 6px;font:600 11px/13px var(--f);color:var(--muted)}
+.lc96 .tag{position:absolute;left:6px;top:6px;z-index:2;padding:4px 5px;background:var(--gold);color:#1b2b34;font:700 10px/1 var(--f);letter-spacing:.12em;text-transform:uppercase}
+.lc96.on{box-shadow:inset 0 0 0 2px var(--gold)}
+.lc96.on .gl{background:radial-gradient(ellipse 60% 22% at 50% 92%,rgba(244,217,127,.3),transparent 70%)}
+.lc96.lock canvas,.cc96.lock canvas{filter:saturate(.35) brightness(.55)}
+.lc96 .lk,.cc96 .lk{position:absolute;right:6px;top:6px;z-index:2;width:26px;height:26px;display:grid;place-items:center;background:#1b2b34;box-shadow:0 0 0 1px #33474f}
+.cc96 .lk{right:4px;top:4px;width:22px;height:22px}
+.lc96 .bar{position:relative;width:96px;height:4px;margin-top:5px;background:#0f1a1f;box-shadow:inset 0 0 0 1px #33474f}
+.lc96 .bar i{position:absolute;left:0;top:0;bottom:0;background:#e5a3d6}
+.lc96.ms .sb{color:#f4d97f}
+.lc96.ms .bar i{background:var(--gold)}
+.cc96{position:relative;flex:none;width:72px;height:104px;padding:0;border:0;border-radius:0;background:#16232a;box-shadow:inset 0 0 0 1px #33474f;display:grid;place-items:end center;cursor:pointer;scroll-snap-align:start}
+.cc96.r{box-shadow:inset 0 0 0 1px #e2c46c}
+.cc96.on{box-shadow:inset 0 0 0 2px var(--gold)}
+.lc96:active,.cc96:active{transform:translateY(2px)}
+.lc96:focus-visible,.cc96:focus-visible,body.v96 #pfTabs button:focus-visible{outline:2px solid var(--ink);outline-offset:-4px}
+</style>
+<style>
 /* version 94: while the browser has zoomed the page in, the page lets the browser's pinch and drag through, to come back out */
 html.vv-zoom,html.vv-zoom *{touch-action:manipulation!important}
 </style>
@@ -15554,10 +15630,10 @@ var TITLES = [
   { k: 'increvable', n: 'Increvable', c: 'Tenir 30 vagues dans une partie', p: () => [PMETA.bestWave, 30] },
   { k: 'palet', n: 'Maître du palet', c: 'Gagner 10 Entractes', p: () => [PMETA.palets, 10] },
   { k: 'tueur', n: 'Tueur de boss', c: 'Abattre 25 boss', p: () => [PMETA.bosses, 25] },
-  { k: 'bois', n: 'Maître des Bois', c: 'Maîtrise 10 avec le Cerf blanc', p: () => [profLvl('cerf'), 10] },
-  { k: 'taniere', n: 'Maître de la Tanière', c: 'Maîtrise 10 avec le Grand Ours', p: () => [profLvl('ours'), 10] },
-  { k: 'brumes', n: 'Maître des Brumes', c: 'Maîtrise 10 avec le Corbeau des brumes', p: () => [profLvl('griffon'), 10] },
-  { k: 'braises', n: 'Maître des Braises', c: 'Maîtrise 10 avec le Renard de braise', p: () => [profLvl('renard'), 10] },
+  { k: 'bois', n: 'Maître des Bois', c: 'Niveau 10 avec le Cerf blanc', p: () => [profLvl('cerf'), 10] },
+  { k: 'taniere', n: 'Maître de la Tanière', c: 'Niveau 10 avec le Grand Ours', p: () => [profLvl('ours'), 10] },
+  { k: 'brumes', n: 'Maître des Brumes', c: 'Niveau 10 avec le Corbeau des brumes', p: () => [profLvl('griffon'), 10] },
+  { k: 'braises', n: 'Maître des Braises', c: 'Niveau 10 avec le Renard de braise', p: () => [profLvl('renard'), 10] },
 ];
 var TITLE_OF = {}; TITLES.forEach((t, i) => { t.i = i; TITLE_OF[t.k] = t; });
 var PROF_CROWN = {"rows":["p...p...p","e...b...a","ebcbbdcda","ebfbddfda","ebbbbddda","eggbddaaa",".aaaaaaa."],"pal":{"a":"#d98b3e","b":"#f6d45e","c":"#ad8d2e","d":"#eaa944","e":"#fff6cc","f":"#7e6a2c","g":"#ffe7b6","p":"#fff2b4"}};      // the record's crown (fork Art, crown.json « small »), or null: the game's small crown then
@@ -15605,7 +15681,7 @@ function profNeed(kind, key, m) {
   const need = PROF_NEED[kind][key]; if (!need) return null;
   if (need.d) return { t: `${need.d} défis`, a: Math.min(PMETA.defis, need.d), g: need.d, long: `${need.d} défis gagnés` };
   const cur = kind === 'tenue' ? profLvl(m) : profMaxLvl();
-  return { t: `Maîtrise ${need.m}`, a: Math.min(cur, need.m), g: need.m, long: kind === 'tenue' ? `Maîtrise ${need.m} avec ${MAISON_LE[m]}` : `Maîtrise ${need.m} avec un général` };
+  return { t: `Niveau ${need.m}`, a: Math.min(cur, need.m), g: need.m, long: kind === 'tenue' ? `Niveau ${need.m} avec ${MAISON_LE[m]}` : `Niveau ${need.m} avec un général` };
 }
 const profTitleHas = k => PMETA.titles.includes(k);
 // everything that is open now, as keys: the difference before / after a game is what is new
@@ -15793,7 +15869,7 @@ function profRender() {
   $('pfStats').innerHTML =
     `<span><b>${hrs[0]}<i>${hrs[1]}</i></b><small>jouées</small></span><span><b>${H.wins}</b><small>${H.wins > 1 ? 'victoires' : 'victoire'}</small></span>` +
     `<span><b>${best ? profNum(best) : '–'}</b><small>record</small></span>` +
-    `<span class="mt"><b>${L}</b><small>maîtrise</small><em style="--f:${Math.round(frac * 100)}%"></em></span>`;
+    `<span class="mt"><b>${L}</b><small>niveau</small><em style="--f:${Math.round(frac * 100)}%"></em></span>`;
   document.querySelectorAll('#pfTabs [data-tab]').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === PF.tab)));
   profList(m, col, cos);
   renderSwatches($('pfCol'), col, new Set()); $('pfColN').textContent = PCOL_N[col];
@@ -19001,9 +19077,9 @@ function rkOpen(from) {
 }
 function rkClose() {
   if (RKX.io) { RKX.io.disconnect(); RKX.io = null; }
-  const to = (RK_ROW_AT[RKX.from] || RKX.from === 'home') ? RKX.from : 'home';
+  const to = (RK_ROW_AT[RKX.from] || RKX.from === 'home' || RKX.from === 'modes') ? RKX.from : 'home';
   showPanel(to);
-  const b = to === 'home' ? $('recBtn') : $(RK_ROW_AT[to][0]).querySelector('.rkrow');
+  const b = (to === 'home' || to === 'modes') ? $('recBtn') : $(RK_ROW_AT[to][0]).querySelector('.rkrow');
   if (b && !b.hidden) try { b.focus({ preventScroll: true }); } catch (e) {}
 }
 
@@ -19012,7 +19088,7 @@ function rkClose() {
   const top = document.querySelector('.hm-top'); if (!top || $('recBtn')) return;
   const b = document.createElement('button'); b.type = 'button'; b.className = 'hm-ic'; b.id = 'recBtn'; b.setAttribute('aria-label', 'Les records');
   b.innerHTML = rkCrown(2); top.insertBefore(b, top.firstChild);
-  b.addEventListener('click', () => rkOpen('home'));
+  b.addEventListener('click', () => rkOpen(b.closest('#modes') ? 'modes' : 'home'));   // version 96: from « Jouer »
 })();
 
 // ---- where the scores come from: Line Towers' end (podResults), Gem TD's and Farm TD's pages (their message « score »)
@@ -20084,7 +20160,7 @@ function prof81Level(m) {
     let fil = btn.querySelector('.pf81-fil'); if (!fil) { fil = document.createElement('span'); fil.className = 'pf81-fil'; fil.innerHTML = '<i></i>'; btn.appendChild(fil); }
     fil.firstChild.style.width = (f * 100).toFixed(1) + '%';
     const cos = profCos(m);
-    btn.setAttribute('aria-label', `Ton profil : ${nick || 'Joueur'}${cos.title ? ', ' + cos.title : ''}, maîtrise ${L}${L < PROF_XP.length ? ', ' + Math.round(f * 100) + ' % vers la ' + (L + 1) : ''}`);
+    btn.setAttribute('aria-label', `Ton profil : ${nick || 'Joueur'}${cos.title ? ', ' + cos.title : ''}, niveau ${L}${L < PROF_XP.length ? ', ' + Math.round(f * 100) + ' % vers la ' + (L + 1) : ''}`);
     return r;
 }; }
 profHomeSync();
@@ -20793,8 +20869,8 @@ function pfDraw() {
   const L = PFX.last, el = PFX.el; if (!L || !el) return;
   const m = L.m, L0 = pfLvlOf(L.xp0), L1 = pfLvlOf(L.xp1), lo = PROF_XP[L1 - 1] || 0, hi = PROF_XP[L1], max = hi === undefined;
   const span = max ? 1 : hi - lo, a = max ? 100 : Math.max(0, Math.min(100, (L.xp0 - lo) / span * 100)), g = max ? 100 : Math.max(0, Math.min(100, (L.xp1 - lo) / span * 100));
-  const gain = L.xp1 - L.xp0, lvTxt = L1 > L0 ? `Maîtrise ${L0} → <em>${L1}</em>` : `Maîtrise ${L1}`;
-  const nums = max ? ['Maîtrise maximale', ''] : [`${profNum(L.xp1)} / ${profNum(hi)}`, `${profNum(hi - L.xp1)} avant le niveau ${L1 + 1}`];
+  const gain = L.xp1 - L.xp0, lvTxt = L1 > L0 ? `Niveau ${L0} → <em>${L1}</em>` : `Niveau ${L1}`;
+  const nums = max ? ['Niveau maximal', ''] : [`${profNum(L.xp1)} / ${profNum(hi)}`, `${profNum(hi - L.xp1)} avant le niveau ${L1 + 1}`];
   const fresh = L.fresh.map(pfFreshName).filter(Boolean), next = max ? null : pfRewards(m).find(r => r.L > L1);
   const row = fresh.length ? { cap: fresh.length > 1 ? `Nouveau · et ${fresh.length - 1} de plus` : 'Nouveau', it: fresh[0], gold: true } : next ? { cap: `Au niveau ${next.L}`, it: next } : null;
   el.innerHTML = `<div class="pf-big"><div class="pf-r1"><span class="pf-fc"><canvas width="24" height="24"></canvas></span><span class="pf-who"><span class="pf-cap">${esc(EMB[m].n)}</span><span class="pf-lv">${lvTxt}</span></span><b class="pf-xp">+${gain}</b></div>` +
@@ -20802,11 +20878,11 @@ function pfDraw() {
     `<div class="pf-nums"><span>${nums[0]}</span><span>${nums[1]}</span></div>` +
     `<div class="pf-chips">${L.parts.map(([n, v]) => `<span class="pf-chip">${esc(n)}<b>+${v}</b></span>`).join('')}</div>` +
     (row ? `<div class="pf-nx"><span class="pf-nxic"></span><span class="pf-t"><span>${row.cap}</span><b class="${row.gold ? 'gold' : ''}">${esc(row.it.name)}</b></span></div>` : '') + '</div>' +
-    `<div class="pf-line"><span class="pf-fc"><canvas width="24" height="24"></canvas></span><b class="pf-xp">+${gain}</b><span class="pf-lv">Maîtrise ${L1}</span>` +
+    `<div class="pf-line"><span class="pf-fc"><canvas width="24" height="24"></canvas></span><b class="pf-xp">+${gain}</b><span class="pf-lv">Niveau ${L1}</span>` +
     `<span class="pf-bar"><i class="a" style="width:${a}%"></i><i class="g" style="left:${a}%;width:${Math.max(0, g - a)}%"></i></span><span class="pf-n">${max ? '' : `${profNum(L.xp1)} / ${profNum(hi)}`}</span></div>`;
   if (row) el.querySelector('.pf-nxic').appendChild(pfIcon(row.it, m));
   el.querySelectorAll('.pf-fc canvas').forEach(cv => { const draw = () => profCrop(cv, m, myCol, profCos(m).tenue, PROF_FACE, 24); if (!draw()) profWhen(m, draw); });
-  el.setAttribute('aria-label', `${EMB[m].n}, maîtrise ${L1}, plus ${gain}${max ? '' : ', ' + nums[1]}${row ? ', ' + row.cap + ' : ' + row.it.name : ''}. Toucher pour ${PFX.open ? 'replier' : 'ouvrir'}`);
+  el.setAttribute('aria-label', `${EMB[m].n}, niveau ${L1}, plus ${gain}${max ? '' : ', ' + nums[1]}${row ? ', ' + row.cap + ' : ' + row.it.name : ''}. Toucher pour ${PFX.open ? 'replier' : 'ouvrir'}`);
 }
 function pfShow(where) {
   if (!PFX.last) return;
@@ -21004,11 +21080,11 @@ function p84Render() {
       const b = e.target.closest('[data-pl]'); if (!b) return; audioInit(); sfx('click');
       const mm = EMB[PF.m] ? PF.m : 'cerf', it = path84(mm)[+b.dataset.pl]; if (!it) return;
       const has = p84Has(it, mm), rar = it.kind === 'tenue' ? (tenRare(it.key) ? ' · rare' : ' · commune') : '';
-      toast(`Niveau ${it.L} · ${p84Name(it, mm)}${rar} : ${has ? 'obtenu' : `maîtrise ${Math.min(profLvl(mm), it.L)} / ${it.L}`}`, 'gold');
+      toast(`Niveau ${it.L} · ${p84Name(it, mm)}${rar} : ${has ? 'obtenu' : `niveau ${Math.min(profLvl(mm), it.L)} / ${it.L}`}`, 'gold');
     });
   }
   const L = profLvl(m), max = L >= PROF_XP.length, lo = PROF_XP[L - 1], hi = PROF_XP[L], frac = max ? 1 : (H.xp - lo) / (hi - lo), nx = p84Next(m), P = path84(m);
-  ms.innerHTML = `<div class="r1"><span class="cp">Maîtrise</span><b class="n">${L}</b><span class="x">${max ? 'Maîtrise maximale' : `<b>${profNum(H.xp)}</b> / ${profNum(hi)}`}</span></div>` +
+  ms.innerHTML = `<div class="r1"><span class="cp">Niveau</span><b class="n">${L}</b><span class="x">${max ? 'Niveau maximal' : `<b>${profNum(H.xp)}</b> / ${profNum(hi)}`}</span></div>` +
     `<div class="bar"><i style="width:${Math.round(Math.max(0, Math.min(1, frac)) * 1000) / 10}%"></i></div>` +
     `<div class="nx">${nx ? `Au niveau ${nx.L} : <b>${esc(p84What(nx, m))}</b>` : `<b>Tout le chemin est ouvert</b> avec ${esc(MAISON_LE[m])}`}</div>` +
     `<div class="path" role="list">${P.map((it, i) => {
@@ -21041,7 +21117,7 @@ function p84Wardrobe(m, col) {
     const has = profHas('tenue', k, m), nd = profNeed('tenue', k, m), on = k === cur, L = profLvl(m), g = PROF_NEED.tenue[k].m, f = Math.min(1, L / g);
     return `<button type="button" class="wd84 r${has ? '' : ' lock'}${on ? ' on' : ''}" data-tenue="${k}" aria-pressed="${on}" aria-label="Tenue ${esc(tenN(k, m).toLowerCase())}, rare${has ? '' : ', verrouillée : ' + esc(nd.long)}">` +
       `<span class="ic"><canvas width="28" height="28"></canvas>${has ? '' : profLockImg()}</span><span class="t"><b>${esc(tenN(k, m))}</b>` +
-      (has ? `<span class="s">${on ? 'Portée' : 'Obtenue · toucher pour la porter'}</span>` : `<span class="s">Maîtrise ${g}</span><span class="bar"><i style="width:${Math.round(f * 100)}%"></i></span>`) + '</span>' +
+      (has ? `<span class="s">${on ? 'Portée' : 'Obtenue · toucher pour la porter'}</span>` : `<span class="s">Niveau ${g}</span><span class="bar"><i style="width:${Math.round(f * 100)}%"></i></span>`) + '</span>' +
       `<span class="k">${on ? '<i class="ok">' + profCheckImg() + '</i>' : has ? '' : `${Math.min(L, g)} / ${g}`}</span></button>`;
   };
   const n = ks => ks.filter(k => profHas('tenue', k, m)).length;
@@ -21120,7 +21196,7 @@ function rvShow(m, k) {
   }
   RV.m = m; RV.k = k; RV.open = true; RV.t0 = performance.now(); RV.fi = -1;
   const need = PROF_NEED.tenue[k], rare = tenRare(k);
-  el.querySelector('.cp').textContent = `Maîtrise ${need ? need.m : 1} · nouvelle tenue`;
+  el.querySelector('.cp').textContent = `Niveau ${need ? need.m : 1} · nouvelle tenue`;
   el.querySelector('.nm').textContent = tenN(k, m);
   const rr = el.querySelector('.rar'); rr.className = 'rar ' + (rare ? 'r' : 'c'); rr.textContent = rare ? 'Rare · or' : 'Commune · nuance';
   el.querySelector('.ln').textContent = `${rare ? TEN_GOLD_LINE[m] + ' ' : ''}${TEN_SHE[m]} ${rare ? TEN_OBJ[m] : 'la'} porte sur les portes, à la table, en partie et sur le podium.`;
@@ -21318,14 +21394,14 @@ const legModeWon = m => { const H = PMETA.houses[m] || {}, w = H.mw || {}; retur
 const legModes = m => { const o = legModeWon(m); return (o.lt ? 1 : 0) + (o.gem ? 1 : 0) + (o.farm ? 1 : 0); };
 const legPl = (n, w) => `${n} ${w}${n > 1 ? 's' : ''}`;           // 0 and 1 take the singular, as the profile's own counts
 const LEG_NEED = [null,
-  { s: 'Maîtrise 10 et une victoire dans chaque mode', long: m => `Maîtrise 10 avec ${MAISON_LE[m]} et une victoire avec lui dans chacun des trois modes`,
+  { s: 'Niveau 10 et une victoire dans chaque mode', long: m => `Niveau 10 avec ${MAISON_LE[m]} et une victoire avec lui dans chacun des trois modes`,
     p: m => profLvl(m) < 10 ? [profLvl(m), 10] : [legModes(m), 3], ok: m => profLvl(m) >= 10 && legModes(m) >= 3,
-    f: m => (Math.min(profLvl(m), 10) / 10 + legModes(m) / 3) / 2, say: m => profLvl(m) < 10 ? `maîtrise ${profLvl(m)} sur 10` : `${legModes(m)} mode${legModes(m) > 1 ? 's' : ''} sur 3` },
+    f: m => (Math.min(profLvl(m), 10) / 10 + legModes(m) / 3) / 2, say: m => profLvl(m) < 10 ? `niveau ${profLvl(m)} sur 10` : `${legModes(m)} mode${legModes(m) > 1 ? 's' : ''} sur 3` },
   { s: '25 victoires', long: m => `25 victoires avec ${MAISON_LE[m]}`, p: m => [legWins(m), 25], ok: m => legWins(m) >= 25, say: m => `${legPl(Math.min(25, legWins(m)), 'victoire')} sur 25` },
   { s: '25 défis du jour', long: () => '25 défis du jour joués jusqu’au bout', p: () => [PMETA.defis | 0, 25], ok: () => (PMETA.defis | 0) >= 25, say: () => `${legPl(Math.min(25, PMETA.defis | 0), 'défi')} sur 25` },
-  { s: 'Maîtrise 15', long: m => `Maîtrise 15 avec ${MAISON_LE[m]}`, p: m => [profLvl(m), 15], ok: m => profLvl(m) >= 15, say: m => `maîtrise ${Math.min(15, profLvl(m))} sur 15` },
+  { s: 'Niveau 15', long: m => `Niveau 15 avec ${MAISON_LE[m]}`, p: m => [profLvl(m), 15], ok: m => profLvl(m) >= 15, say: m => `niveau ${Math.min(15, profLvl(m))} sur 15` },
   { s: '100 victoires', long: m => `100 victoires avec ${MAISON_LE[m]}`, p: m => [legWins(m), 100], ok: m => legWins(m) >= 100, say: m => `${legPl(Math.min(100, legWins(m)), 'victoire')} sur 100` },
-  { s: 'Maîtrise 20', long: m => `Maîtrise 20 avec ${MAISON_LE[m]}`, p: m => [profLvl(m), 20], ok: m => profLvl(m) >= 20, say: m => `maîtrise ${Math.min(20, profLvl(m))} sur 20` },
+  { s: 'Niveau 20', long: m => `Niveau 20 avec ${MAISON_LE[m]}`, p: m => [profLvl(m), 20], ok: m => profLvl(m) >= 20, say: m => `niveau ${Math.min(20, profLvl(m))} sur 20` },
 ];
 const legHas = (k, m) => { const d = legOf(k, m); return !!d && LEG_NEED[d.slot].ok(m); };
 const legFrac = (k, m) => { const N = LEG_NEED[LEG_D[k].slot]; if (N.f) return N.f(m); const [a, g] = N.p(m); return Math.max(0, Math.min(1, a / g)); };
@@ -23374,6 +23450,188 @@ function vvCheck() {
    eggs explained (the egg of chance by the wave, the champion's egg with its House's ribbon); all of it in Farm TD's page. */
 var V95 = true;
 /* ================================================================ /version 95 */
+/* ================================================================ version 96 · l'accueil A, l'écran « Jouer », le profil aux onglets
+   - Patrick, 09/11 (planche, versions 122 to 125): 12 h 09, the showcase of the legendaries in the profile, the home « ultra chargé »;
+     12 h 36: the home A, « très minimaliste », with « Lucas t'attend » to join a game; « Jouer » opens the challenge and the modes; in
+     the profile, Tenue, Bannière, Titre « limite en CTA, sticky », the open one plain to see; no path of mastery; « le 16, je ne sais
+     pas à quoi ça correspond »; 12 h 41: « garder le défi du jour à l'accueil… Jouer, défi du jour et en dessous, si tu reçois une
+     invitation, le bloc ». 13 h 25, on the plate of the home: « le niveau, ce soit juste en 16, qu'il soit dans un petit carré jaune,
+     en haut à droite », and a line of progression along the bottom; « le reste, je valide, tu peux publier en ligne ».
+   - The home: the plate (#profBtn) in the top left, small: the face, the nickname, the general's name, his level in a gold square in
+     the top right corner, the thread to the next level along the bottom; the settings in the top right; « Jouer », the challenge of
+     the day under it, and under the challenge the invitation (« Lucas t'attend ») when there is one. The crown, the « ? » and
+     « Rejoindre » leave the home: the crown (#recBtn) goes to the top right of « Jouer », « Rejoindre » (#multiBtn) to its bottom as
+     « Rejoindre avec un code », « Comment jouer » (#tutoBtn) into the settings. The same elements, moved: their listeners stay.
+   - « Jouer »: the screen of the modes, titled « Jouer »; the records open from it come back to it.
+   - The profile: the general's name, then « Ton général · niveau 16 » and a bar to the 17; the three figures, the path, the colours
+     and the records leave it (the colour stays at the doors); the tabs (Tenues, Bannière, Titre) in a bar held at the bottom, the open
+     one in gold; « Tenues »: the legendaries in big cards that move (the one he wears first, then the ones he has, then the others,
+     the nearest first, with what opens each), the common ones under them; a touch wears one, or says what opens it.
+   - « Niveau » for « Maîtrise » everywhere the game writes it (the build replaces the words).
+   - The test copies of the old suites (« legacy », mk_legacy96.py) set V96_LEGACY: they keep the home and the profile of version 95. */
+var V96 = true;
+const V96UI = typeof V96_LEGACY === 'undefined';
+
+/* ---------------------------------------------------------------- the home A, « Jouer », the settings */
+(function v96Home() {
+  if (!V96UI) return;
+  document.body.classList.add('v96');
+  const col = document.querySelector('#startOv .sp.hm .sp-col'), cta = document.querySelector('#startOv .hm-cta');
+  // the plate, in the top left: the face, the nickname, the general's name (his level and the thread are version 81's)
+  const pb = $('profBtn');
+  if (pb && col) {
+    pb.classList.add('chip96'); col.appendChild(pb);
+    const tx = pb.querySelector('.tx');
+    if (tx && !tx.querySelector('.gn96')) { const g = document.createElement('span'); g.className = 'gn96'; tx.appendChild(g); }
+  }
+  // « Jouer » alone; the challenge under it; the invitation under the challenge
+  const two = cta && cta.querySelector('.hm-two'); if (two) two.classList.add('one96');
+  const df = $('defiBtn'), wp = $('waitPlate');
+  if (two) { if (df) two.after(df); if (wp) (df || two).after(wp); }
+  // « Jouer »: its title, the crown of the records in the top right, « Rejoindre avec un code » at the bottom
+  const M = $('modes');
+  if (M) {
+    const ttl = M.querySelector('.tb-title'); if (ttl) ttl.textContent = 'Jouer';
+    const head = M.querySelector('.tb-head'), rb = $('recBtn');
+    if (head && rb) { const last = head.lastElementChild; if (last && last.tagName === 'SPAN' && !last.children.length) last.replaceWith(rb); else head.appendChild(rb); }
+    const mcol = M.querySelector('.sp-col'), mb = $('multiBtn'), mn = $('multiNote');
+    if (mcol && mb) {
+      mb.classList.add('join96'); mcol.appendChild(mb); if (mn) mcol.appendChild(mn);
+      // its words: the bootstrap writes « Rejoindre » (or « Connexion… », « Indisponible »); here it says what it does
+      const say = () => { if (mb.textContent === 'Rejoindre') mb.textContent = 'Rejoindre avec un code'; };
+      say(); new MutationObserver(say).observe(mb, { childList: true, characterData: true, subtree: true });
+    }
+  }
+  // « Comment jouer », in the settings of the home (the sheet « pref »); the gold dot of a fresh « ? » goes to the settings' icon
+  const tb = $('tutoBtn'), set = document.querySelector('#tbSheet .sh-set');
+  if (tb && set && !$('helpRow')) {
+    const g = document.createElement('div'); g.className = 'sh-grp'; g.id = 'helpRow';
+    g.innerHTML = '<span class="cp">Aide</span>'; set.appendChild(g); g.appendChild(tb);
+    tb.classList.add('help96'); tb.insertAdjacentHTML('beforeend', '<span class="t">Comment jouer</span>');
+    tb.addEventListener('click', () => { try { sheetClose(true); } catch (e) {} }, true);
+    const pf = $('prefBtn'), sync = () => { if (pf) pf.classList.toggle('fresh', tb.classList.contains('fresh')); };
+    sync(); new MutationObserver(sync).observe(tb, { attributes: true, attributeFilter: ['class'] });
+  }
+})();
+// the plate: the general's name under the nickname; what it says to a screen reader
+{ const base = profHomeSync; profHomeSync = function () {
+    const r = base.apply(this, arguments);
+    if (!V96UI) return r;
+    const btn = $('profBtn'); if (!btn) return r;
+    const m = EMB[myMaison] ? myMaison : 'cerf', { L, f } = prof81Level(m), g = btn.querySelector('.gn96');
+    if (g) g.textContent = EMB[m].n;
+    btn.setAttribute('aria-label', `Ton profil : ${nick || 'Joueur'}, ${EMB[m].n}, niveau ${L}${L < PROF_XP.length ? ', ' + Math.round(f * 100) + ' % vers le ' + (L + 1) : ''}`);
+    return r;
+}; }
+// the home was drawn before this block: once more, with the general's name
+if (V96UI) { try { profHomeSync(); } catch (e) { console.error(e); } }
+
+/* ---------------------------------------------------------------- the profile: the level in words, the tabs at the bottom */
+(function v96Prof() {
+  if (!V96UI) return;
+  const id = document.querySelector('#profil .pf-id'), col = document.querySelector('#profil .sp-col'), tabs = $('pfTabs');
+  if (id && !$('pfLv')) id.insertAdjacentHTML('beforeend', '<span class="lv96" id="pfLv"><b id="pfLvT"></b><span class="rw" aria-hidden="true"><span class="br"><i id="pfLvF"></i></span><em id="pfLvN"></em></span></span>');
+  if (col && tabs) col.appendChild(tabs);
+  const t = tabs && tabs.querySelector('[data-tab=tenue]'); if (t) t.textContent = 'Tenues';
+})();
+function v96Level() {
+  const lv = $('pfLv'); if (!lv) return;
+  const m = EMB[PF.m] ? PF.m : 'cerf', { L, f } = prof81Level(m), max = L >= PROF_XP.length;
+  $('pfLvT').textContent = `Ton général · niveau ${L}`;
+  $('pfLvF').style.width = (f * 100).toFixed(1) + '%';
+  $('pfLvN').textContent = max ? 'max' : String(L + 1);
+  lv.setAttribute('aria-label', `${EMB[m].n}, ton général, niveau ${L}${max ? ', le plus haut' : ', ' + Math.round(f * 100) + ' % vers le ' + (L + 1)}`);
+}
+{ const base = profRender; profRender = function () {
+    const r = base.apply(this, arguments);
+    if (V96UI) { try { v96Level(); } catch (e) { console.error(e); } }
+    return r;
+}; }
+// the tab « Tenues »: the showcase (instead of version 84's wardrobe and version 87's list)
+{ const base = p84Wardrobe; p84Wardrobe = function (m, col) {
+    if (!V96UI) return base.apply(this, arguments);
+    v96Vitrine(m, col);
+}; }
+{ const base = profList; profList = function (m, col, cos) {
+    $('pfList').classList.remove('v96');
+    const r = base.apply(this, arguments);
+    if (!V96UI || PF.tab === 'tenue') return r;
+    // Bannière, Titre: how many he has, over the list
+    const box = $('pfList');
+    const n = PF.tab === 'motif' ? [MOTIF_KEYS.filter(k => profHas('motif', k, m)).length, MOTIF_KEYS.length] : [TITLES.filter(t => profTitleHas(t.k)).length, TITLES.length];
+    box.insertAdjacentHTML('afterbegin', `<div class="vh96 g"><span class="cp">${PF.tab === 'motif' ? 'Bannières' : 'Titres'}</span><span class="k">${n[0]} / ${n[1]}</span></div>`);
+    return r;
+}; }
+function v96Vitrine(m, col) {
+  const box = $('pfList'), cur = profCos(m).tenue;
+  box.classList.remove('w84'); box.classList.add('v96');
+  const ks = (LEG_KEYS[m] || []).filter(Boolean), won = ks.filter(k => legHas(k, m));
+  const order = [...ks.filter(k => k === cur), ...won.filter(k => k !== cur), ...ks.filter(k => !legHas(k, m)).sort((a, b) => legFrac(b, m) - legFrac(a, m))];
+  // a legendary that waits for a level says it in gold, like the bar of the level
+  const byLevel = k => { const s = LEG_D[k].slot; return s === 4 || s === 6 || (s === 1 && profLvl(m) < 10); };
+  const leg = k => {
+    const d = LEG_D[k], N = LEG_NEED[d.slot], has = legHas(k, m), on = k === cur;
+    return `<button type="button" class="lc96${on ? ' on' : ''}${has ? '' : ' lock'}${!has && byLevel(k) ? ' ms' : ''}" data-tenue="${k}" aria-pressed="${on}" aria-label="Tenue légendaire ${esc(d.n)}${on ? ', portée' : has ? '' : ', verrouillée : ' + esc(N.long(m))}">` +
+      `<i class="gl"></i>${on ? '<span class="tag">Portée</span>' : ''}${has ? '' : '<span class="lk">' + profLockImg() + '</span>'}` +
+      `<canvas class="cv96" data-k="${k}" data-w="132" data-h="150"></canvas><span class="nm">${esc(d.n)}</span>` +
+      (has ? `<span class="sb">${on ? 'Sur ton général' : 'À toi'}</span>` : `<span class="sb">${esc(N.s)}</span><span class="bar"><i style="width:${Math.round(legFrac(k, m) * 100)}%"></i></span>`) + '</button>';
+  };
+  const com = k => {
+    const has = profHas('tenue', k, m), on = k === cur, nd = profNeed('tenue', k, m);
+    return `<button type="button" class="cc96${on ? ' on' : ''}${has ? '' : ' lock'}${tenRare(k) ? ' r' : ''}" data-tenue="${k}" aria-pressed="${on}" aria-label="Tenue ${esc(tenN(k, m).toLowerCase())}${on ? ', portée' : has || !nd ? '' : ', verrouillée : ' + esc(nd.long)}">` +
+      `<canvas class="cv96" data-k="${k}" data-w="72" data-h="104"></canvas>${has ? '' : '<span class="lk">' + profLockImg() + '</span>'}</button>`;
+  };
+  const cs = TENUE_KEYS, nC = cs.filter(k => profHas('tenue', k, m)).length;
+  box.innerHTML = (ks.length ? `<div class="vh96"><span class="cp">Légendaires</span><span class="k">${won.length} / ${ks.length}</span></div><div class="vr96 l">${order.map(leg).join('')}</div>` : '') +
+    `<div class="vh96"><span class="cp">Communes</span><span class="k">${nC} / ${cs.length}</span></div><div class="vr96 c">${cs.map(com).join('')}</div>`;
+  v96Cards(box, m, col);
+}
+
+/* ---------------------------------------------------------------- the cards' generals, drawn at their frame (ten times a second) */
+const V96C = { cards: [], raf: 0, f: -1 };
+function v96Cards(box, m, col) {
+  const dpr = Math.max(1, Math.min(3, Math.round(window.devicePixelRatio || 1)));
+  V96C.cards = [...box.querySelectorAll('canvas.cv96')].map(cv => {
+    const w = +cv.dataset.w, h = +cv.dataset.h; cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + 'px'; cv.style.height = h + 'px';
+    return { cv, m, k: cv.dataset.k, col, dpr };
+  });
+  for (const c of V96C.cards) { if (LEG_D[c.k]) legImg(c.k); else chrLoad(m); }
+  V96C.f = -1; v96Kick();
+}
+function v96Art(m, k, t, col) {
+  const C = CHAMP[m], d = LEG_D[k]; if (!C) return null;
+  if (d && d.m === m) {
+    const st = legStrip(k, col); if (!st) return null;
+    const i = legIdx(d, t);
+    return { src: st, sx: i * d.w, sw: d.w, sh: d.h, cx: d.ox + C.W / 2, fy: d.oy + C.H, gx: d.ox, gy: d.oy, C };
+  }
+  if (!chrOf(m).L) { chrLoad(m); return null; }
+  const L = chrTint(m, col, k || 'bois'); if (!L) return null;
+  const fr = champStill.matches ? C.seq[0] : C.seq[Math.floor(t / C.hold) % C.seq.length], cv = L[fr]; if (!cv) return null;
+  return { src: cv, sx: 0, sw: C.W, sh: C.H, cx: C.W / 2, fy: C.H, gx: 0, gy: 0, C };
+}
+function v96Paint(c, t) {
+  const A = v96Art(c.m, c.k, t, c.col); if (!A) return false;
+  const cv = c.cv, x = cv.getContext('2d'), S = c.dpr;
+  x.imageSmoothingEnabled = false; x.clearRect(0, 0, cv.width, cv.height);
+  const dx = Math.round(cv.width / 2 - A.cx * S), dy = Math.round(cv.height - 6 * S - A.fy * S);
+  x.fillStyle = 'rgba(4,8,10,.45)';
+  (A.C.sh || []).forEach((r, i) => x.fillRect(dx + (A.gx + r[0]) * S, dy + (A.gy + A.C.H - 1 + i) * S, r[1] * S, S));
+  x.drawImage(A.src, A.sx, 0, A.sw, A.sh, dx, dy, A.sw * S, A.sh * S);
+  c.ok = true;
+  return true;
+}
+function v96Kick() { if (!V96C.raf) V96C.raf = requestAnimationFrame(v96Tick); }
+function v96Tick() {
+  V96C.raf = 0;
+  const P = $('profil'); if (!P || P.hidden || document.hidden || !V96C.cards.length || !V96C.cards[0].cv.isConnected) return;
+  const t = performance.now() / 1000, f = Math.floor(t * 10);
+  if (f !== V96C.f || V96C.cards.some(c => !c.ok)) { V96C.f = f; for (const c of V96C.cards) { try { v96Paint(c, t); } catch (e) {} } }
+  V96C.raf = requestAnimationFrame(v96Tick);
+}
+{ const base = showPanel; showPanel = function (p) { const r = base.apply(this, arguments); if (V96UI && p === 'profil') v96Kick(); return r; }; }
+document.addEventListener('visibilitychange', () => { if (V96UI && !document.hidden) v96Kick(); });
+/* ================================================================ /version 96 */
 
 useTerrain(TERKEY);
 demo();
