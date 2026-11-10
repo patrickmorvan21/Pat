@@ -1,5 +1,5 @@
 // To run: npm install miniflare@4 (in a scratch folder), then node test/serveur.test.mjs. Not run by the deploy.
-// Les Joutes · the server, version 2 (../cf2/src/index.js), in Miniflare with a D1 database: its rules before it goes on Patrick's account.
+// Les Joutes · the server, version 3 (../cf2/src/index.js: the records, and the friends), in Miniflare with a D1 database: its rules before it goes on Patrick's account.
 import { Miniflare } from 'miniflare';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
@@ -17,7 +17,7 @@ const pidOf = k => crypto.createHash('sha256').update('lj|' + k).digest('hex').s
 const me = (recs, more = {}) => Object.assign({ key: K1, n: 'Patrick', h: 'cerf', c: 1, u: 'bois', recs }, more);
 
 let [st, body, ao] = await get('/');
-ck('GET / says who it is', st === 200 && body.ok && body.nom === 'les-joutes' && body.v === 2, body);
+ck('GET / says who it is', st === 200 && body.ok && body.nom === 'les-joutes' && body.v === 3, body);
 [st, body, ao] = await get();
 ck('an empty server: the 9 boards of the game and the défis of today and yesterday, empty; the game\'s address allowed',
   st === 200 && Object.keys(body.boards).length === 11 && body.boards['gem/croix'].length === 0 && body.boards['defi/' + TODAY] && body.boards['defi/' + YDAY] && body.jour === TODAY && ao === O, [st, Object.keys(body.boards), body.jour, ao]);
@@ -70,6 +70,57 @@ ck('another site is not allowed to read it from a page', ao === O, ao);
 ck('another path: 404', st === 404 && body.why === 'path', [st, body]);
 const pu = await mf.dispatchFetch('http://x/rec', { method: 'PUT', headers: { Origin: O } });
 ck('another method: 405', pu.status === 405);
+
+// ---- the friends (version 3)
+const amiP = async (path, b, ip = '3.3.3.3') => { const r = await mf.dispatchFetch('http://x' + path, { method: 'POST', headers: { Origin: O, 'Content-Type': 'text/plain;charset=UTF-8', 'CF-Connecting-IP': ip }, body: typeof b === 'string' ? b : JSON.stringify(b) }); return [r.status, await r.json()]; };
+const K3 = 'zyxwvutsrqponmlkjihgfedcba987654', K4 = 'QWERTYUIOPASDFGHJKLZXCVBNM123456';
+const pres = (key, more = {}) => Object.assign({ key, n: 'Patrick', h: 'cerf', c: 0, u: 'bois', lv: 16, st: 'home', m: 'lt' }, more);
+let [sa, A] = await amiP('/ami', pres(K3));
+ck('a player tells where he is: his friend code (6 signs, no I, O, 0, 1), no friend yet', sa === 200 && A.ok && /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/.test(A.code) && Array.isArray(A.amis) && A.amis.length === 0, [sa, A]);
+let [, A2] = await amiP('/ami', pres(K3, { n: 'Pat' }));
+ck('… his code is always the same', A2.code === A.code, [A.code, A2.code]);
+let [sb, B] = await amiP('/ami', pres(K4, { n: 'Lucas', h: 'ours', c: 1, lv: 7 }));
+ck('another player has another code', sb === 200 && B.code !== A.code, [A.code, B.code]);
+let [sq, Q] = await amiP('/ami/qui', { key: K3, code: B.code.toLowerCase().slice(0, 3) + ' ' + B.code.slice(3) });
+ck('before adding: who has this code (lower case and a space are read too): Lucas, Grand Ours, level 7', sq === 200 && Q.ok && Q.n === 'Lucas' && Q.h === 'ours' && Q.lv === 7 && Q.code === B.code, [sq, Q]);
+[sq, Q] = await amiP('/ami/qui', { key: K3, code: A.code });
+ck('… one\'s own code: « toi »', sq === 400 && Q.why === 'toi', [sq, Q]);
+[sq, Q] = await amiP('/ami/qui', { key: K3, code: 'ZZZZZZ' === A.code || 'ZZZZZZ' === B.code ? 'YYYYYY' : 'ZZZZZZ' });
+ck('… a code nobody has: « inconnu »', sq === 404 && Q.why === 'inconnu', [sq, Q]);
+[sq, Q] = await amiP('/ami/qui', { key: K3, code: 'AB10' });
+ck('… a code that cannot be one: refused', sq === 400 && Q.why === 'code', [sq, Q]);
+let [sd, D] = await amiP('/ami/add', { key: K3, code: B.code });
+ck('adding Lucas: friends both ways, at once', sd === 200 && D.ok && D.ami.n === 'Lucas' && D.ami.code === B.code, [sd, D]);
+[, B] = await amiP('/ami', pres(K4, { n: 'Lucas', h: 'ours', c: 1, lv: 7 }));
+ck('… Lucas sees Pat in his friends, at home, just now', B.amis.length === 1 && B.amis[0].n === 'Pat' && B.amis[0].code === A.code && B.amis[0].st === 'home' && B.amis[0].ago <= 2 && B.amis[0].room === '', B.amis);
+[, A] = await amiP('/ami', pres(K3, { n: 'Pat', st: 'table', m: 'farm', room: 'k7q4', rn: 4, rk: 2 }));
+[, B] = await amiP('/ami', pres(K4, { n: 'Lucas', h: 'ours', c: 1, lv: 7 }));
+ck('Pat at his table of Farm TD: Lucas sees the table\'s code, 2 of 4', B.amis[0].st === 'table' && B.amis[0].m === 'farm' && B.amis[0].room === 'k7q4' && B.amis[0].rn === 4 && B.amis[0].rk === 2, B.amis[0]);
+[, A] = await amiP('/ami', pres(K3, { n: 'Pat', st: 'table', m: 'farm', room: 'K7Q4!', rn: 4, rk: 2 }));
+[, B] = await amiP('/ami', pres(K4, { n: 'Lucas' }));
+ck('… a table\'s code that cannot be one: at home, no code given', B.amis[0].st === 'home' && B.amis[0].room === '', B.amis[0]);
+[, A] = await amiP('/ami', pres(K3, { n: 'Pat', st: 'game', m: 'gem' }));
+[, B] = await amiP('/ami', pres(K4, { n: 'Lucas' }));
+ck('… in a game of Gem TD', B.amis[0].st === 'game' && B.amis[0].m === 'gem' && B.amis[0].room === '', B.amis[0]);
+const rest = await mf.getD1Database('DB'); await rest.prepare('UPDATE players SET at = at - 80000 WHERE code = ?1').bind(A.code).run();
+[, B] = await amiP('/ami', pres(K4, { n: 'Lucas' }));
+ck('… silent for 80 s: « off », where he was is no longer said, how long ago is', B.amis[0].st === 'off' && B.amis[0].m === '' && B.amis[0].room === '' && B.amis[0].ago >= 80, B.amis[0]);
+[sd, D] = await amiP('/ami/add', { key: K3, code: B.code });
+ck('adding him again changes nothing', sd === 200 && D.ok, [sd, D]);
+[, A] = await amiP('/ami', pres(K3, { n: 'Pat' }));
+ck('… still one friend', A.amis.length === 1 && A.amis[0].n === 'Lucas', A.amis);
+[sd, D] = await amiP('/ami/add', { key: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef', code: A.code });
+ck('a key that never told where it is cannot add anyone', sd === 400 && D.why === 'moi', [sd, D]);
+[sd, D] = await amiP('/ami/del', { key: K4, code: A.code });
+[, A] = await amiP('/ami', pres(K3, { n: 'Pat' })); [, B] = await amiP('/ami', pres(K4, { n: 'Lucas' }));
+ck('no longer friends, on both sides', sd === 200 && D.ok && A.amis.length === 0 && B.amis.length === 0, [A.amis, B.amis]);
+for (const [path, b, why, name] of [['/ami', { key: 'x' }, 'key', 'a bad key'], ['/ami/add', { key: K3 }, 'code', 'no code'], ['/ami', 'nope', 'json', 'not JSON']]) {
+  const [s3, b3] = await amiP(path, b); ck(`friends, refused: ${name}`, s3 === 400 && b3.why === why, [s3, b3]);
+}
+const ga = await mf.dispatchFetch('http://x/ami', { headers: { Origin: O } });
+ck('friends: a GET is not allowed', ga.status === 405);
+const [, R2] = await get();
+ck('the records still answer as before', R2.boards && R2.boards['gem/croix'].length >= 1, Object.keys(R2.boards || {}).length);
 await mf.dispose();
 console.log(`${P} passed, ${F} failed`);
 process.exit(F ? 1 : 0);

@@ -4,7 +4,7 @@ Le petit serveur du jeu de Patrick (https://patrickmorvan21.github.io/Pat/domus-
 
 Cloudflare le **déploie tout seul à chaque envoi sur cette branche** (`serveur`) : rien à faire à la main. Pour voir qu'il répond : https://lesjoutes.patrick-morvan21.workers.dev/
 
-## Ce qu'il fait (version 2, 07/11/2026)
+## Ce qu'il fait (version 3, 10/11/2026)
 
 - `GET /` : répond `{ ok, nom, v }`, pour voir qu'il marche.
 - `GET /rec` : les cent meilleurs de chaque tableau (Line Towers ; les quatre cartes de Gem TD ; les quatre fermes de Farm TD ; le défi du jour et celui de la veille).
@@ -12,11 +12,16 @@ Cloudflare le **déploie tout seul à chaque envoi sur cette branche** (`serveur
   - Un joueur, c'est une **clé secrète** que son téléphone garde ; son numéro public en est tiré : personne ne peut écrire sous le numéro d'un autre.
   - Seul un meilleur score remplace le score ; le nom (10 lettres), la Maison, la couleur et la tenue suivent le dernier envoi.
   - 40 envois par minute au plus depuis une même adresse (gardée brouillée, quelques minutes).
+- **Les amis** (version 3) :
+  - `POST /ami` : où en est un joueur (l'accueil, sa table avec son code, une partie), toutes les 20 s ; il reçoit son **code ami** (6 signes, toujours le même, tiré de son numéro public) et ses amis, avec où ils sont. Un ami silencieux depuis 75 s est « hors ligne », et le code de sa table n'est jamais donné. Seuls ses amis voient où il est.
+  - `POST /ami/qui` : qui a ce code ami (son nom, sa Maison, son niveau), avant de l'ajouter.
+  - `POST /ami/add` : ajouter un ami par son code : **amis tous les deux**, sans demande à accepter (100 au plus).
+  - `POST /ami/del` : ne plus être amis, des deux côtés.
 
 Seuls le jeu en ligne et l'appli iPhone (`capacitor://localhost`) peuvent le lire depuis une page.
 
 ## Pour Claude
 
 - Le code : `src/index.js` ; la configuration : `wrangler.jsonc` (la base D1 par son identifiant).
-- Les essais : `test/serveur.test.mjs`, dans Miniflare (31 vérifications), avant chaque envoi.
+- Les essais : `test/serveur.test.mjs`, dans Miniflare (53 vérifications), avant chaque envoi.
 - Ne jamais mettre de secret dans ce dépôt : il est public.
