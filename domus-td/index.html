@@ -32,6 +32,8 @@
   var NEW = 'https://lesjoutes.fr/';
   var KEEP = /^(ddl-|jt-maison$|farmtd-|gemtd-|gemmes-v1-)/, SKIP = /-test$/;
   var q = location.search, h = location.hash;
+  var force = /[?&]restaurer(=|&|$)/.test(q);                      // « ?restaurer » : le profil d'ici reprend sa place là-bas, même s'il y en a déjà un
+  if (force) q = q.replace(/([?&])restaurer(=[^&]*)?(&|$)/, function (s, a, b, c) { return c ? a : ''; }).replace(/^&/, '?').replace(/\?$/, '');
   function link() { try { document.getElementById('go').href = NEW + q + h; } catch (e) {} }
   link();
   var ls = {}, size = 0, LIMIT = 48000;
@@ -51,7 +53,7 @@
       ls[k] = v; size += k.length + v.length;
     });
   } catch (e) {}
-  var msg = { v: 1, ls: ls, q: q, h: h };
+  var msg = { v: 1, ls: ls, q: q, h: h, f: force ? 1 : 0 };
   var b = '';
   try { b = btoa(unescape(encodeURIComponent(JSON.stringify(msg)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); } catch (e) {}
   var url = NEW + 'migrate.html' + (b ? '#' + b : '');
