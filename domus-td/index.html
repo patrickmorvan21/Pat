@@ -32,6 +32,27 @@
   var NEW = 'https://lesjoutes.fr/';
   var KEEP = /^(ddl-|jt-maison$|farmtd-|gemtd-|gemmes-v1-)/, SKIP = /-test$/;
   var q = location.search, h = location.hash;
+  if (/[?&]code(=|&|$)/.test(q)) { showCode(); return; }              // « ?code » : montre la clé de récupération de cette adresse, ne renvoie nulle part
+  function showCode() {
+    var key = ''; try { key = localStorage.getItem('ddl-rkey') || ''; } catch (e) {}
+    var ok = /^[A-Za-z0-9]{32}$/.test(key), p = document.querySelector('p'), A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function sha(t) { return crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)).then(function (d) { return Array.prototype.map.call(new Uint8Array(d), function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); }); }
+    document.body.style.cssText = 'display:block;text-align:left;padding:28px 16px;height:auto';
+    if (!ok) { p.innerHTML = 'Aucune clé de récupération dans cet appareil, à cette adresse.<br><br>Si tu jouais depuis une icône sur l’écran d’accueil, ouvre cette page dans l’autre navigateur, ou sur l’autre appareil où tu jouais.'; return; }
+    var nick = ''; try { nick = localStorage.getItem('ddl-nick') || ''; } catch (e) {}
+    var fmt = key.replace(/(.{4})(?=.)/g, '$1 ');
+    p.innerHTML = '<b style="font-size:20px">Ta clé de récupération</b><br><br>' +
+      '<span id="k" style="display:block;font:700 22px/1.5 ui-monospace,Menlo,monospace;color:#e8c66a;word-break:normal;-webkit-user-select:all;user-select:all">' + esc(fmt) + '</span><br>' +
+      '<button id="cp" style="font:700 16px system-ui;padding:12px 18px;border:0;background:#e8c66a;color:#1b2b34">Copier la clé</button><br><br>' +
+      '<span id="fc" style="color:#8ea2a7"></span><br><br>' +
+      '<span style="color:#8ea2a7">Dans le jeu (lesjoutes.fr) : ton profil → « Mon compte » → colle la clé dans « J’ai déjà un profil ».' + (nick ? '<br>Nom ici : ' + esc(nick) : '') + '</span>';
+    document.getElementById('cp').onclick = function () { try { navigator.clipboard.writeText(key).then(function () { document.getElementById('cp').textContent = 'Copiée'; }); } catch (e) {} };
+    sha('lj|' + key).then(function (h) { return sha('code|0|' + h.slice(0, 16)); }).then(function (h) {
+      var v = parseInt(h.slice(0, 8), 16) >>> 2, c = ''; for (var i = 0; i < 6; i++) { c = A[v & 31] + c; v >>>= 5; }
+      document.getElementById('fc').textContent = 'Code ami lié à cette clé : ' + c.slice(0, 3) + ' ' + c.slice(3) + ' (c’est ce que tes amis voient pour toi).';
+    }).catch(function () {});
+  }
   var force = /[?&]restaurer(=|&|$)/.test(q);                      // « ?restaurer » : le profil d'ici reprend sa place là-bas, même s'il y en a déjà un
   if (force) q = q.replace(/([?&])restaurer(=[^&]*)?(&|$)/, function (s, a, b, c) { return c ? a : ''; }).replace(/^&/, '?').replace(/\?$/, '');
   function link() { try { document.getElementById('go').href = NEW + q + h; } catch (e) {} }
