@@ -18,10 +18,17 @@ Cloudflare le **déploie tout seul à chaque envoi sur cette branche** (`serveur
   - `POST /ami/add` : ajouter un ami par son code : **amis tous les deux**, sans demande à accepter (100 au plus).
   - `POST /ami/del` : ne plus être amis, des deux côtés.
 
+- **Version 4** (11/11/2026) :
+  - `POST /profil` `{ key }` : le profil gardé (la progression, le nom, la Maison, les tenues…), et si le joueur est VIP.
+  - `POST /profil/save` `{ key, t, data }` : le profil du téléphone ; le plus récent gagne (200 000 signes au plus, les clés du jeu seulement).
+  - `POST /lier/code` `{ key }` puis `POST /lier/prendre` `{ code }` : « Lier un appareil », un code de 6 signes, 10 minutes, une seule fois.
+  - `POST /vip` `{ key, code }` : le code VIP ouvre Gem TD et Fusion TD ; `POST /vip/regler` : Patrick seul (ses numéros publics) choisit le code ; le changer ferme les anciens VIP. Le code n'est gardé que par son empreinte.
+  - 90 envois par minute depuis une même adresse (40 avant) : une table de six amis sur un même Wi-Fi.
+
 Seuls le jeu en ligne et l'appli iPhone (`capacitor://localhost`) peuvent le lire depuis une page.
 
 ## Pour Claude
 
 - Le code : `src/index.js` ; la configuration : `wrangler.jsonc` (la base D1 par son identifiant).
-- Les essais : `test/serveur.test.mjs`, dans Miniflare (53 vérifications), avant chaque envoi.
+- Les essais : `test/serveur.test.mjs`, dans Miniflare (57 vérifications), et `test/v4.test.mjs` (34), avant chaque envoi.
 - Ne jamais mettre de secret dans ce dépôt : il est public.

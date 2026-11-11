@@ -24,6 +24,16 @@
 // POST /ami/qui  { key, code }   le joueur de ce code, avant de l'ajouter → { ok, n, h, c, u, lv }
 // POST /ami/add  { key, code }   ajouter un ami : amis tous les deux, sans demande à accepter → { ok, ami: { code, n, h, c, u, lv } }
 // POST /ami/del  { key, code }   ne plus être amis (des deux côtés) → { ok }
+// Version 4 (11/11/2026), après la perte de profil de Patrick : « que ce genre de problème n'arrive plus » ; 16 h 11 : « Le profil sur le
+// serveur et « Lier un appareil » : code le tout suite » ; « Prochainement » pour Gem TD et Fusion TD, avec un code VIP à taper :
+// POST /profil        { key }                → { ok, t, data | null, vip, admin }   le profil gardé de ce joueur (sa progression, son nom…)
+// POST /profil/save   { key, t, data }       → { ok, t } ; s'il y a plus récent ici : { ok, stale: true, t }
+//   - data : les clés du jeu (ddl-…, jt-maison, farmtd-…, gemtd-…, gemmes-v1-…) et leurs valeurs, 200 000 signes au plus ; t : l'heure du téléphone ;
+// POST /lier/code     { key }                → { ok, code, exp }   un code de 6 signes, valable 10 minutes, une seule fois
+// POST /lier/prendre  { code }               → { ok, key }         sur l'autre appareil : la clé du profil (le code est alors effacé)
+// POST /vip           { key, code }          → { ok, vip }         le code VIP de Patrick ouvre Gem TD et Fusion TD
+// POST /vip/regler    { key, code }          → { ok }              Patrick seul (ses numéros publics) : le code VIP ; le changer ferme les anciens
+//   - le code VIP n'est gardé que par son empreinte ; un VIP l'est tant que le code n'a pas changé.
 const FIXED = {
   'lt/all': 500000,
   'gem/sablier': 20000000, 'gem/croix': 20000000, 'gem/lacets': 20000000, 'gem/etoile': 20000000,
@@ -34,17 +44,26 @@ const HOUSES = ['cerf', 'ours', 'griffon', 'renard'];
 const COLOURS = 7;
 // lesjoutes.fr, the game's address since version 102 (11/11/2026); the old one (patrickmorvan21.github.io) stays: the old links, and the phones that have not reloaded the game
 const ORIGINS = ['https://lesjoutes.fr', 'https://patrickmorvan21.github.io', 'capacitor://localhost', 'http://localhost:8091', 'http://127.0.0.1:8091'];
-const TOP = 100, MAX_RECS = 16, PER_MIN = 40, KEEP_DEFI_DAYS = 8, CACHE_MS = 10000;
+const TOP = 100, MAX_RECS = 16, PER_MIN = 90, KEEP_DEFI_DAYS = 8, CACHE_MS = 10000;
 const KEY = /^[A-Za-z0-9]{32}$/, OUTFIT = /^[a-z0-9_]{1,24}$/, DAY = /^defi\/(\d{4}-\d{2}-\d{2})$/;
 const outfitOk = v => typeof v === 'string' && OUTFIT.test(v);
 const ALPHA = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', CODE = /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/, ROOM = /^[a-z0-9]{3,8}$/;
 const STATES = ['home', 'table', 'game'], MODES = ['lt', 'gem', 'farm'], ONLINE_MS = 75000, MAX_FRIENDS = 100;
+// version 4: the profile, the links between devices, the VIPs
+const PROF_KEY = /^(ddl-[a-z0-9-]{1,40}|jt-maison|farmtd-[a-z0-9-]{1,40}|gemtd-[a-z0-9-]{1,40}|gemmes-v1-[a-z0-9-]{1,40})$/, PROF_MAX = 200000, PROF_KEYS = 200;
+const LINK_MS = 10 * 60000, VIP_CODE = /^[A-Z0-9]{4,16}$/;
+// Patrick's public numbers (not secret: drawn from his keys) — he alone chooses the VIP code
+const ADMINS = ['112f3a8f77616c5b', '1803e5789722bd41', 'd0a038f9c309cbf1'];
 const SCHEMA = [
   'CREATE TABLE IF NOT EXISTS players (pid TEXT PRIMARY KEY, code TEXT NOT NULL UNIQUE, n TEXT NOT NULL, h TEXT NOT NULL, c INTEGER NOT NULL, u TEXT NOT NULL, lv INTEGER NOT NULL, st TEXT NOT NULL, m TEXT NOT NULL, room TEXT NOT NULL, rn INTEGER NOT NULL, rk INTEGER NOT NULL, at INTEGER NOT NULL)',
   'CREATE TABLE IF NOT EXISTS friends (a TEXT NOT NULL, b TEXT NOT NULL, at INTEGER NOT NULL, PRIMARY KEY (a, b))',
   'CREATE TABLE IF NOT EXISTS records (b TEXT NOT NULL, pid TEXT NOT NULL, n TEXT NOT NULL, h TEXT NOT NULL, c INTEGER NOT NULL, u TEXT NOT NULL, s INTEGER NOT NULL, w INTEGER NOT NULL, t INTEGER NOT NULL, at INTEGER NOT NULL, PRIMARY KEY (b, pid))',
   'CREATE INDEX IF NOT EXISTS records_best ON records (b, s DESC, t ASC)',
   'CREATE TABLE IF NOT EXISTS hits (ip TEXT NOT NULL, m INTEGER NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (ip, m))',
+  'CREATE TABLE IF NOT EXISTS profiles (pid TEXT PRIMARY KEY, data TEXT NOT NULL, t INTEGER NOT NULL, at INTEGER NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS links (code TEXT PRIMARY KEY, pid TEXT NOT NULL, k TEXT NOT NULL, exp INTEGER NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS vips (pid TEXT PRIMARY KEY, h TEXT NOT NULL, at INTEGER NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS settings (k TEXT PRIMARY KEY, v TEXT NOT NULL)',
 ];
 let ready = false, cache = null;
 async function setup(db) { if (ready) return; await db.batch(SCHEMA.map(q => db.prepare(q))); ready = true; }
@@ -187,16 +206,102 @@ async function amiCode(req, db, d, what) {
   return reply(req, { ok: true, ami: pub(other) });
 }
 
+// ---- version 4: the profile kept on the server, the links between devices, the VIPs
+const pidOf = async key => (await sha('lj|' + key)).slice(0, 16);
+async function vipOf(db, pid) {
+  if (ADMINS.includes(pid)) return true;
+  const [cur, me] = await db.batch([db.prepare("SELECT v FROM settings WHERE k = 'vip'"), db.prepare('SELECT h FROM vips WHERE pid = ?1').bind(pid)]);
+  const c = cur.results && cur.results[0], m = me.results && me.results[0];
+  return !!(c && m && c.v === m.h);
+}
+async function profGet(req, db, d) {
+  const key = String(d.key || ''); if (!KEY.test(key)) return no(req, 'key');
+  if (await slowed(req, db, parisDay())) return no(req, 'slow', 429);
+  const pid = await pidOf(key);
+  const r = await db.prepare('SELECT data, t FROM profiles WHERE pid = ?1').bind(pid).first();
+  let data = null; if (r) { try { data = JSON.parse(r.data); } catch (e) { data = null; } }
+  return reply(req, { ok: true, t: r ? r.t : 0, data, vip: await vipOf(db, pid), admin: ADMINS.includes(pid) });
+}
+async function profSave(req, db, d) {
+  const key = String(d.key || ''); if (!KEY.test(key)) return no(req, 'key');
+  const t = Math.floor(+d.t); if (!(t > 0 && t < Date.now() + 86400000)) return no(req, 't');
+  const src = d.data; if (!src || typeof src !== 'object' || Array.isArray(src)) return no(req, 'data');
+  const data = {}; let n = 0, size = 0;
+  for (const k of Object.keys(src)) {
+    const v = src[k];
+    if (!PROF_KEY.test(k) || /-test$/.test(k) || typeof v !== 'string') return no(req, 'data', 400, { k: k.slice(0, 50) });
+    if (++n > PROF_KEYS) return no(req, 'data', 413);
+    size += k.length + v.length; if (size > PROF_MAX) return no(req, 'big', 413);
+    data[k] = v;
+  }
+  if (await slowed(req, db, parisDay())) return no(req, 'slow', 429);
+  const pid = await pidOf(key);
+  const ex = await db.prepare('SELECT t FROM profiles WHERE pid = ?1').bind(pid).first();
+  if (ex && ex.t >= t) return reply(req, { ok: true, stale: true, t: ex.t });
+  await db.prepare('INSERT INTO profiles (pid, data, t, at) VALUES (?1, ?2, ?3, ?4) ON CONFLICT (pid) DO UPDATE SET data = excluded.data, t = excluded.t, at = excluded.at')
+    .bind(pid, JSON.stringify(data), t, Date.now()).run();
+  return reply(req, { ok: true, t });
+}
+async function linkCode(req, db, d) {
+  const key = String(d.key || ''); if (!KEY.test(key)) return no(req, 'key');
+  if (await slowed(req, db, parisDay())) return no(req, 'slow', 429);
+  const pid = await pidOf(key), now = Date.now(), exp = now + LINK_MS;
+  const u = new Uint8Array(6); let code = '';
+  for (let tries = 0; tries < 5; tries++) {
+    crypto.getRandomValues(u); code = [...u].map(x => ALPHA[x & 31]).join('');
+    if (!(await db.prepare('SELECT code FROM links WHERE code = ?1 AND exp > ?2').bind(code, now).first())) break;
+  }
+  await db.batch([db.prepare('DELETE FROM links WHERE pid = ?1 OR exp < ?2').bind(pid, now),
+    db.prepare('INSERT OR REPLACE INTO links (code, pid, k, exp) VALUES (?1, ?2, ?3, ?4)').bind(code, pid, key, exp)]);
+  return reply(req, { ok: true, code, exp });
+}
+async function linkTake(req, db, d) {
+  const code = String(d.code || '').toUpperCase().replace(/[\s-]/g, ''); if (!CODE.test(code)) return no(req, 'code');
+  if (await slowed(req, db, parisDay())) return no(req, 'slow', 429);
+  const now = Date.now();
+  const r = await db.prepare('SELECT k, exp FROM links WHERE code = ?1').bind(code).first();
+  if (!r || r.exp < now) return no(req, 'inconnu', 404);
+  await db.prepare('DELETE FROM links WHERE code = ?1').bind(code).run();
+  return reply(req, { ok: true, key: r.k });
+}
+const vipHash = code => sha('vip|' + code);
+async function vipTry(req, db, d) {
+  const key = String(d.key || ''); if (!KEY.test(key)) return no(req, 'key');
+  const code = String(d.code || '').toUpperCase().replace(/[\s-]/g, ''); if (!VIP_CODE.test(code)) return no(req, 'faux');
+  if (await slowed(req, db, parisDay())) return no(req, 'slow', 429);
+  const pid = await pidOf(key);
+  const cur = await db.prepare("SELECT v FROM settings WHERE k = 'vip'").first();
+  if (!cur) return no(req, 'ferme', 404);
+  const h = await vipHash(code);
+  if (h !== cur.v) return no(req, 'faux', 403);
+  await db.prepare('INSERT INTO vips (pid, h, at) VALUES (?1, ?2, ?3) ON CONFLICT (pid) DO UPDATE SET h = excluded.h, at = excluded.at').bind(pid, h, Date.now()).run();
+  return reply(req, { ok: true, vip: true });
+}
+async function vipSet(req, db, d) {
+  const key = String(d.key || ''); if (!KEY.test(key)) return no(req, 'key');
+  const pid = await pidOf(key); if (!ADMINS.includes(pid)) return no(req, 'admin', 403);
+  const code = String(d.code || '').toUpperCase().replace(/[\s-]/g, ''); if (!VIP_CODE.test(code)) return no(req, 'code');
+  await db.prepare("INSERT INTO settings (k, v) VALUES ('vip', ?1) ON CONFLICT (k) DO UPDATE SET v = excluded.v").bind(await vipHash(code)).run();
+  return reply(req, { ok: true });
+}
+const V4 = { '/profil': profGet, '/profil/save': profSave, '/lier/code': linkCode, '/lier/prendre': linkTake, '/vip': vipTry, '/vip/regler': vipSet };
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(req) });
-    if (url.pathname === '/' && req.method === 'GET') return reply(req, { ok: true, nom: 'les-joutes', v: 3 });
+    if (url.pathname === '/' && req.method === 'GET') return reply(req, { ok: true, nom: 'les-joutes', v: 4 });
     const AMI = { '/ami': 'me', '/ami/qui': 'qui', '/ami/add': 'add', '/ami/del': 'del' }[url.pathname];
-    if (url.pathname !== '/rec' && !AMI) return no(req, 'path', 404);
+    const F4 = Object.prototype.hasOwnProperty.call(V4, url.pathname) ? V4[url.pathname] : null;
+    if (url.pathname !== '/rec' && !AMI && !F4) return no(req, 'path', 404);
     if (!env.DB) return no(req, 'db', 500);
     try {
       await setup(env.DB);
+      if (F4) {
+        if (req.method !== 'POST') return no(req, 'method', 405);
+        const d = await body(req); if (!d) return no(req, 'json');
+        return await F4(req, env.DB, d);
+      }
       if (AMI) {
         if (req.method !== 'POST') return no(req, 'method', 405);
         const d = await body(req); if (!d) return no(req, 'json');

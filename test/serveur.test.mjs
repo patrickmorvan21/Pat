@@ -17,7 +17,7 @@ const pidOf = k => crypto.createHash('sha256').update('lj|' + k).digest('hex').s
 const me = (recs, more = {}) => Object.assign({ key: K1, n: 'Patrick', h: 'cerf', c: 1, u: 'bois', recs }, more);
 
 let [st, body, ao] = await get('/');
-ck('GET / says who it is', st === 200 && body.ok && body.nom === 'les-joutes' && body.v === 3, body);
+ck('GET / says who it is', st === 200 && body.ok && body.nom === 'les-joutes' && body.v === 4, body);
 [st, body, ao] = await get();
 ck('an empty server: the 9 boards of the game and the défis of today and yesterday, empty; the game\'s address allowed',
   st === 200 && Object.keys(body.boards).length === 11 && body.boards['gem/croix'].length === 0 && body.boards['defi/' + TODAY] && body.boards['defi/' + YDAY] && body.jour === TODAY && ao === O, [st, Object.keys(body.boards), body.jour, ao]);
@@ -57,9 +57,9 @@ ck('an odd post is cleaned: 10 letters, a House, a colour, an outfit, a wave tha
 [, body] = await get();
 ck('a post sent as plain text (no question first from the browser) is read too', st === 200, st);
 ck('the order: the best score first, the earliest among equals; another key is another player', body.boards['gem/croix'].map(r => r[1]).join(',') === 'Zoé,Patrick' && body.boards['gem/croix'][0][0] === pidOf(K2), body.boards['gem/croix'].map(r => [r[1], r[5], r[7]]));
-// at most 40 posts a minute from one address
-let last = 0; for (let i = 0; i < 41; i++) [last] = await post(me([{ b: 'gem/sablier', s: 100 + i }]), '9.9.9.9');
-ck('the 41st post in a minute from one address is refused', last === 429, last);
+// at most 90 posts a minute from one address (40 until version 4)
+let last = 0; for (let i = 0; i < 91; i++) [last] = await post(me([{ b: 'gem/sablier', s: 100 + i }]), '9.9.9.9');
+ck('the 91st post in a minute from one address is refused', last === 429, last);
 [st] = await post(me([{ b: 'gem/sablier', s: 100 }]), '8.8.8.8');
 ck('… another address still can', st === 200, st);
 const pre = await mf.dispatchFetch('http://x/rec', { method: 'OPTIONS', headers: { Origin: 'capacitor://localhost', 'Access-Control-Request-Method': 'POST' } });
