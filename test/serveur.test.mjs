@@ -65,7 +65,16 @@ ck('… another address still can', st === 200, st);
 const pre = await mf.dispatchFetch('http://x/rec', { method: 'OPTIONS', headers: { Origin: 'capacitor://localhost', 'Access-Control-Request-Method': 'POST' } });
 ck('the iPhone app\'s address (capacitor://localhost) is allowed, the question before a post answered', pre.status === 204 && pre.headers.get('access-control-allow-methods').includes('POST') && pre.headers.get('access-control-allow-origin') === 'capacitor://localhost');
 [, , ao] = await get('/rec', 'https://evil.example');
-ck('another site is not allowed to read it from a page', ao === O, ao);
+ck('another site is not allowed to read it from a page (it is told the game\'s own address, lesjoutes.fr)', ao === 'https://lesjoutes.fr', ao);
+// version 102 (11/11/2026): the game's address is lesjoutes.fr; the old one still allowed
+[, , ao] = await get('/rec', 'https://lesjoutes.fr');
+ck('lesjoutes.fr (the game\'s address since version 102) is allowed to read it from a page', ao === 'https://lesjoutes.fr', ao);
+[, , ao] = await get('/rec', 'https://www.lesjoutes.fr');
+ck('www.lesjoutes.fr is not a page of the game (GitHub sends it to lesjoutes.fr): not allowed', ao === 'https://lesjoutes.fr', ao);
+[, , ao] = await get('/rec', 'https://lesjoutes.fr.evil.example');
+ck('a look-alike address is not allowed', ao === 'https://lesjoutes.fr', ao);
+const preN = await mf.dispatchFetch('http://x/ami', { method: 'OPTIONS', headers: { Origin: 'https://lesjoutes.fr', 'Access-Control-Request-Method': 'POST' } });
+ck('the question before a friends post from lesjoutes.fr is answered', preN.status === 204 && preN.headers.get('access-control-allow-origin') === 'https://lesjoutes.fr' && preN.headers.get('access-control-allow-methods').includes('POST'));
 [st, body] = await get('/nimporte');
 ck('another path: 404', st === 404 && body.why === 'path', [st, body]);
 const pu = await mf.dispatchFetch('http://x/rec', { method: 'PUT', headers: { Origin: O } });

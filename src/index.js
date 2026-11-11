@@ -32,7 +32,8 @@ const FIXED = {
 const DEFI_CAP = 50000000;
 const HOUSES = ['cerf', 'ours', 'griffon', 'renard'];
 const COLOURS = 7;
-const ORIGINS = ['https://patrickmorvan21.github.io', 'capacitor://localhost', 'http://localhost:8091', 'http://127.0.0.1:8091'];
+// lesjoutes.fr, the game's address since version 102 (11/11/2026); the old one (patrickmorvan21.github.io) stays: the old links, and the phones that have not reloaded the game
+const ORIGINS = ['https://lesjoutes.fr', 'https://patrickmorvan21.github.io', 'capacitor://localhost', 'http://localhost:8091', 'http://127.0.0.1:8091'];
 const TOP = 100, MAX_RECS = 16, PER_MIN = 40, KEEP_DEFI_DAYS = 8, CACHE_MS = 10000;
 const KEY = /^[A-Za-z0-9]{32}$/, OUTFIT = /^[a-z0-9_]{1,24}$/, DAY = /^defi\/(\d{4}-\d{2}-\d{2})$/;
 const outfitOk = v => typeof v === 'string' && OUTFIT.test(v);
