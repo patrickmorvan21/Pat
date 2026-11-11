@@ -32,21 +32,28 @@
   var NEW = 'https://lesjoutes.fr/';
   var KEEP = /^(ddl-|jt-maison$|farmtd-|gemtd-|gemmes-v1-)/, SKIP = /-test$/;
   var q = location.search, h = location.hash;
-  if (/[?&]code(=|&|$)/.test(q)) { showCode(); return; }              // « ?code » : montre la clé de récupération de cette adresse, ne renvoie nulle part
-  function showCode() {
+  var icon = false; try { icon = window.navigator.standalone === true || !!(window.matchMedia && matchMedia('(display-mode: standalone)').matches); } catch (e) {}
+  var held = false, moved = false; try { held = /^[A-Za-z0-9]{32}$/.test(localStorage.getItem('ddl-rkey') || ''); moved = localStorage.getItem('ddl-moved') === '1'; } catch (e) {}
+  if (/[?&]code(=|&|$)/.test(q)) { showCode(false); return; }        // « ?code » : montre la clé de récupération de cette adresse, ne renvoie nulle part
+  if (icon && held && !moved) { showCode(true); return; }            // l'ancienne icône de l'écran d'accueil : sa clé d'abord (son stockage est à part), puis le déménagement
+  function showCode(fromIcon) {
     var key = ''; try { key = localStorage.getItem('ddl-rkey') || ''; } catch (e) {}
     var ok = /^[A-Za-z0-9]{32}$/.test(key), p = document.querySelector('p'), A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function sha(t) { return crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)).then(function (d) { return Array.prototype.map.call(new Uint8Array(d), function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); }); }
-    document.body.style.cssText = 'display:block;text-align:left;padding:28px 16px;height:auto';
+    document.body.style.cssText = 'display:block;text-align:left;padding:56px 16px 28px;height:auto';
     if (!ok) { p.innerHTML = 'Aucune clé de récupération dans cet appareil, à cette adresse.<br><br>Si tu jouais depuis une icône sur l’écran d’accueil, ouvre cette page dans l’autre navigateur, ou sur l’autre appareil où tu jouais.'; return; }
     var nick = ''; try { nick = localStorage.getItem('ddl-nick') || ''; } catch (e) {}
     var fmt = key.replace(/(.{4})(?=.)/g, '$1 ');
-    p.innerHTML = '<b style="font-size:20px">Ta clé de récupération</b><br><br>' +
+    p.innerHTML = (fromIcon ? '<b style="font-size:24px">Les Joutes a déménagé</b><br><span style="color:#8ea2a7">Le jeu est maintenant sur lesjoutes.fr. Cette icône garde ton profil à part : voici sa clé.</span><br><br>' : '') +
+      '<b style="font-size:20px">Ta clé de récupération</b><br><br>' +
       '<span id="k" style="display:block;font:700 22px/1.5 ui-monospace,Menlo,monospace;color:#e8c66a;word-break:normal;-webkit-user-select:all;user-select:all">' + esc(fmt) + '</span><br>' +
       '<button id="cp" style="font:700 16px system-ui;padding:12px 18px;border:0;background:#e8c66a;color:#1b2b34">Copier la clé</button><br><br>' +
       '<span id="fc" style="color:#8ea2a7"></span><br><br>' +
-      '<span style="color:#8ea2a7">Dans le jeu (lesjoutes.fr) : ton profil → « Mon compte » → colle la clé dans « J’ai déjà un profil ».' + (nick ? '<br>Nom ici : ' + esc(nick) : '') + '</span>';
+      (fromIcon ? '<button id="mv" style="font:700 16px system-ui;padding:14px 18px;border:0;background:#8fb08a;color:#1b2b34;width:100%">Ouvrir Les Joutes avec ce profil</button><br><br>' : '') +
+      '<span style="color:#8ea2a7">Dans le jeu (lesjoutes.fr) : ton profil → « Mon compte » → colle la clé dans « J’ai déjà un profil ».' + (nick ? '<br>Nom ici : ' + esc(nick) : '') +
+      (fromIcon ? '<br><br>Ensuite, ajoute la nouvelle icône depuis lesjoutes.fr dans Safari (Partager → Sur l’écran d’accueil). Supprime celle-ci seulement quand ta clé est bien collée là-bas.' : '') + '</span>';
+    if (fromIcon) document.getElementById('mv').onclick = function () { try { localStorage.setItem('ddl-moved', '1'); } catch (e) {} go(true); };
     document.getElementById('cp').onclick = function () { try { navigator.clipboard.writeText(key).then(function () { document.getElementById('cp').textContent = 'Copiée'; }); } catch (e) {} };
     sha('lj|' + key).then(function (h) { return sha('code|0|' + h.slice(0, 16)); }).then(function (h) {
       var v = parseInt(h.slice(0, 8), 16) >>> 2, c = ''; for (var i = 0; i < 6; i++) { c = A[v & 31] + c; v >>>= 5; }
@@ -57,6 +64,8 @@
   if (force) q = q.replace(/([?&])restaurer(=[^&]*)?(&|$)/, function (s, a, b, c) { return c ? a : ''; }).replace(/^&/, '?').replace(/\?$/, '');
   function link() { try { document.getElementById('go').href = NEW + q + h; } catch (e) {} }
   link();
+  go(force);
+  function go(force) {
   var ls = {}, size = 0, LIMIT = 48000;
   var FIRST = ['ddl-rkey', 'ddl-rpid', 'ddl-pid', 'ddl-nick', 'jt-maison', 'ddl-col', 'ddl-meta', 'ddl-best', 'ddl-rec-meta'];
   try {
@@ -79,6 +88,7 @@
   try { b = btoa(unescape(encodeURIComponent(JSON.stringify(msg)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); } catch (e) {}
   var url = NEW + 'migrate.html' + (b ? '#' + b : '');
   try { location.replace(url); } catch (e) { location.href = NEW + q + h; }
+  }
 })();
 </script>
 <noscript><meta http-equiv="refresh" content="0; url=https://lesjoutes.fr/"></noscript>
