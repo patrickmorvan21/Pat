@@ -17,7 +17,7 @@ const pidOf = k => crypto.createHash('sha256').update('lj|' + k).digest('hex').s
 const me = (recs, more = {}) => Object.assign({ key: K1, n: 'Patrick', h: 'cerf', c: 1, u: 'bois', recs }, more);
 
 let [st, body, ao] = await get('/');
-ck('GET / says who it is', st === 200 && body.ok && body.nom === 'les-joutes' && body.v === 4, body);
+ck('GET / says who it is', st === 200 && body.ok && body.nom === 'les-joutes' && body.v === 5, body);
 [st, body, ao] = await get();
 ck('an empty server: the 9 boards of the game and the défis of today and yesterday, empty; the game\'s address allowed',
   st === 200 && Object.keys(body.boards).length === 11 && body.boards['gem/croix'].length === 0 && body.boards['defi/' + TODAY] && body.boards['defi/' + YDAY] && body.jour === TODAY && ao === O, [st, Object.keys(body.boards), body.jour, ao]);

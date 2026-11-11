@@ -32,3 +32,8 @@ Seuls le jeu en ligne et l'appli iPhone (`capacitor://localhost`) peuvent le lir
 - Le code : `src/index.js` ; la configuration : `wrangler.jsonc` (la base D1 par son identifiant).
 - Les essais : `test/serveur.test.mjs`, dans Miniflare (57 vérifications), et `test/v4.test.mjs` (34), avant chaque envoi.
 - Ne jamais mettre de secret dans ce dépôt : il est public.
+
+## Version 5 (11/11/2026) : les statistiques anonymes
+- `POST /stat` : le jeu envoie des événements (ouverture, temps passé, parties solo ou à une table, tables créées et rejointes) sous un identifiant tiré au hasard à chaque ouverture, jamais lié au profil.
+- `POST /stats/resume` : les totaux et les courbes, pour Patrick seul (ses numéros publics). La page `stats.html` du site les affiche.
+- La table `ev` garde 120 jours ; aucune fiche individuelle. Les parties des appareils de Patrick ne sont pas comptées (sauf s'il l'active sur la page).

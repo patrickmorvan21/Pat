@@ -34,6 +34,11 @@
 // POST /vip           { key, code }          → { ok, vip }         le code VIP de Patrick ouvre Gem TD et Fusion TD
 // POST /vip/regler    { key, code }          → { ok }              Patrick seul (ses numéros publics) : le code VIP ; le changer ferme les anciens
 //   - le code VIP n'est gardé que par son empreinte ; un VIP l'est tant que le code n'a pas changé.
+// Version 5 (11/11/2026), Patrick, 18 h 41 : « savoir combien jouent activement, le temps passé, s'ils ont créé une table avec de vrais joueurs ou s'ils jouent seuls avec des bots » :
+// POST /stat          { sid, p, ev: [{ k, m?, a?, b?, w?, n? }, …] }   des événements anonymes : sid = un tirage au hasard à chaque ouverture du jeu, jamais lié au profil
+//   k : open (ouverture ; p : web, icone, appli) · ping (n secondes passées au jeu) · start (partie lancée ; m le mode, a vrais joueurs, b bots, w solo|table) ·
+//       end (partie finie ; w win|lose|quit, n secondes, a vrais joueurs) · table (table créée) · join (table rejointe ; w code|lien|ami)
+// POST /stats/resume  { key, days? }   Patrick seul : les totaux et les courbes (aucune fiche individuelle) → { ok, … }
 const FIXED = {
   'lt/all': 500000,
   'gem/sablier': 20000000, 'gem/croix': 20000000, 'gem/lacets': 20000000, 'gem/etoile': 20000000,
@@ -55,6 +60,8 @@ const LINK_MS = 10 * 60000, VIP_CODE = /^[A-Z0-9]{4,16}$/;
 // Patrick's public numbers (not secret: drawn from his keys) — he alone chooses the VIP code
 const ADMINS = ['112f3a8f77616c5b', '1803e5789722bd41', 'd0a038f9c309cbf1'];
 const SCHEMA = [
+  'CREATE TABLE IF NOT EXISTS ev (id INTEGER PRIMARY KEY AUTOINCREMENT, d TEXT NOT NULL, t INTEGER NOT NULL, sid TEXT NOT NULL, p TEXT NOT NULL, k TEXT NOT NULL, m TEXT NOT NULL, a INTEGER NOT NULL, b INTEGER NOT NULL, w TEXT NOT NULL, n INTEGER NOT NULL)',
+  'CREATE INDEX IF NOT EXISTS ev_d ON ev (d, k)',
   'CREATE TABLE IF NOT EXISTS players (pid TEXT PRIMARY KEY, code TEXT NOT NULL UNIQUE, n TEXT NOT NULL, h TEXT NOT NULL, c INTEGER NOT NULL, u TEXT NOT NULL, lv INTEGER NOT NULL, st TEXT NOT NULL, m TEXT NOT NULL, room TEXT NOT NULL, rn INTEGER NOT NULL, rk INTEGER NOT NULL, at INTEGER NOT NULL)',
   'CREATE TABLE IF NOT EXISTS friends (a TEXT NOT NULL, b TEXT NOT NULL, at INTEGER NOT NULL, PRIMARY KEY (a, b))',
   'CREATE TABLE IF NOT EXISTS records (b TEXT NOT NULL, pid TEXT NOT NULL, n TEXT NOT NULL, h TEXT NOT NULL, c INTEGER NOT NULL, u TEXT NOT NULL, s INTEGER NOT NULL, w INTEGER NOT NULL, t INTEGER NOT NULL, at INTEGER NOT NULL, PRIMARY KEY (b, pid))',
@@ -284,13 +291,62 @@ async function vipSet(req, db, d) {
   await db.prepare("INSERT INTO settings (k, v) VALUES ('vip', ?1) ON CONFLICT (k) DO UPDATE SET v = excluded.v").bind(await vipHash(code)).run();
   return reply(req, { ok: true });
 }
-const V4 = { '/profil': profGet, '/profil/save': profSave, '/lier/code': linkCode, '/lier/prendre': linkTake, '/vip': vipTry, '/vip/regler': vipSet };
+
+// ---- version 5: the anonymous statistics
+const EV_K = ['open', 'ping', 'start', 'end', 'table', 'join'], EV_P = ['web', 'icone', 'appli'], EV_W = ['', 'solo', 'table', 'win', 'lose', 'quit', 'code', 'lien', 'ami'], SID = /^[a-z0-9]{8,16}$/, KEEP_EV_DAYS = 120;
+async function statIn(req, db, d) {
+  const sid = String(d.sid || ''); if (!SID.test(sid)) return no(req, 'sid');
+  const p = EV_P.includes(d.p) ? d.p : 'web', evs = Array.isArray(d.ev) ? d.ev.slice(0, 20) : [];
+  if (!evs.length) return reply(req, { ok: true, n: 0 });
+  if (await slowed(req, db, parisDay())) return no(req, 'slow', 429);
+  const now = Date.now(), day = parisDay(now), q = db.prepare('INSERT INTO ev (d, t, sid, p, k, m, a, b, w, n) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)'), st = [];
+  for (const e of evs) {
+    if (!e || !EV_K.includes(e.k)) continue;
+    const m = MODES.includes(e.m) ? e.m : '', w = EV_W.includes(e.w) ? e.w : '';
+    st.push(q.bind(day, now, sid, p, e.k, m, clamp(e.a, 0, 6), clamp(e.b, 0, 12), w, clamp(e.n, 0, e.k === 'ping' ? 120 : 86400)));
+  }
+  if (st.length) await db.batch(st);
+  if (Math.random() < 0.01) await db.prepare('DELETE FROM ev WHERE d < ?1').bind(shiftDay(parisDay(), -KEEP_EV_DAYS)).run();
+  return reply(req, { ok: true, n: st.length });
+}
+async function statOut(req, db, d) {
+  const key = String(d.key || ''); if (!KEY.test(key)) return no(req, 'key');
+  const pid = await pidOf(key); if (!ADMINS.includes(pid)) return no(req, 'admin', 403);
+  const days = clamp(d.days || 14, 1, 90), today = parisDay(), from = shiftDay(today, -(days - 1)), now = Date.now();
+  const all = async (sql, ...a) => (await db.prepare(sql).bind(...a).all()).results || [];
+  const one = async (sql, ...a) => (await db.prepare(sql).bind(...a).first()) || {};
+  const [perDay, byMode, byKind, tableSizes, secs, ends, joins, plat, usersOnline, reg, bySid, hours] = await Promise.all([
+    all("SELECT d, COUNT(DISTINCT sid) AS sessions, SUM(CASE WHEN k='ping' THEN n ELSE 0 END) AS secs, SUM(k='start') AS starts, SUM(k='end') AS ends, SUM(k='table') AS tables, SUM(k='join') AS joins FROM ev WHERE d >= ?1 GROUP BY d ORDER BY d", from),
+    all("SELECT m, COUNT(*) AS n FROM ev WHERE k='start' AND d >= ?1 GROUP BY m", from),
+    all("SELECT w, COUNT(*) AS n, SUM(a>=2) AS humans, AVG(b) AS bots FROM ev WHERE k='start' AND d >= ?1 GROUP BY w", from),
+    all("SELECT a, COUNT(*) AS n FROM ev WHERE k='start' AND w='table' AND d >= ?1 GROUP BY a ORDER BY a", from),
+    one("SELECT COUNT(DISTINCT sid) AS sessions, SUM(CASE WHEN k='ping' THEN n ELSE 0 END) AS secs FROM ev WHERE d >= ?1", from),
+    all("SELECT w, COUNT(*) AS n, AVG(n) AS secs FROM ev WHERE k='end' AND d >= ?1 GROUP BY w", from),
+    all("SELECT w, COUNT(*) AS n FROM ev WHERE k='join' AND d >= ?1 GROUP BY w", from),
+    all("SELECT p, COUNT(DISTINCT sid) AS n FROM ev WHERE k='open' AND d >= ?1 GROUP BY p", from),
+    one("SELECT COUNT(DISTINCT sid) AS n FROM ev WHERE t > ?1", now - 5 * 60000),
+    one("SELECT COUNT(*) AS joueurs, SUM(at > ?1) AS h24, SUM(at > ?2) AS d7, SUM(at > ?3) AS h1 FROM players", now - 86400000, now - 7 * 86400000, now - 3600000),
+    all("SELECT sid, SUM(CASE WHEN k='ping' THEN n ELSE 0 END) AS secs, SUM(k='start') AS starts, SUM(k='start' AND w='table') AS tstarts, SUM(k='table' OR k='join') AS social FROM ev WHERE d >= ?1 GROUP BY sid", from),
+    all("SELECT CAST(strftime('%H', t / 1000, 'unixepoch', '+1 hour') AS INTEGER) AS h, COUNT(DISTINCT sid) AS n FROM ev WHERE d >= ?1 GROUP BY h", from),
+  ]);
+  // how long a launch lasts, and what each launch did
+  const buckets = [0, 0, 0, 0, 0]; let played = 0, withTable = 0, social = 0;
+  for (const r of bySid) {
+    const m = (r.secs || 0) / 60;
+    buckets[m < 1 ? 0 : m < 5 ? 1 : m < 15 ? 2 : m < 30 ? 3 : 4]++;
+    if (r.starts > 0) played++; if (r.tstarts > 0) withTable++; if (r.social > 0) social++;
+  }
+  const hrs = Array(24).fill(0); for (const r of hours) if (r.h >= 0 && r.h < 24) hrs[r.h] = r.n;
+  return reply(req, { ok: true, days, from, today, now: { online: usersOnline.n || 0 }, players: reg,
+    total: { sessions: secs.sessions || 0, secs: secs.secs || 0, played, withTable, social }, perDay, byMode, byKind, tableSizes, ends, joins, plat, buckets, hours: hrs });
+}
+const V4 = { '/profil': profGet, '/profil/save': profSave, '/lier/code': linkCode, '/lier/prendre': linkTake, '/vip': vipTry, '/vip/regler': vipSet, '/stat': statIn, '/stats/resume': statOut };
 
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(req) });
-    if (url.pathname === '/' && req.method === 'GET') return reply(req, { ok: true, nom: 'les-joutes', v: 4 });
+    if (url.pathname === '/' && req.method === 'GET') return reply(req, { ok: true, nom: 'les-joutes', v: 5 });
     const AMI = { '/ami': 'me', '/ami/qui': 'qui', '/ami/add': 'add', '/ami/del': 'del' }[url.pathname];
     const F4 = Object.prototype.hasOwnProperty.call(V4, url.pathname) ? V4[url.pathname] : null;
     if (url.pathname !== '/rec' && !AMI && !F4) return no(req, 'path', 404);

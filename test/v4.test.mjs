@@ -62,7 +62,7 @@ const call2 = async (path, x) => { const r = await mf2.dispatchFetch('http://x' 
 // the path, the method
 [st, b] = await call('/profil', '[1]'); ck('a list instead of an object: refused', st === 400 && b.why === 'json', [st, b]);
 const r = await mf.dispatchFetch('http://x/profil', { headers: { Origin: O } }); ck('GET /profil: refused (POST only)', r.status === 405, r.status);
-const r2 = await mf.dispatchFetch('http://x/', { headers: { Origin: O } }); const j2 = await r2.json(); ck('GET / says version 4', j2.v === 4, j2);
+const r2 = await mf.dispatchFetch('http://x/', { headers: { Origin: O } }); const j2 = await r2.json(); ck('GET / says version 5', j2.v === 5, j2);
 console.log(`\n${P} passed, ${F} failed`);
 await mf.dispose(); await mf2.dispose();
 process.exit(F ? 1 : 0);
