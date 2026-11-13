@@ -46,7 +46,7 @@ const FIXED = {
 };
 const DEFI_CAP = 50000000;
 const HOUSES = ['cerf', 'ours', 'griffon', 'renard'];
-const COLOURS = 7;
+const COLOURS = 8;
 // lesjoutes.fr, the game's address since version 102 (11/11/2026); the old one (patrickmorvan21.github.io) stays: the old links, and the phones that have not reloaded the game
 const ORIGINS = ['https://lesjoutes.fr', 'https://patrickmorvan21.github.io', 'capacitor://localhost', 'http://localhost:8091', 'http://127.0.0.1:8091'];
 const TOP = 100, MAX_RECS = 16, PER_MIN = 90, KEEP_DEFI_DAYS = 8, CACHE_MS = 10000;
@@ -179,7 +179,7 @@ async function amiMe(req, db, d) {
   const pid = (await sha('lj|' + key)).slice(0, 16), now = Date.now();
   const st = STATES.includes(d.st) ? d.st : 'home', table = st === 'table' && ROOM.test(String(d.room || ''));
   const who = { n: cleanName(d.n), h: HOUSES.includes(d.h) ? d.h : 'cerf', c: clamp(d.c, 0, COLOURS - 1), u: outfitOk(d.u) ? d.u : 'bois', lv: clamp(d.lv, 1, 99),
-    st: st === 'table' && !table ? 'home' : st, m: MODES.includes(d.m) ? d.m : 'lt', room: table ? String(d.room) : '', rn: table ? clamp(d.rn, 2, 6) : 0, rk: table ? clamp(d.rk, 1, 6) : 0 };
+    st: st === 'table' && !table ? 'home' : st, m: MODES.includes(d.m) ? d.m : 'lt', room: table ? String(d.room) : '', rn: table ? clamp(d.rn, 2, 8) : 0, rk: table ? clamp(d.rk, 1, 8) : 0 };
   const ex = await db.prepare('SELECT code FROM players WHERE pid = ?1').bind(pid).first();
   let code = ex && ex.code;
   for (let k = 0; !code && k < 8; k++) { const c = await codeOf(pid, k); if (!(await db.prepare('SELECT pid FROM players WHERE code = ?1').bind(c).first())) code = c; }
@@ -303,7 +303,7 @@ async function statIn(req, db, d) {
   for (const e of evs) {
     if (!e || !EV_K.includes(e.k)) continue;
     const m = MODES.includes(e.m) ? e.m : '', w = EV_W.includes(e.w) ? e.w : '';
-    st.push(q.bind(day, now, sid, p, e.k, m, clamp(e.a, 0, 6), clamp(e.b, 0, 12), w, clamp(e.n, 0, e.k === 'ping' ? 120 : 86400)));
+    st.push(q.bind(day, now, sid, p, e.k, m, clamp(e.a, 0, 8), clamp(e.b, 0, 12), w, clamp(e.n, 0, e.k === 'ping' ? 120 : 86400)));
   }
   if (st.length) await db.batch(st);
   if (Math.random() < 0.01) await db.prepare('DELETE FROM ev WHERE d < ?1').bind(shiftDay(parisDay(), -KEEP_EV_DAYS)).run();

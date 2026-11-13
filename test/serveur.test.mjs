@@ -52,7 +52,7 @@ const bads = [
 for (const [bad, why, name] of bads) { const [s2, b2] = await post(bad); ck(`refused: ${name}`, s2 === 400 && b2.why === why, [s2, b2]); }
 [st, body] = await post({ key: K2, n: '\u0007<b>Évil</b> plus long​', h: 'dragon', c: 99, u: 'DIAMANT!', recs: [{ b: 'lt/all', s: 120, w: 5000, t: 1 }] });
 [, body] = await get(); const r3 = body.boards['lt/all'].find(r => r[0] === pidOf(K2));
-ck('an odd post is cleaned: 10 letters, a House, a colour, an outfit, a wave that exist', st === 200 && r3 && r3[1] === '<b>Évil</b' && r3[2] === 'cerf' && r3[3] === 6 && r3[4] === 'bois' && r3[6] === 999, r3);
+ck('an odd post is cleaned: 10 letters, a House, a colour, an outfit, a wave that exist', st === 200 && r3 && r3[1] === '<b>Évil</b' && r3[2] === 'cerf' && r3[3] === 7 && r3[4] === 'bois' && r3[6] === 999, r3);
 [st, body] = await post({ key: K2, n: 'Zoé', h: 'renard', c: 5, u: 'or', recs: [{ b: 'gem/croix', s: 9900, w: 16, t: 2500 }] }, '2.2.2.2', 'text/plain;charset=UTF-8');
 [, body] = await get();
 ck('a post sent as plain text (no question first from the browser) is read too', st === 200, st);
