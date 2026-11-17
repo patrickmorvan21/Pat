@@ -37,3 +37,8 @@ Seuls le jeu en ligne et l'appli iPhone (`capacitor://localhost`) peuvent le lir
 - `POST /stat` : le jeu envoie des événements (ouverture, temps passé, parties solo ou à une table, tables créées et rejointes) sous un identifiant tiré au hasard à chaque ouverture, jamais lié au profil.
 - `POST /stats/resume` : les totaux et les courbes, pour Patrick seul (ses numéros publics). La page `stats.html` du site les affiche.
 - La table `ev` garde 120 jours ; aucune fiche individuelle. Les parties des appareils de Patrick ne sont pas comptées (sauf s'il l'active sur la page).
+
+## Version 6 (17/11/2026) : la fiche d'un ami et le face-à-face
+- `POST /fiche/save` `{ key, fi }` : le jeu envoie ses chiffres (parties, victoires, temps de jeu, meilleure vague, défis, tours, vies volées, boss, nombre de titres, titre porté, et par Maison : niveau, parties, victoires) ; tout est borné, les Maisons inconnues sont ignorées.
+- `POST /fiche` `{ key, code }` : la fiche de l'ami qui a ce code ; **seulement si vous êtes amis** (403 sinon). Rend son nom, sa Maison, sa tenue, son niveau, où il est, ses chiffres (`fi`, null s'il n'a pas encore rouvert le jeu), et les records des deux joueurs sur chaque tableau (`recs`: `{ a: toi, o: lui }`).
+- Une table de plus : `fiches`. Aucun secret ni clé dans les réponses. Essais : `test/v6.test.mjs` (16 vérifications, avec `miniflare@4`).

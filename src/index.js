@@ -69,6 +69,7 @@ const SCHEMA = [
   'CREATE TABLE IF NOT EXISTS hits (ip TEXT NOT NULL, m INTEGER NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (ip, m))',
   'CREATE TABLE IF NOT EXISTS profiles (pid TEXT PRIMARY KEY, data TEXT NOT NULL, t INTEGER NOT NULL, at INTEGER NOT NULL)',
   'CREATE TABLE IF NOT EXISTS links (code TEXT PRIMARY KEY, pid TEXT NOT NULL, k TEXT NOT NULL, exp INTEGER NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS fiches (pid TEXT PRIMARY KEY, data TEXT NOT NULL, at INTEGER NOT NULL)',
   'CREATE TABLE IF NOT EXISTS vips (pid TEXT PRIMARY KEY, h TEXT NOT NULL, at INTEGER NOT NULL)',
   'CREATE TABLE IF NOT EXISTS settings (k TEXT PRIMARY KEY, v TEXT NOT NULL)',
 ];
@@ -340,13 +341,47 @@ async function statOut(req, db, d) {
   return reply(req, { ok: true, days, from, today, now: { online: usersOnline.n || 0 }, players: reg,
     total: { sessions: secs.sessions || 0, secs: secs.secs || 0, played, withTable, social }, perDay, byMode, byKind, tableSizes, ends, joins, plat, buckets, hours: hrs });
 }
-const V4 = { '/profil': profGet, '/profil/save': profSave, '/lier/code': linkCode, '/lier/prendre': linkTake, '/vip': vipTry, '/vip/regler': vipSet, '/stat': statIn, '/stats/resume': statOut };
+
+// ---- version 6: the friend's card and the face to face. The game sends its numbers (POST /fiche/save); only a friend can read them (POST /fiche)
+const N = (v, max) => Math.max(0, Math.min(max, Math.floor(+v) || 0));
+const TITLE_KEY = /^[a-z0-9_]{1,24}$/;
+function cleanFiche(f) {
+  f = f && typeof f === 'object' ? f : {};
+  const hs = {}; for (const h of HOUSES) { const a = Array.isArray(f.hs && f.hs[h]) ? f.hs[h] : []; hs[h] = [N(a[0], 99), N(a[1], 99999), N(a[2], 99999)]; }
+  return { g: N(f.g, 999999), w: N(f.w, 999999), s: N(f.s, 99999999), bw: N(f.bw, 9999), d: N(f.d, 9999), tw: N(f.tw, 9999999), sv: N(f.sv, 9999999), bo: N(f.bo, 999999), ti: N(f.ti, 999),
+    ty: TITLE_KEY.test(String(f.ty || '')) ? String(f.ty) : '', hs };
+}
+async function ficheSave(req, db, d) {
+  const key = String(d.key || ''); if (!KEY.test(key)) return no(req, 'key');
+  const today = parisDay(); if (await slowed(req, db, today)) return no(req, 'slow', 429);
+  const pid = await pidOf(key), data = JSON.stringify(cleanFiche(d.fi));
+  await db.prepare('INSERT INTO fiches (pid, data, at) VALUES (?1, ?2, ?3) ON CONFLICT (pid) DO UPDATE SET data = excluded.data, at = excluded.at').bind(pid, data, Date.now()).run();
+  return reply(req, { ok: true });
+}
+async function ficheGet(req, db, d) {
+  const key = String(d.key || ''); if (!KEY.test(key)) return no(req, 'key');
+  const code = String(d.code || '').toUpperCase().replace(/[\s-]/g, ''); if (!CODE.test(code)) return no(req, 'code');
+  const today = parisDay(); if (await slowed(req, db, today)) return no(req, 'slow', 429);
+  const pid = await pidOf(key);
+  const o = await db.prepare('SELECT pid, code, n, h, c, u, lv, st, m, at FROM players WHERE code = ?1').bind(code).first();
+  if (!o || o.pid === pid) return no(req, 'inconnu', 404);
+  if (!(await db.prepare('SELECT a FROM friends WHERE a = ?1 AND b = ?2').bind(pid, o.pid).first())) return no(req, 'pas ami', 403);
+  const fi = await db.prepare('SELECT data, at FROM fiches WHERE pid = ?1').bind(o.pid).first();
+  const bs = boardsOf(today), qs = bs.map(() => '?').join(',');
+  const rs = await db.prepare(`SELECT b, pid, s, w, t FROM records WHERE pid IN (?1, ?2) AND b IN (${bs.map((_, i) => '?' + (i + 3)).join(',')})`).bind(pid, o.pid, ...bs).all();
+  const recs = {};
+  for (const r of rs.results || []) { const e = recs[r.b] || (recs[r.b] = { a: null, o: null }); (r.pid === pid ? (e.a = { s: r.s, w: r.w, t: r.t }) : (e.o = { s: r.s, w: r.w, t: r.t })); }
+  const on = Date.now() - o.at < ONLINE_MS;
+  let data = null; try { data = fi ? JSON.parse(fi.data) : null; } catch (e) {}
+  return reply(req, { ok: true, ami: Object.assign(pub(o), { st: on ? o.st : 'off', m: on ? o.m : '', ago: Math.max(0, Math.round((Date.now() - o.at) / 1000)) }), fi: data, recs, today });
+}
+const V4 = { '/fiche/save': ficheSave, '/fiche': ficheGet,  '/profil': profGet, '/profil/save': profSave, '/lier/code': linkCode, '/lier/prendre': linkTake, '/vip': vipTry, '/vip/regler': vipSet, '/stat': statIn, '/stats/resume': statOut };
 
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(req) });
-    if (url.pathname === '/' && req.method === 'GET') return reply(req, { ok: true, nom: 'les-joutes', v: 5 });
+    if (url.pathname === '/' && req.method === 'GET') return reply(req, { ok: true, nom: 'les-joutes', v: 6 });
     const AMI = { '/ami': 'me', '/ami/qui': 'qui', '/ami/add': 'add', '/ami/del': 'del' }[url.pathname];
     const F4 = Object.prototype.hasOwnProperty.call(V4, url.pathname) ? V4[url.pathname] : null;
     if (url.pathname !== '/rec' && !AMI && !F4) return no(req, 'path', 404);
