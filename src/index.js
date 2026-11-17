@@ -41,6 +41,7 @@
 // POST /stats/resume  { key, days? }   Patrick seul : les totaux et les courbes (aucune fiche individuelle) → { ok, … }
 const FIXED = {
   'lt/all': 500000,
+  'lt/nuit': 500000, 'lt/riviere': 500000, 'lt/champs': 500000, 'lt/neige': 500000, 'lt/automne': 500000, 'lt/desert': 500000,
   'gem/sablier': 20000000, 'gem/croix': 20000000, 'gem/lacets': 20000000, 'gem/etoile': 20000000,
   'farm/trefle': 50000000, 'farm/peigne': 50000000, 'farm/escargot': 50000000, 'farm/dunes': 50000000,
 };
@@ -49,7 +50,7 @@ const HOUSES = ['cerf', 'ours', 'griffon', 'renard'];
 const COLOURS = 8;
 // lesjoutes.fr, the game's address since version 102 (11/11/2026); the old one (patrickmorvan21.github.io) stays: the old links, and the phones that have not reloaded the game
 const ORIGINS = ['https://lesjoutes.fr', 'https://patrickmorvan21.github.io', 'capacitor://localhost', 'http://localhost:8091', 'http://127.0.0.1:8091'];
-const TOP = 100, MAX_RECS = 16, PER_MIN = 90, KEEP_DEFI_DAYS = 8, CACHE_MS = 10000;
+const TOP = 100, MAX_RECS = 24, PER_MIN = 90, KEEP_DEFI_DAYS = 8, CACHE_MS = 10000;
 const KEY = /^[A-Za-z0-9]{32}$/, OUTFIT = /^[a-z0-9_]{1,24}$/, DAY = /^defi\/(\d{4}-\d{2}-\d{2})$/;
 const outfitOk = v => typeof v === 'string' && OUTFIT.test(v);
 const ALPHA = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', CODE = /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/, ROOM = /^[a-z0-9]{3,8}$/;
@@ -381,7 +382,7 @@ export default {
   async fetch(req, env) {
     const url = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors(req) });
-    if (url.pathname === '/' && req.method === 'GET') return reply(req, { ok: true, nom: 'les-joutes', v: 6 });
+    if (url.pathname === '/' && req.method === 'GET') return reply(req, { ok: true, nom: 'les-joutes', v: 7 });
     const AMI = { '/ami': 'me', '/ami/qui': 'qui', '/ami/add': 'add', '/ami/del': 'del' }[url.pathname];
     const F4 = Object.prototype.hasOwnProperty.call(V4, url.pathname) ? V4[url.pathname] : null;
     if (url.pathname !== '/rec' && !AMI && !F4) return no(req, 'path', 404);

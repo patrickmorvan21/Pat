@@ -17,10 +17,10 @@ const pidOf = k => crypto.createHash('sha256').update('lj|' + k).digest('hex').s
 const me = (recs, more = {}) => Object.assign({ key: K1, n: 'Patrick', h: 'cerf', c: 1, u: 'bois', recs }, more);
 
 let [st, body, ao] = await get('/');
-ck('GET / says who it is', st === 200 && body.ok && body.nom === 'les-joutes' && body.v === 6, body);
+ck('GET / says who it is', st === 200 && body.ok && body.nom === 'les-joutes' && body.v === 7, body);
 [st, body, ao] = await get();
-ck('an empty server: the 9 boards of the game and the défis of today and yesterday, empty; the game\'s address allowed',
-  st === 200 && Object.keys(body.boards).length === 11 && body.boards['gem/croix'].length === 0 && body.boards['defi/' + TODAY] && body.boards['defi/' + YDAY] && body.jour === TODAY && ao === O, [st, Object.keys(body.boards), body.jour, ao]);
+ck('an empty server: the 15 boards of the game and the défis of today and yesterday, empty; the game\'s address allowed',
+  st === 200 && Object.keys(body.boards).length === 17 && body.boards['gem/croix'].length === 0 && body.boards['defi/' + TODAY] && body.boards['defi/' + YDAY] && body.jour === TODAY && ao === O, [st, Object.keys(body.boards), body.jour, ao]);
 [st, body] = await post(me([{ b: 'gem/croix', s: 8710, w: 14, t: 1000 }, { b: 'lt/all', s: 4200, w: 18, t: 900 }, { b: 'farm/dunes', s: 120000, w: 31, t: 800 }]));
 ck('a first post with three records is kept, and gives the player\'s public number (from his key)', st === 200 && body.ok && body.pid === pidOf(K1) && /^[0-9a-f]{16}$/.test(body.pid), [st, body]);
 [, body] = await get();

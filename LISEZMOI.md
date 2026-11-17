@@ -42,3 +42,8 @@ Seuls le jeu en ligne et l'appli iPhone (`capacitor://localhost`) peuvent le lir
 - `POST /fiche/save` `{ key, fi }` : le jeu envoie ses chiffres (parties, victoires, temps de jeu, meilleure vague, défis, tours, vies volées, boss, nombre de titres, titre porté, et par Maison : niveau, parties, victoires) ; tout est borné, les Maisons inconnues sont ignorées.
 - `POST /fiche` `{ key, code }` : la fiche de l'ami qui a ce code ; **seulement si vous êtes amis** (403 sinon). Rend son nom, sa Maison, sa tenue, son niveau, où il est, ses chiffres (`fi`, null s'il n'a pas encore rouvert le jeu), et les records des deux joueurs sur chaque tableau (`recs`: `{ a: toi, o: lui }`).
 - Une table de plus : `fiches`. Aucun secret ni clé dans les réponses. Essais : `test/v6.test.mjs` (16 vérifications, avec `miniflare@4`).
+
+## Version 7 (17/11/2026) : les records de Line Towers par terrain
+- Six tableaux de plus : `lt/nuit`, `lt/riviere`, `lt/champs`, `lt/neige`, `lt/automne`, `lt/desert` (plafond 500 000, comme `lt/all`). Le tableau `lt/all` reste en base mais le jeu ne l'affiche plus.
+- Un envoi `POST /rec` accepte jusqu'à 24 records (au lieu de 16), puisqu'il y a maintenant 15 tableaux fixes et 2 défis.
+- Essais : `test/v7.test.mjs` (avec `miniflare@4`).
